@@ -1,6 +1,6 @@
 # NYTimes-KMP
 
-[![Kotlin Experimental](https://kotl.in/badges/experimental.svg)](https://kotlinlang.org/docs/components-stability.html)
+[![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/android.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/android.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.8.10-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
