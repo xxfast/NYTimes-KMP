@@ -1,4 +1,4 @@
-package io.github.xxfast.krouter.android
+package io.github.xxfast.nytimes.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

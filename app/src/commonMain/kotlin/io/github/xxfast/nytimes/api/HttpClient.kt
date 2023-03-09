@@ -19,14 +19,6 @@ import kotlinx.serialization.json.Json
 
 val HttpClient = HttpClient(CIO) {
   install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-  install(Logging) {
-    logger = object : Logger {
-      override fun log(message: String) {
-        println(message)
-      }
-    }
-    level = LogLevel.ALL
-  }
 
   defaultRequest {
     url {
@@ -36,7 +28,6 @@ val HttpClient = HttpClient(CIO) {
     }
   }
 }
-
 
 suspend inline fun <reified T> HttpClient.get(
   block: HttpRequestBuilder.() -> Unit = {}

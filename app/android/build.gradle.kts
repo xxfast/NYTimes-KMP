@@ -1,5 +1,7 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
   id("com.android.application")
   kotlin("android")
@@ -7,10 +9,11 @@ plugins {
 }
 
 android {
-  namespace = "io.github.xxfast.krouter.android"
+  namespace = "io.github.xxfast.nytimes.android"
   compileSdk = 33
+
   defaultConfig {
-    applicationId = "io.github.xxfast.krouter.android"
+    applicationId = "io.github.xxfast.nytimes.android"
     minSdk = 24
     targetSdk = 33
     versionCode = 1
@@ -27,9 +30,28 @@ android {
     }
   }
 
+  signingConfigs {
+    val localProperties: java.util.Properties = gradleLocalProperties(rootDir)
+    val localStoreFile: String = localProperties.getProperty("androidReleaseStoreFile", ".")
+    val localStorePassword: String = localProperties.getProperty("androidReleaseStorePassword", "")
+    val localKeyAlias: String = localProperties.getProperty("androidReleaseKeyAlias", "")
+    val localKeyPassword: String = localProperties.getProperty("androidReleaseKeyPassword", "")
+
+    create("release") {
+      storeFile = file(localStoreFile)
+      storePassword = localStorePassword
+      keyAlias = localKeyAlias
+      keyPassword = localKeyPassword
+      enableV1Signing = true
+      enableV2Signing = true
+    }
+  }
+
   buildTypes {
-    getByName("release") {
-      isMinifyEnabled = false
+    release {
+      isMinifyEnabled = true
+      signingConfig = signingConfigs.named("release").get()
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
 }
