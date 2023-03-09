@@ -31,16 +31,18 @@ jobs:
         mkdir keys
         echo $ANDROID_RELEASE_KEYSTORE_FILE | base64 --decode > keys/release.keystore
         
-    - name: Write local.properties with signinig config
+    - name: Write local.properties
       env:
         ANDROID_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}
         ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
         ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+        NYT_API_KEY: ${{ secrets.NYT_API_KEY }}
       run: |
         echo androidReleaseStoreFile=../../keys/release.keystore >> local.properties
         echo androidReleaseStorePassword=$ANDROID_RELEASE_KEYSTORE_PASSWORD >> local.properties
         echo androidReleaseKeyAlias=$ANDROID_RELEASE_KEY_ALIAS >> local.properties
         echo androidReleaseKeyPassword=$ANDROID_RELEASE_KEY_PASSWORD >> local.properties
+        echo apiKey=$NYT_API_KEY >> local.properties
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
