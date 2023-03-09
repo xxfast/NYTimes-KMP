@@ -80,7 +80,7 @@ kotlin {
 }
 
 android {
-  namespace = "io.github.xxfast.krouter.sample"
+  namespace = "io.github.xxfast.nytimes.android"
   compileSdk = 33
   defaultConfig {
     minSdk = 24
