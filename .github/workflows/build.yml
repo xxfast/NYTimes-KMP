@@ -94,3 +94,31 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew :app:desktop:${{ matrix.config.task }}
+
+  build_ios:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Setup Cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1
+        with:
+          podfile-path: app/ios/Podfile.lock
+
+      - name: Build with xcode
+        run: |
+          cd app/ios
+          pod install
+          xcodebuild -workspace ios.xcworkspace -scheme ios archive -archivePath ../build/outputs/ios 
+          xcodebuild -exportArchive -archivePath app/build/outputs/ios.xcarchive -exportPath app/build/outputs/ipa -exportOptionsPlist app/ios/exportOptions.plist
