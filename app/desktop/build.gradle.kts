@@ -33,7 +33,7 @@ compose.desktop {
 
       packageName = "NYTimes"
 
-      val iconsRoot = project.file("src/desktopMain/resources/icons")
+      val iconsRoot = project.file("src/main/resources/icons")
 
       macOS {
         iconFile.set { iconsRoot.resolve("nytimes-desktop.icns") }
