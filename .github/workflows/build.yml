@@ -96,6 +96,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :app:desktop:${{ matrix.config.task }}
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: desktop-${{ matrix.config.target }}
+          path: |
+            app/desktop/build/compose/binaries/main/
+
   build_ios:
     name: Build iOS
     runs-on: macos-latest
