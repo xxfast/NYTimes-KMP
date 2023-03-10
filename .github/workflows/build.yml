@@ -88,6 +88,7 @@ jobs:
           NYT_API_KEY: ${{ secrets.NYT_API_KEY }}
         run: |
           echo apiKey=$NYT_API_KEY >> local.properties
+        shell: bash
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
