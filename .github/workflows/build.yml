@@ -121,5 +121,4 @@ jobs:
         run: |
           cd app/ios
           pod install
-          xcodebuild -workspace ios.xcworkspace -scheme ios archive -archivePath ../build/outputs/ios 
-          xcodebuild -exportArchive -archivePath app/build/outputs/ios.xcarchive -exportPath app/build/outputs/ipa -exportOptionsPlist app/ios/exportOptions.plist
+          xcodebuild -workspace ios.xcworkspace -scheme ios 
