@@ -96,7 +96,7 @@ buildkonfig {
     val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
 
     require(apiKey.isNotEmpty()) {
-      "Register your api key from thenewsapi.com and place it in local.properties as `apiKey`"
+      "Register your api key from developer.nytimes.com and place it in local.properties as `apiKey`"
     }
 
     buildConfigField(STRING, "API_KEY", apiKey)
