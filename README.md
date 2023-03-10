@@ -8,11 +8,6 @@
 
 A KMP template of the New York Times App using Compose multiplatform
 
-
-An example [Compose Multiplatform](https://github.com/JetBrains/compose-jb) navigation library that use [Decompose](https://github.com/arkivanov/Decompose) and [Essenty](https://github.com/arkivanov/Essenty) to create an API inspired by [Conductor](https://github.com/bluelinelabs/Conductor)
-
-A detailed breakdown available in this [Medium article](https://medium.com/@xxfast/diy-compose-multiplatform-navigation-with-decompose-94ac8126e6b5)
-
 ## Features
 - 📰 Top Stories; Feed of top stories for the day
 
