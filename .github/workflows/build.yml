@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build_android:
     name: Build android
     runs-on: ubuntu-latest
 
@@ -58,3 +58,39 @@ jobs:
           app/android/build/outputs/apk/debug/android-debug.apk
           app/android/build/outputs/apk/release/android-release.apk
           app/android/build/outputs/mapping/release/mapping.txt
+
+  build_desktop:
+    strategy:
+      matrix:
+        config: [
+          { target: apple, os: macos-latest, task: packageDmg },
+          { target: windows, os: windows-latest, task: packageMsi }
+          { target: linux, os: ubuntu-latest, task: packageDeb },
+        ]
+    runs-on: ${{ matrix.config.os }}
+    name: Build ${{ matrix.config.target }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Write local.properties
+        env:
+          NYT_API_KEY: ${{ secrets.NYT_API_KEY }}
+        run: |
+          echo apiKey=$NYT_API_KEY >> local.properties
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew :app:desktop:${{ matrix.config.task }}

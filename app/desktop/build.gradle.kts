@@ -1,34 +1,58 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
-
-import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi
 
 plugins {
-  kotlin("multiplatform")
+  kotlin("jvm")
   id("org.jetbrains.compose")
 }
 
-kotlin {
-  jvm("desktop") {
-    withJava()
-    compilations.all {
-      kotlinOptions {
-        jvmTarget = "15"
-      }
-    }
-  }
+dependencies {
+  implementation(project(":app"))
+  implementation(compose.desktop.currentOs)
+  implementation(compose.runtime)
+  implementation(compose.foundation)
+  implementation(compose.material3)
+  implementation(compose.materialIconsExtended)
+  implementation(compose.preview)
+  implementation("com.arkivanov.decompose:decompose:1.0.0-compose-experimental")
+  implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+}
 
-  sourceSets {
-    val desktopMain by getting {
-      dependencies {
-        implementation(project(":app"))
-        implementation(compose.desktop.macos_arm64)
-        implementation(compose.runtime)
-        implementation(compose.foundation)
-        implementation(compose.material3)
-        implementation(compose.materialIconsExtended)
-        implementation(compose.preview)
-        implementation("com.arkivanov.decompose:decompose:1.0.0")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0")
+val appVersion = "1.0.0"
+version = appVersion
+
+compose.desktop {
+  application {
+    mainClass = "io.github.xxfast.nytimes.desktop.ApplicationKt"
+
+    nativeDistributions {
+      targetFormats(Dmg, Msi, Deb)
+
+      modules("java.instrument", "java.management", "jdk.unsupported")
+
+      packageName = "NYTimes"
+
+      val iconsRoot = project.file("src/desktopMain/resources/icons")
+
+      macOS {
+        iconFile.set { iconsRoot.resolve("nytimes-desktop.icns") }
+        packageVersion = appVersion
+        dmgPackageVersion = appVersion
+        pkgPackageVersion = appVersion
+      }
+
+      windows {
+        iconFile.set { iconsRoot.resolve("nytimes-desktop.ico") }
+        menuGroup = "PSCore Multiplatform"
+        // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
+        upgradeUuid = "18159995-d967-4CD2-8885-77BFA97CFA9F"
+        packageVersion = appVersion
+        msiPackageVersion = appVersion
+      }
+
+      linux {
+        iconFile.set { iconsRoot.resolve("nytimes-desktop.png") }
       }
     }
   }

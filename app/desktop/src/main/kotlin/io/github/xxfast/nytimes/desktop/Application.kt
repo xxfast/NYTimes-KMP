@@ -1,4 +1,4 @@
-package io.github.xxfast.krouter.desktop
+package io.github.xxfast.nytimes.desktop
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
