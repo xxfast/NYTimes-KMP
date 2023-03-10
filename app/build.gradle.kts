@@ -80,7 +80,7 @@ kotlin {
 }
 
 android {
-  namespace = "io.github.xxfast.nytimes.android"
+  namespace = "io.github.xxfast.nytimes.app"
   compileSdk = 33
   defaultConfig {
     minSdk = 24
