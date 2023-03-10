@@ -64,7 +64,7 @@ jobs:
       matrix:
         config: [
           { target: apple, os: macos-latest, task: packageDmg },
-          { target: windows, os: windows-latest, task: packageMsi }
+          { target: windows, os: windows-latest, task: packageMsi },
           { target: linux, os: ubuntu-latest, task: packageDeb },
         ]
     runs-on: ${{ matrix.config.os }}
