@@ -96,6 +96,7 @@ jobs:
         run: ./gradlew :app:desktop:${{ matrix.config.task }}
 
   build_ios:
+    name: Build iOS
     runs-on: macos-latest
 
     steps:
