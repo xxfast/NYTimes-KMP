@@ -6,14 +6,11 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 plugins {
   kotlin("multiplatform")
   id("com.android.library")
-  kotlin("native.cocoapods")
   id("org.jetbrains.compose")
   id("kotlin-parcelize")
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
 }
-
-version = "0.1.0"
 
 kotlin {
   android()
@@ -67,14 +64,6 @@ kotlin {
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
       }
-    }
-  }
-
-  cocoapods {
-    summary = "PSCore demo kotlin library"
-    homepage = "README.md"
-    framework {
-      baseName = "PSCore"
     }
   }
 }
