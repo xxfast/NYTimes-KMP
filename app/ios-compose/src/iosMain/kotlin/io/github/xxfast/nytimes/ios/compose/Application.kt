@@ -17,13 +17,7 @@ fun Main(): UIViewController = ComposeUIViewController {
 
   CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
     MaterialTheme {
-      Text("Hello world!")
-      MainScreen()
+      HomeScreen()
     }
   }
-}
-
-@Composable
-private fun MainScreen(){
-  HomeScreen()
 }

@@ -38,7 +38,6 @@ kotlin {
         implementation("com.arkivanov.decompose:decompose:1.0.0")
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
         implementation("io.ktor:ktor-client-core:2.0.3")
-        implementation("io.ktor:ktor-client-cio:2.0.3")
         implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
         implementation("io.ktor:ktor-client-logging:2.0.3")
         implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
@@ -54,6 +53,18 @@ kotlin {
       }
     }
 
+    val androidMain by getting {
+      dependencies {
+        implementation("io.ktor:ktor-client-cio:2.0.3")
+      }
+    }
+
+    val desktopMain by getting {
+      dependencies {
+        implementation("io.ktor:ktor-client-cio:2.0.3")
+      }
+    }
+
     val iosX64Main by getting
     val iosArm64Main by getting
     val iosSimulatorArm64Main by getting
@@ -63,6 +74,7 @@ kotlin {
       iosArm64Main.dependsOn(this)
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
+        implementation("io.ktor:ktor-client-darwin:2.2.4")
       }
     }
   }
