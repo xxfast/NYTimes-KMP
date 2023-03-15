@@ -52,7 +52,7 @@ fun StoryScreen(
   onBack: () -> Unit,
 ) {
   val viewModel: StoryViewModel =
-    rememberViewModel { savedState -> StoryViewModel(savedState, section, uri, title) }
+    rememberViewModel(StoryViewModel::class) { savedState -> StoryViewModel(savedState, section, uri, title) }
 
   val state: StoryState by viewModel.states.collectAsState()
 

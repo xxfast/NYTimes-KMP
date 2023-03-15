@@ -60,7 +60,7 @@ fun TopStoriesScreen(
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
-    rememberViewModel { savedState -> TopStoriesViewModel(savedState) }
+    rememberViewModel(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 

@@ -15,7 +15,7 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesScreen
 
 @Composable
 fun HomeScreen() {
-  val router: Router<StoryHomeScreen> = rememberRouter(listOf(List))
+  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class, listOf(List))
 
   RoutedContent(
     router = router,
