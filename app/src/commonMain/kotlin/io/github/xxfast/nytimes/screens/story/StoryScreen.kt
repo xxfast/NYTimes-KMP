@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -43,6 +45,7 @@ import io.github.xxfast.krouter.rememberViewModel
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.Loading
+import io.github.xxfast.nytimes.utils.statusBarPadding
 
 @Composable
 fun StoryScreen(
@@ -81,7 +84,9 @@ fun StoryView(
         },
         actions = {
           IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }
-        }
+        },
+        modifier = Modifier
+          .windowInsetsPadding(WindowInsets.statusBarPadding)
       )
     },
   ) { scaffoldPadding ->

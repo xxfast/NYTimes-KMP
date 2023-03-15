@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
@@ -48,6 +46,7 @@ import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimes
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesLogo
+import io.github.xxfast.nytimes.utils.navigationBarPadding
 import io.github.xxfast.nytimes.utils.statusBarPadding
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -92,7 +91,9 @@ fun TopStoriesView(
     },
     bottomBar = {
       BottomAppBar(
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
+        modifier = Modifier
+          .windowInsetsPadding(WindowInsets.navigationBarPadding)
       ) {
         Icon(
           imageVector = SampleIcons.NewYorkTimesLogo,
@@ -120,11 +121,8 @@ fun TopStoriesView(
         .padding(scaffoldPadding)
         .fillMaxSize()
     ) {
-      if (state.articles != Loading) LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(16.dp),
-      ) {
-        items(state.articles) { summary -> StorySummaryView(summary, onSelect) }
+      if (state.articles != Loading) FeedView(summaries = state.articles) { summary ->
+        StorySummaryView(summary, onSelect)
       }
 
       AnimatedVisibility(
