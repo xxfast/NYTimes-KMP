@@ -15,11 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
@@ -79,8 +76,6 @@ fun TopStoriesView(
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-  val lazyStaggeredGridState: LazyStaggeredGridState = rememberLazyStaggeredGridState()
-
   Scaffold(
     topBar = {
       CenterAlignedTopAppBar(
@@ -121,12 +116,9 @@ fun TopStoriesView(
         .padding(scaffoldPadding)
         .fillMaxSize()
     ) {
-      if (state.articles != Loading) LazyVerticalStaggeredGrid(
-        state = lazyStaggeredGridState,
+      if (state.articles != Loading) LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp),
-        columns = StaggeredGridCells.Adaptive(250.dp),
       ) {
         items(state.articles) { summary -> StorySummaryView(summary, onSelect) }
       }
