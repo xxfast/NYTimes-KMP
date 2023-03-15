@@ -18,3 +18,4 @@ rootProject.name = "NYTimes-KMP"
 include(":app")
 include(":app:android")
 include(":app:desktop")
+include(":app:ios-compose")

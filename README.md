@@ -13,6 +13,11 @@ A KMP template of the New York Times App using Compose multiplatform
 
 ## Showcase
 
+### Android
 https://user-images.githubusercontent.com/13775137/223930832-94a210f7-b477-4bcf-a40f-194ce15b41bd.mp4
 
+### iOS
+https://user-images.githubusercontent.com/13775137/225458153-b3812e6d-0725-4213-a9d6-0a727bcacdff.mp4
+
+### Desktop
 https://user-images.githubusercontent.com/13775137/223930769-78c1a839-bddc-4379-8994-f8cb028e97e1.mp4

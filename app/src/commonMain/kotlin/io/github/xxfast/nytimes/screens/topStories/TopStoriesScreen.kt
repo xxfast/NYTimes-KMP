@@ -3,23 +3,19 @@ package io.github.xxfast.nytimes.screens.topStories
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
@@ -50,6 +46,8 @@ import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimes
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesLogo
+import io.github.xxfast.nytimes.utils.navigationBarPadding
+import io.github.xxfast.nytimes.utils.statusBarPadding
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -60,7 +58,7 @@ fun TopStoriesScreen(
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
-    rememberViewModel { savedState -> TopStoriesViewModel(savedState) }
+    rememberViewModel(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
@@ -71,7 +69,7 @@ fun TopStoriesScreen(
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopStoriesView(
   state: TopStoriesState,
@@ -79,8 +77,6 @@ fun TopStoriesView(
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-  val lazyStaggeredGridState: LazyStaggeredGridState = rememberLazyStaggeredGridState()
-
   Scaffold(
     topBar = {
       CenterAlignedTopAppBar(
@@ -88,12 +84,16 @@ fun TopStoriesView(
         scrollBehavior = scrollBehavior,
         actions = {
           IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }
-        }
+        },
+        modifier = Modifier
+          .windowInsetsPadding(WindowInsets.statusBarPadding)
       )
     },
     bottomBar = {
       BottomAppBar(
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
+        modifier = Modifier
+          .windowInsetsPadding(WindowInsets.navigationBarPadding)
       ) {
         Icon(
           imageVector = SampleIcons.NewYorkTimesLogo,
@@ -121,14 +121,8 @@ fun TopStoriesView(
         .padding(scaffoldPadding)
         .fillMaxSize()
     ) {
-      if (state.articles != Loading) LazyVerticalStaggeredGrid(
-        state = lazyStaggeredGridState,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(16.dp),
-        columns = StaggeredGridCells.Adaptive(250.dp),
-      ) {
-        items(state.articles) { summary -> StorySummaryView(summary, onSelect) }
+      if (state.articles != Loading) FeedView(summaries = state.articles) { summary ->
+        StorySummaryView(summary, onSelect)
       }
 
       AnimatedVisibility(

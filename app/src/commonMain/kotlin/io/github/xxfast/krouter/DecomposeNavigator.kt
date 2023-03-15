@@ -13,6 +13,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigationSource
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.essenty.parcelable.Parcelable
+import kotlin.reflect.KClass
 
 /**
  * Based off from https://proandroiddev.com/a-comprehensive-hundred-line-navigation-for-jetpack-desktop-compose-5b723c4f256e
@@ -22,9 +23,10 @@ val LocalComponentContext: ProvidableCompositionLocal<ComponentContext> =
   staticCompositionLocalOf { error("Root component context was not provided") }
 
 @Composable
-inline fun <reified C : Parcelable> rememberChildStack(
+internal fun <C : Parcelable> rememberChildStack(
+  type: KClass<C>,
   source: StackNavigationSource<C>,
-  noinline initialStack: () -> List<C>,
+  initialStack: () -> List<C>,
   key: String = "DefaultChildStack",
   handleBackButton: Boolean = false,
 ): State<ChildStack<C, ComponentContext>> {
@@ -34,6 +36,7 @@ inline fun <reified C : Parcelable> rememberChildStack(
     componentContext.childStack(
       source = source,
       initialStack = initialStack,
+      configurationClass = type,
       key = key,
       handleBackButton = handleBackButton,
       childFactory = { _, childComponentContext -> childComponentContext },

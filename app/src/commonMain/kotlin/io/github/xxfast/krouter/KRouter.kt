@@ -20,6 +20,7 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.statekeeper.StateKeeper
+import kotlin.reflect.KClass
 
 class Router<C : Parcelable>(
   private val navigator: StackNavigation<C>,
@@ -30,20 +31,22 @@ val LocalRouter: ProvidableCompositionLocal<Router<*>?> =
   staticCompositionLocalOf { null }
 
 @Composable
-inline fun <reified C : Parcelable> rememberRouter(
+fun <C : Parcelable> rememberRouter(
+  type: KClass<C>,
   stack: List<C>,
   handleBackButton: Boolean = true
 ): Router<C> {
   val navigator: StackNavigation<C> = remember { StackNavigation() }
 
   val packageName: String =
-    requireNotNull(C::class.qualifiedName) { "Unable to retain anonymous instance of ${C::class}"}
+    requireNotNull(type.qualifiedName) { "Unable to retain anonymous instance of $type"}
 
   val childStackState: State<ChildStack<C, ComponentContext>> = rememberChildStack(
     source = navigator,
     initialStack = { stack },
     key = packageName,
-    handleBackButton = handleBackButton
+    handleBackButton = handleBackButton,
+    type = type,
   )
 
   return remember { Router(navigator = navigator, stack = childStackState) }
@@ -69,24 +72,29 @@ fun <C : Parcelable> RoutedContent(
   }
 }
 
+@Suppress("UNCHECKED_CAST") // ViewModels must be Instances
 @Composable
-inline fun <reified T : ViewModel> rememberViewModel(
-  key: Any = T::class,
-  crossinline block: @DisallowComposableCalls (savedState: SavedStateHandle) -> T
+fun <T : ViewModel> rememberViewModel(
+  viewModelClass: KClass<T>,
+  block: @DisallowComposableCalls (savedState: SavedStateHandle) -> T
 ): T {
   val component: ComponentContext = LocalComponentContext.current
   val stateKeeper: StateKeeper = component.stateKeeper
   val instanceKeeper: InstanceKeeper = component.instanceKeeper
 
   val packageName: String =
-    requireNotNull(T::class.qualifiedName) { "Unable to retain anonymous instance of ${T::class}"}
+    requireNotNull(viewModelClass.qualifiedName) { "Unable to retain anonymous instance of $viewModelClass"}
   val viewModelKey = "$packageName.viewModel"
   val stateKey = "$packageName.savedState"
 
-  val (viewModel, savedState) = remember(key) {
+  val (viewModel, savedState) = remember(viewModelClass) {
     val savedState: SavedStateHandle = instanceKeeper
       .getOrCreate(stateKey) { SavedStateHandle(stateKeeper.consume(stateKey, SavedState::class)) }
-    val viewModel: T = instanceKeeper.getOrCreate(viewModelKey) { block(savedState) }
+    var viewModel: T? = instanceKeeper.get(viewModelKey) as T?
+    if (viewModel == null) {
+      viewModel = block(savedState)
+      instanceKeeper.put(viewModelKey, viewModel)
+    }
     viewModel to savedState
   }
 
