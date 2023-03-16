@@ -37,7 +37,7 @@ kotlin {
 
         implementation("com.arkivanov.decompose:decompose:1.0.0")
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
-        implementation("io.ktor:ktor-client-core:2.0.3")
+        implementation("io.ktor:ktor-client-core:2.2.4")
         implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
         implementation("io.ktor:ktor-client-logging:2.0.3")
         implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
