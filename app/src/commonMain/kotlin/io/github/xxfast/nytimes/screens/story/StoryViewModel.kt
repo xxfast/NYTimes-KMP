@@ -4,11 +4,16 @@ import app.cash.molecule.RecompositionClock.Immediate
 import app.cash.molecule.moleculeFlow
 import io.github.xxfast.krouter.SavedStateHandle
 import io.github.xxfast.krouter.ViewModel
+import io.github.xxfast.kstore.KStore
+import io.github.xxfast.kstore.storeOf
 import io.github.xxfast.nytimes.api.HttpClient
 import io.github.xxfast.nytimes.api.NyTimesWebService
+import io.github.xxfast.nytimes.data.appStorage
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.StoryEvent.Refresh
+import io.github.xxfast.nytimes.screens.story.StoryEvent.Save
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +30,14 @@ class StoryViewModel(
   private val eventsFlow: MutableSharedFlow<StoryEvent> = MutableSharedFlow(5)
   private val initialState: StoryState = savedState.get() ?: StoryState(title, Loading)
   private val webService = NyTimesWebService(HttpClient)
+  private val store: KStore<SavedArticles> = storeOf(filePath = "$appStorage/saved.json", default = emptySet())
 
   val states: StateFlow<StoryState> by lazy {
-    moleculeFlow(Immediate) { StoryDomain(section, uri, title, initialState, eventsFlow, webService) }
+    moleculeFlow(Immediate) { StoryDomain(section, uri, title, initialState, eventsFlow, webService, store) }
       .onEach { state -> savedState.set(state) }
       .stateIn(this, SharingStarted.Lazily, initialState)
   }
 
   fun onRefresh() { launch { eventsFlow.emit(Refresh) } }
+  fun onSave() { launch { eventsFlow.emit(Save) } }
 }

@@ -17,8 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExitToApp
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,7 +60,14 @@ fun StoryScreen(
   onBack: () -> Unit,
 ) {
   val viewModel: StoryViewModel =
-    rememberViewModel(StoryViewModel::class) { savedState -> StoryViewModel(savedState, section, uri, title) }
+    rememberViewModel(StoryViewModel::class) { savedState ->
+      StoryViewModel(
+        savedState,
+        section,
+        uri,
+        title
+      )
+    }
 
   val state: StoryState by viewModel.states.collectAsState()
 
@@ -63,6 +75,7 @@ fun StoryScreen(
     state = state,
     onRefresh = viewModel::onRefresh,
     onBack = onBack,
+    onSave = viewModel::onSave
   )
 }
 
@@ -71,6 +84,7 @@ fun StoryScreen(
 fun StoryView(
   state: StoryState,
   onRefresh: () -> Unit,
+  onSave: () -> Unit,
   onBack: () -> Unit,
 ) {
   Scaffold(
@@ -83,6 +97,14 @@ fun StoryView(
           IconButton(onClick = onBack) { Icon(Icons.Rounded.ArrowBack, contentDescription = null) }
         },
         actions = {
+          IconButton(onClick = onSave, enabled = state.article != null) {
+            val icon: ImageVector =
+              if (state.isSaved == true) Icons.Filled.Favorite
+              else Icons.Outlined.FavoriteBorder
+
+            Icon(imageVector = icon, contentDescription = null)
+          }
+
           IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }
         },
         modifier = Modifier
@@ -95,16 +117,16 @@ fun StoryView(
         .padding(scaffoldPadding)
         .fillMaxSize()
     ) {
-      if (state.details == Loading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+      if (state.article == Loading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
       else Column(
         modifier = Modifier
           .verticalScroll(rememberScrollState())
       ) {
-        if (state.details.imageUrl != null) Box {
+        if (!state.article.multimedia.isNullOrEmpty()) Box {
           CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
           Image(
-            painter = rememberAsyncImagePainter(state.details.imageUrl),
+            painter = rememberAsyncImagePainter(state.article.multimedia.first().url),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
@@ -118,24 +140,28 @@ fun StoryView(
           verticalArrangement = Arrangement.spacedBy(16.dp),
           modifier = Modifier.padding(16.dp)
         ) {
+          Text(
+            text = state.article.title,
+            style = MaterialTheme.typography.headlineSmall,
+          )
 
           Text(
-            text = state.details.title,
-            style = MaterialTheme.typography.headlineSmall,
+            text = state.article.byline,
+            style = MaterialTheme.typography.labelLarge,
           )
 
           AssistChip(
             onClick = {},
             label = {
               Text(
-                text = state.details.section.name,
+                text = state.article.section.name,
                 style = MaterialTheme.typography.labelMedium
               )
             }
           )
 
           Text(
-            text = state.details.description,
+            text = state.article.abstract,
             style = MaterialTheme.typography.bodyMedium,
           )
 
@@ -148,7 +174,7 @@ fun StoryView(
             val uriHandler = LocalUriHandler.current
 
             TextButton(
-              onClick = { uriHandler.openUri(state.details.externalUrl) },
+              onClick = { uriHandler.openUri(state.article.url) },
               shape = MaterialTheme.shapes.small,
             ) {
               Icon(
@@ -158,7 +184,7 @@ fun StoryView(
               )
 
               Text(
-                text = state.details.externalUrl,
+                text = state.article.url,
                 style = MaterialTheme.typography.bodySmall,
               )
             }
@@ -173,7 +199,7 @@ fun StoryView(
             )
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-              val sections = listOf(state.details.section.name, state.details.subsection)
+              val sections = listOf(state.article.section.name, state.article.subsection)
               items(sections) { section ->
                 AssistChip(
                   onClick = {},
