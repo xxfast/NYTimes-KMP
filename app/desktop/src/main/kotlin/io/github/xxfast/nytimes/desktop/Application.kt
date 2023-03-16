@@ -11,7 +11,9 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.krouter.LocalComponentContext
+import io.github.xxfast.nytimes.data.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import net.harawata.appdirs.AppDirsFactory
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
@@ -21,6 +23,8 @@ fun main() {
   application {
     val windowState: WindowState = rememberWindowState()
     LifecycleController(lifecycle, windowState)
+    appStorage = AppDirsFactory.getInstance()
+      .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
 
     Window(
       title = "The New York Times",

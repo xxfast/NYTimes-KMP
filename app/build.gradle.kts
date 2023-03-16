@@ -35,14 +35,16 @@ kotlin {
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)
 
+        implementation("app.cash.molecule:molecule-runtime:0.7.1")
         implementation("com.arkivanov.decompose:decompose:1.0.0")
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+        implementation("com.arkivanov.essenty:parcelable:1.0.0")
         implementation("io.ktor:ktor-client-core:2.2.4")
         implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
         implementation("io.ktor:ktor-client-logging:2.0.3")
         implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
         implementation("io.github.qdsfdhvh:image-loader:1.2.10")
-        implementation("app.cash.molecule:molecule-runtime:0.7.1")
+        implementation("io.github.xxfast:kstore:0.4.0-SNAPSHOT")
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
       }
     }
