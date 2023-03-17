@@ -23,7 +23,7 @@ fun HomeScreen() {
   ) { screen ->
     when(screen){
       List -> TopStoriesScreen(
-        onSelect = { section, uri, title -> router.push(Details(section, uri, title))}
+        onSelectArticle = { section, uri, title -> router.push(Details(section, uri, title))}
       )
 
       is Details -> StoryScreen(

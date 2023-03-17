@@ -6,7 +6,9 @@ import io.github.xxfast.krouter.SavedStateHandle
 import io.github.xxfast.krouter.ViewModel
 import io.github.xxfast.nytimes.api.HttpClient
 import io.github.xxfast.nytimes.api.NyTimesWebService
+import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
+import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -22,4 +24,5 @@ class TopStoriesViewModel(savedState: SavedStateHandle) : ViewModel() {
   }
 
   fun onRefresh() { launch { eventsFlow.emit(Refresh) } }
+  fun onSelectSection(section: TopStorySection) { launch { eventsFlow.emit(SelectSection(section)) } }
 }

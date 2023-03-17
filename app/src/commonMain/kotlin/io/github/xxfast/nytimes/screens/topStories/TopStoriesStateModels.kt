@@ -27,5 +27,5 @@ data class TopStorySummaryState(
 
 sealed interface TopStoriesEvent {
   object Refresh: TopStoriesEvent
-  data class Search(val query: String): TopStoriesEvent
+  data class SelectSection(val section: TopStorySection): TopStoriesEvent
 }

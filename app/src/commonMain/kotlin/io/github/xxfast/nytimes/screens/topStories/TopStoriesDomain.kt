@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.models.TopStorySections.home
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -21,9 +22,9 @@ fun TopStoriesDomain(
   var section: TopStorySection by remember { mutableStateOf(initialState.section) }
   var refreshes: Int by remember { mutableStateOf(0) }
 
-  LaunchedEffect(refreshes, section) {
+  LaunchedEffect(refreshes) {
     // Don't autoload the stories when restored from process death
-    if(refreshes == 0 && articles != Loading) return@LaunchedEffect
+    if (refreshes == 0 && articles != Loading) return@LaunchedEffect
 
     articles = Loading
 
@@ -46,7 +47,11 @@ fun TopStoriesDomain(
     events.collect { event ->
       when (event) {
         TopStoriesEvent.Refresh -> refreshes++
-        is TopStoriesEvent.Search -> TODO()
+        is TopStoriesEvent.SelectSection -> {
+          // reset the section to home if it is already selected
+          section = if (event.section == section) home else event.section
+          refreshes++
+        }
       }
     }
   }
