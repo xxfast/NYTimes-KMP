@@ -1,29 +1,11 @@
-package io.github.xxfast.nytimes.api
+package io.github.xxfast.nytimes.utils
 
-import io.github.xxfast.nytimes.app.BuildKonfig
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.URLProtocol
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
-
-val HttpClient = HttpClient {
-  install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-
-  defaultRequest {
-    url {
-      host = "api.nytimes.com"
-      protocol = URLProtocol.HTTPS
-      parameters.append("api-key", BuildKonfig.API_KEY)
-    }
-  }
-}
 
 suspend inline fun <reified T> HttpClient.get(
   block: HttpRequestBuilder.() -> Unit = {}
@@ -43,3 +25,4 @@ suspend inline fun <reified T> request(
   exception.printStackTrace()
   Result.failure(exception)
 }
+

@@ -18,11 +18,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExitToApp
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -102,7 +100,13 @@ fun StoryView(
               if (state.isSaved == true) Icons.Filled.Favorite
               else Icons.Outlined.FavoriteBorder
 
-            Icon(imageVector = icon, contentDescription = null)
+            Icon(
+              imageVector = icon,
+              contentDescription = null,
+              tint =
+              if (state.isSaved == true) MaterialTheme.colorScheme.primary
+              else MaterialTheme.colorScheme.onSurface
+            )
           }
 
           IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }

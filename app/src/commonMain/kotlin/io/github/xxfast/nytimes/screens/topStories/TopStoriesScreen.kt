@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults.assistChipColors
@@ -30,22 +33,29 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DismissibleDrawerSheet
+import androidx.compose.material3.DismissibleNavigationDrawer
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
@@ -57,6 +67,8 @@ import io.github.xxfast.nytimes.resources.icons.NewYorkTimes
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesLogo
 import io.github.xxfast.nytimes.utils.navigationBarPadding
 import io.github.xxfast.nytimes.utils.statusBarPadding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -75,7 +87,7 @@ fun TopStoriesScreen(
     state = state,
     onSelect = onSelectArticle,
     onRefresh = viewModel::onRefresh,
-    onSelectSection = viewModel::onSelectSection
+    onSelectSection = viewModel::onSelectSection,
   )
 }
 
@@ -87,79 +99,126 @@ fun TopStoriesView(
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
 ) {
-  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-  Scaffold(
-    topBar = {
-      CenterAlignedTopAppBar(
-        title = { Icon(imageVector = SampleIcons.NewYorkTimes, contentDescription = null) },
-        scrollBehavior = scrollBehavior,
-        actions = {
-          IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }
-        },
-        modifier = Modifier
-          .windowInsetsPadding(WindowInsets.statusBarPadding)
-      )
-    },
-    bottomBar = {
-      BottomAppBar(
-        contentPadding = PaddingValues(16.dp),
-        modifier = Modifier
-          .windowInsetsPadding(WindowInsets.navigationBarPadding)
+  val drawer: DrawerState = rememberDrawerState(DrawerValue.Closed)
+  val scope: CoroutineScope = rememberCoroutineScope()
+
+  ModalNavigationDrawer(
+    drawerState = drawer,
+    drawerContent = {
+      ModalDrawerSheet(
+        drawerTonalElevation = 4.dp
       ) {
-        Icon(
-          imageVector = SampleIcons.NewYorkTimesLogo,
-          contentDescription = null,
-          modifier = Modifier
-            .size(32.dp)
-            .padding(4.dp)
-        )
+        LazyColumn(
+          verticalArrangement = Arrangement.spacedBy(16.dp),
+          contentPadding = PaddingValues(16.dp)
+        ) {
+          item {
+            Text(
+              text = "Favourites (${state.numberOfFavourites})",
+              style = MaterialTheme.typography.headlineSmall
+            )
+          }
 
-        val year: Int = Clock.System.now()
-          .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
-          .year
-
-        Column {
-          Text(text = "Data provided by", style = MaterialTheme.typography.labelSmall)
-          Text(text = "The New York Times © $year")
+          if (state.favourites == null) item {
+            Text("Nothing to see here")
+          } else items(state.favourites) { favourite ->
+            StorySummaryView(favourite, onSelect)
+          }
         }
       }
     },
     modifier = Modifier
-      .nestedScroll(scrollBehavior.nestedScrollConnection)
-  ) { scaffoldPadding ->
-    Column(
-      modifier = Modifier
-        .padding(scaffoldPadding)
-        .scrollable(rememberScrollState(), Orientation.Vertical)
-        .fillMaxSize()
-    ) {
-      LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-      ) {
-        items(sections) { section ->
-          ElevatedAssistChip(
-            onClick = { onSelectSection(section) },
-            label = { Text(section.name) },
-            colors = assistChipColors(
-              containerColor = if (section == state.section)
-                MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
-            ),
-            shape = RoundedCornerShape(16.dp)
+  ) {
+    Scaffold(
+      topBar = {
+        CenterAlignedTopAppBar(
+          title = { Icon(imageVector = SampleIcons.NewYorkTimes, contentDescription = null) },
+          actions = {
+            IconButton(onClick = onRefresh) {
+              Icon(
+                Icons.Rounded.Refresh,
+                contentDescription = null
+              )
+            }
+          },
+          navigationIcon = {
+            IconButton(
+              onClick = { scope.launch { if (drawer.isClosed) drawer.open() else drawer.close() } }
+            ) {
+              Icon(
+                imageVector = if (drawer.isOpen) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = null,
+                tint = if (drawer.isOpen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+              )
+            }
+          },
+          modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBarPadding)
+        )
+      },
+      bottomBar = {
+        BottomAppBar(
+          contentPadding = PaddingValues(16.dp),
+          modifier = Modifier
+            .windowInsetsPadding(WindowInsets.navigationBarPadding)
+        ) {
+          Icon(
+            imageVector = SampleIcons.NewYorkTimesLogo,
+            contentDescription = null,
+            modifier = Modifier
+              .size(32.dp)
+              .padding(4.dp)
           )
+
+          val year: Int = Clock.System.now()
+            .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
+            .year
+
+          Column {
+            Text(text = "Data provided by", style = MaterialTheme.typography.labelSmall)
+            Text(text = "The New York Times © $year")
+          }
         }
-      }
-
-      if (state.articles != Loading) FeedView(summaries = state.articles) { summary ->
-        StorySummaryView(summary, onSelect)
-      }
-
-      AnimatedVisibility(
-        visible = state.articles == Loading,
-        enter = fadeIn(),
-        exit = fadeOut(),
+      },
+      modifier = Modifier
+    ) { scaffoldPadding ->
+      Column(
+        modifier = Modifier
+          .scrollable(rememberScrollState(), Orientation.Vertical)
+          .fillMaxSize()
+          .padding(scaffoldPadding)
       ) {
-        CircularProgressIndicator()
+        val selectionColor: @Composable (Boolean) -> Color = { selection ->
+          if (selection) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+        }
+
+        LazyRow(
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          contentPadding = PaddingValues(horizontal = 16.dp)
+        ) {
+          items(sections) { section ->
+            ElevatedAssistChip(
+              onClick = { onSelectSection(section) },
+              label = { Text(section.name) },
+              colors = assistChipColors(containerColor = selectionColor(section == state.section)),
+              shape = RoundedCornerShape(16.dp)
+            )
+          }
+        }
+
+        if (state.articles != Loading) FeedView(summaries = state.articles) { summary ->
+          StorySummaryView(summary, onSelect)
+        }
+
+        AnimatedVisibility(
+          visible = state.articles == Loading,
+          enter = fadeIn(),
+          exit = fadeOut(),
+        ) {
+          Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(modifier = Modifier.align(Center))
+          }
+        }
       }
     }
   }
