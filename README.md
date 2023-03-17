@@ -1,3 +1,5 @@
+<img src="https://user-images.githubusercontent.com/13775137/225805083-cf156f71-64b8-4a1c-ab6d-0478445b22b0.png" align="right" width="200" height="200" />
+
 # NYTimes-KMP
 
 [![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml)
@@ -8,8 +10,14 @@
 
 A KMP template of the New York Times App using Compose multiplatform
 
-## Features
-- 📰 Top Stories; Feed of top stories for the day
+## The stack
+- 🌐 [Ktor](https://github.com/ktorio/ktor); for networking
+- 📦 [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization); for content negotiation
+- 🕰️ [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime); for datetime
+- 🗃️ [KStore](https://github.com/xxfast/KStore); for storage
+- 🚏 [Decompose](https://github.com/arkivanov/Decompose) + [KRouter](https://github.com/xxfast/KRouter); for navigation
+- 🧪 [Molecule](https://github.com/cashapp/molecule); for modeling state
+- 🏞️ [Compose-imageloader](https://github.com/qdsfdhvh/compose-imageloader); for loading images
 
 ## Showcase
 
