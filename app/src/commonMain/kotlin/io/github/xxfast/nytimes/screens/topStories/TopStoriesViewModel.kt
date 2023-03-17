@@ -4,10 +4,16 @@ import app.cash.molecule.RecompositionClock.Immediate
 import app.cash.molecule.moleculeFlow
 import io.github.xxfast.krouter.SavedStateHandle
 import io.github.xxfast.krouter.ViewModel
-import io.github.xxfast.nytimes.api.HttpClient
 import io.github.xxfast.nytimes.api.NyTimesWebService
+import io.github.xxfast.nytimes.data.HttpClient
+import io.github.xxfast.nytimes.data.store
+import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
-import kotlinx.coroutines.flow.*
+import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TopStoriesViewModel(savedState: SavedStateHandle) : ViewModel() {
@@ -16,10 +22,11 @@ class TopStoriesViewModel(savedState: SavedStateHandle) : ViewModel() {
   private val webService = NyTimesWebService(HttpClient)
 
   val states by lazy {
-    moleculeFlow(Immediate) { TopStoriesDomain(initialState, eventsFlow, webService) }
+    moleculeFlow(Immediate) { TopStoriesDomain(initialState, eventsFlow, webService, store) }
       .onEach { state -> savedState.set(state) }
       .stateIn(this, SharingStarted.Lazily, initialState)
   }
 
   fun onRefresh() { launch { eventsFlow.emit(Refresh) } }
+  fun onSelectSection(section: TopStorySection) { launch { eventsFlow.emit(SelectSection(section)) } }
 }

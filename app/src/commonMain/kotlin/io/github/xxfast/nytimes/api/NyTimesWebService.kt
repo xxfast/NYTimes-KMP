@@ -4,6 +4,7 @@ import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.utils.get
 import io.ktor.client.HttpClient
 import io.ktor.http.path
 

@@ -3,6 +3,7 @@ package io.github.xxfast.nytimes.screens.topStories
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections.home
 
@@ -10,11 +11,11 @@ val Loading: Nothing? = null
 
 @Parcelize
 data class TopStoriesState(
-  val section: TopStorySection = home,
+  val section: TopStorySection? = home,
   val articles: List<TopStorySummaryState>? = Loading,
+  val favourites: List<TopStorySummaryState>? = Loading,
+  val numberOfFavourites: Int? = Loading,
 ): Parcelable
-
-val Default: TopStoriesState = TopStoriesState()
 
 @Parcelize
 data class TopStorySummaryState(
@@ -27,5 +28,5 @@ data class TopStorySummaryState(
 
 sealed interface TopStoriesEvent {
   object Refresh: TopStoriesEvent
-  data class Search(val query: String): TopStoriesEvent
+  data class SelectSection(val section: TopStorySection): TopStoriesEvent
 }
