@@ -14,5 +14,3 @@ val store: KStore<SavedArticles> by lazy {
   storeOf(filePath = "$appStorage/saved.json", default = emptySet())
 }
 
-@Serializable
-data class DailyArticles(val day: LocalDate, val articles: List<Article>)

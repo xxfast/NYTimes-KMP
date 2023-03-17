@@ -15,8 +15,6 @@ import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStorySection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -42,7 +40,11 @@ fun StoryDomain(
     if (refreshes == 0 && article != Loading) return@LaunchedEffect
 
     article = Loading
-    article = webService.story(section, uri).getOrNull()
+
+    // Get the article from store, if not found get a fresh one
+    article = store.get().orEmpty()
+      .find { article -> article.uri == uri }
+      ?: webService.story(section, uri).getOrNull()
   }
 
   LaunchedEffect(Unit) {
