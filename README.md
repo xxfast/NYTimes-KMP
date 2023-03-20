@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/13775137/225805083-cf156f71-64b8-4a1c-ab6d-0478445b22b0.png" align="right" width="200" height="200" />
+<img src="https://user-images.githubusercontent.com/13775137/226222990-558b58ca-20c0-4a45-8285-bf037f79647f.png" align="right" width="200" height="200" />
 
 # NYTimes-KMP
 
@@ -22,10 +22,10 @@ A KMP template of the New York Times App using Compose multiplatform
 ## Showcase
 
 ### Android
-https://user-images.githubusercontent.com/13775137/225797932-cee20857-2c61-47b9-8ec2-b8c6c2c79ce7.mp4
+https://user-images.githubusercontent.com/13775137/226222818-b560acc0-53ba-4205-875f-39fdb4b2c370.mp4
 
 ### iOS
-https://user-images.githubusercontent.com/13775137/225798478-8d13104b-76cd-4723-9b64-b60a301166e6.mp4
+https://user-images.githubusercontent.com/13775137/226222910-df74f449-ec01-4a72-88c4-d2ab0e98ff5b.mp4
 
 ### Desktop
-https://user-images.githubusercontent.com/13775137/225799737-f9616df4-2839-4829-87ea-62361fc224c3.mp4
+https://user-images.githubusercontent.com/13775137/226222948-861e5362-a5db-4ee1-8992-de758dcea7db.mp4
