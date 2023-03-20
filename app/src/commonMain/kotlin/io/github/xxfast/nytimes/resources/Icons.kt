@@ -1,18 +1,18 @@
 package io.github.xxfast.nytimes.resources
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import io.github.xxfast.nytimes.resources.icons.NewYorkTimes
-import io.github.xxfast.nytimes.resources.icons.NewYorkTimesLogo
+import io.github.xxfast.nytimes.resources.icons.MyTimesNews
+import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 
 public object Icons
 
 private var __Icons: List<ImageVector>? = null
 
-public val Icons.Icons: List<ImageVector>
+public val Icons.AllIcons: List<ImageVector>
   get() {
     if (__Icons != null) {
       return __Icons!!
     }
-    __Icons = listOf(NewYorkTimes, NewYorkTimesLogo)
+    __Icons= listOf(MyTimesNews, NewYorkTimesAttribution)
     return __Icons!!
   }

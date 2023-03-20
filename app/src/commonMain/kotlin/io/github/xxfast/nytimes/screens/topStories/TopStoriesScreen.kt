@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,8 +32,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DismissibleDrawerSheet
-import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedAssistChip
@@ -46,6 +43,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -57,21 +55,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections
-import io.github.xxfast.nytimes.resources.icons.NewYorkTimes
-import io.github.xxfast.nytimes.resources.icons.NewYorkTimesLogo
+import io.github.xxfast.nytimes.resources.icons.MyTimesNews
+import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.utils.navigationBarPadding
 import io.github.xxfast.nytimes.utils.statusBarPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import io.github.xxfast.nytimes.resources.Icons as SampleIcons
 
 @Composable
@@ -132,7 +128,14 @@ fun TopStoriesView(
     Scaffold(
       topBar = {
         CenterAlignedTopAppBar(
-          title = { Icon(imageVector = SampleIcons.NewYorkTimes, contentDescription = null) },
+          title = {
+            Icon(
+              imageVector = SampleIcons.MyTimesNews,
+              contentDescription = null,
+              modifier = Modifier
+                .height(32.dp)
+            )
+          },
           actions = {
             IconButton(onClick = onRefresh) {
               Icon(
@@ -157,26 +160,24 @@ fun TopStoriesView(
         )
       },
       bottomBar = {
+        val uriHandler = LocalUriHandler.current
+
         BottomAppBar(
           contentPadding = PaddingValues(16.dp),
           modifier = Modifier
             .windowInsetsPadding(WindowInsets.navigationBarPadding)
         ) {
-          Icon(
-            imageVector = SampleIcons.NewYorkTimesLogo,
-            contentDescription = null,
-            modifier = Modifier
-              .size(32.dp)
-              .padding(4.dp)
-          )
-
-          val year: Int = Clock.System.now()
-            .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
-            .year
-
-          Column {
-            Text(text = "Data provided by", style = MaterialTheme.typography.labelSmall)
-            Text(text = "The New York Times © $year")
+          TextButton(
+            onClick = {
+              uriHandler.openUri("https://developer.nytimes.com.")
+            }
+          ) {
+            Icon(
+              imageVector = SampleIcons.NewYorkTimesAttribution,
+              contentDescription = null,
+              modifier = Modifier
+                .height(42.dp)
+            )
           }
         }
       },
