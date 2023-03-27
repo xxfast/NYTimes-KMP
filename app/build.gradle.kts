@@ -27,6 +27,10 @@ kotlin {
   iosArm64()
   iosSimulatorArm64()
 
+  js(IR) {
+    browser()
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -44,7 +48,7 @@ kotlin {
         implementation("io.ktor:ktor-client-logging:2.0.3")
         implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
         implementation("io.github.qdsfdhvh:image-loader:1.2.10")
-        implementation("io.github.xxfast:kstore:0.4.0-SNAPSHOT")
+        implementation("io.github.xxfast:kstore:0.5.0")
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
       }
     }
@@ -58,12 +62,14 @@ kotlin {
     val androidMain by getting {
       dependencies {
         implementation("io.ktor:ktor-client-cio:2.0.3")
+        implementation("io.github.xxfast:kstore-file:0.5.0")
       }
     }
 
     val desktopMain by getting {
       dependencies {
         implementation("io.ktor:ktor-client-cio:2.0.3")
+        implementation("io.github.xxfast:kstore-file:0.5.0")
       }
     }
 
@@ -77,6 +83,13 @@ kotlin {
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
         implementation("io.ktor:ktor-client-darwin:2.2.4")
+        implementation("io.github.xxfast:kstore-file:0.5.0")
+      }
+    }
+
+    val jsMain by getting {
+      dependencies {
+        implementation("io.github.xxfast:kstore-storage:0.5.0")
       }
     }
   }

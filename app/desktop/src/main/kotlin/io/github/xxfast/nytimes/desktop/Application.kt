@@ -11,7 +11,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.krouter.LocalComponentContext
-import io.github.xxfast.nytimes.data.appStorage
+import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import net.harawata.appdirs.AppDirsFactory
 
