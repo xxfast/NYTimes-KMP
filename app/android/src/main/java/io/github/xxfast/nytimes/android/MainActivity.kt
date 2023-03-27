@@ -12,7 +12,7 @@ import androidx.core.view.WindowCompat
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import io.github.xxfast.krouter.LocalComponentContext
-import io.github.xxfast.nytimes.data.appStorage
+import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 
 class MainActivity : ComponentActivity() {

@@ -39,7 +39,7 @@ fun <C : Parcelable> rememberRouter(
   val navigator: StackNavigation<C> = remember { StackNavigation() }
 
   val packageName: String =
-    requireNotNull(type.qualifiedName) { "Unable to retain anonymous instance of $type"}
+    requireNotNull(type.simpleName) { "Unable to retain anonymous instance of $type"}
 
   val childStackState: State<ChildStack<C, ComponentContext>> = rememberChildStack(
     source = navigator,
@@ -83,7 +83,7 @@ fun <T : ViewModel> rememberViewModel(
   val instanceKeeper: InstanceKeeper = component.instanceKeeper
 
   val packageName: String =
-    requireNotNull(viewModelClass.qualifiedName) { "Unable to retain anonymous instance of $viewModelClass"}
+    requireNotNull(viewModelClass.simpleName) { "Unable to retain anonymous instance of $viewModelClass"}
   val viewModelKey = "$packageName.viewModel"
   val stateKey = "$packageName.savedState"
 

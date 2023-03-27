@@ -7,10 +7,6 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.10" apply false
 }
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
-}
-
 buildscript {
     dependencies {
         classpath("org.jetbrains.compose:compose-gradle-plugin:1.3.1")
