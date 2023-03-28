@@ -2,7 +2,7 @@ package io.github.xxfast.nytimes.screens.story
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import io.github.xxfast.nytimes.models.Article
+import io.github.xxfast.nytimes.core.models.Article
 
 val Loading: Nothing? = null
 val DontKnowYet: Nothing? = null

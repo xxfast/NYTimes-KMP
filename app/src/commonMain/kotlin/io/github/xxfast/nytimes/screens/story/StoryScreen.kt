@@ -45,8 +45,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.core.models.ArticleUri
+import io.github.xxfast.nytimes.core.models.Multimedia
+import io.github.xxfast.nytimes.core.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.utils.statusBarPadding
 
@@ -120,11 +121,13 @@ fun StoryView(
         modifier = Modifier
           .verticalScroll(rememberScrollState())
       ) {
-        if (!state.article.multimedia.isNullOrEmpty()) Box {
+        val multimedia: List<Multimedia>? = state.article.multimedia
+
+        if (!multimedia.isNullOrEmpty()) Box {
           CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
 
           Image(
-            painter = rememberAsyncImagePainter(state.article.multimedia.first().url),
+            painter = rememberAsyncImagePainter(multimedia.first().url),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier

@@ -7,8 +7,8 @@ import io.github.xxfast.krouter.ViewModel
 import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.data.HttpClient
 import io.github.xxfast.nytimes.data.store
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.core.models.ArticleUri
+import io.github.xxfast.nytimes.core.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.StoryEvent.Refresh
 import io.github.xxfast.nytimes.screens.story.StoryEvent.Save
 import kotlinx.coroutines.flow.MutableSharedFlow

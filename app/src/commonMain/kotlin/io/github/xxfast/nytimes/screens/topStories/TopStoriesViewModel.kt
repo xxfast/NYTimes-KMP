@@ -7,7 +7,7 @@ import io.github.xxfast.krouter.ViewModel
 import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.data.HttpClient
 import io.github.xxfast.nytimes.data.store
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.core.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -59,9 +59,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.models.sections
+import io.github.xxfast.nytimes.core.models.ArticleUri
+import io.github.xxfast.nytimes.core.models.TopStorySection
+import io.github.xxfast.nytimes.core.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.utils.navigationBarPadding

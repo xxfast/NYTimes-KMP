@@ -34,6 +34,8 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
+        implementation(project(":core"))
+
         implementation(compose.runtime)
         implementation(compose.foundation)
         implementation(compose.material3)
@@ -44,9 +46,9 @@ kotlin {
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
         implementation("com.arkivanov.essenty:parcelable:1.0.0")
         implementation("io.ktor:ktor-client-core:2.2.4")
-        implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
-        implementation("io.ktor:ktor-client-logging:2.0.3")
-        implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
+        implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
+        implementation("io.ktor:ktor-client-logging:2.2.4")
+        implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.4")
         implementation("io.github.qdsfdhvh:image-loader:1.2.10")
         implementation("io.github.xxfast:kstore:0.5.0")
         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
@@ -61,14 +63,14 @@ kotlin {
 
     val androidMain by getting {
       dependencies {
-        implementation("io.ktor:ktor-client-cio:2.0.3")
+        implementation("io.ktor:ktor-client-cio:2.2.4")
         implementation("io.github.xxfast:kstore-file:0.5.0")
       }
     }
 
     val desktopMain by getting {
       dependencies {
-        implementation("io.ktor:ktor-client-cio:2.0.3")
+        implementation("io.ktor:ktor-client-cio:2.2.4")
         implementation("io.github.xxfast:kstore-file:0.5.0")
       }
     }

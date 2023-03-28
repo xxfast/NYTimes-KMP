@@ -9,10 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.nytimes.api.NyTimesWebService
-import io.github.xxfast.nytimes.models.Article
-import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.core.models.Article
+import io.github.xxfast.nytimes.core.models.ArticleUri
 import io.github.xxfast.nytimes.models.SavedArticles
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.core.models.TopStorySection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

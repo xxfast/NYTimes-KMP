@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.nytimes.core.utils
 
 import android.os.Parcel
 import com.arkivanov.essenty.parcelable.Parceler
