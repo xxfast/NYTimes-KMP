@@ -15,8 +15,8 @@ dependencies {
   implementation(compose.material3)
   implementation(compose.materialIconsExtended)
   implementation(compose.preview)
-  implementation("com.arkivanov.decompose:decompose:1.0.0-compose-experimental")
-  implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+  implementation("com.arkivanov.decompose:decompose:2.0.0-compose-experimental-alpha-01")
+  implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-compose-experimental-alpha-01")
   implementation("net.harawata:appdirs:1.2.1")
 }
 

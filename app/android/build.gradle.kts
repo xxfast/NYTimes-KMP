@@ -65,6 +65,6 @@ dependencies {
   implementation(compose.preview)
   implementation(compose.uiTooling)
 
-  implementation("com.arkivanov.decompose:decompose:1.0.0-compose-experimental")
+  implementation("com.arkivanov.decompose:decompose:2.0.0-compose-experimental-alpha-01")
   implementation("androidx.activity:activity-compose:1.6.1")
 }

@@ -41,7 +41,7 @@ kotlin {
 
         implementation("app.cash.molecule:molecule-runtime:0.7.1")
         implementation("com.arkivanov.decompose:decompose:1.0.0")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-compose-experimental-alpha-01")
         implementation("com.arkivanov.essenty:parcelable:1.0.0")
         implementation("io.ktor:ktor-client-core:2.2.4")
         implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
