@@ -39,17 +39,17 @@ kotlin {
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)
 
-        implementation("app.cash.molecule:molecule-runtime:0.7.1")
-        implementation("com.arkivanov.decompose:decompose:1.0.0")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-compose-experimental-alpha-01")
-        implementation("com.arkivanov.essenty:parcelable:1.0.0")
-        implementation("io.ktor:ktor-client-core:2.2.4")
-        implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
-        implementation("io.ktor:ktor-client-logging:2.0.3")
-        implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
-        implementation("io.github.qdsfdhvh:image-loader:1.2.10")
-        implementation("io.github.xxfast:kstore:0.5.0")
-        implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+        implementation(libs.molecule.runtime)
+        implementation(libs.decompose)
+        implementation(libs.decompose.compose.multiplatform)
+        implementation(libs.essenty.parcelable)
+        implementation(libs.ktor.client.core)
+        implementation(libs.ktor.client.content.negotiation)
+        implementation(libs.ktor.client.logging)
+        implementation(libs.ktor.serialization.kotlinx.json)
+        implementation(libs.qdsfdhvh.image.loader)
+        implementation(libs.kstore)
+        implementation(libs.kotlinx.datetime)
       }
     }
 
@@ -61,15 +61,15 @@ kotlin {
 
     val androidMain by getting {
       dependencies {
-        implementation("io.ktor:ktor-client-cio:2.0.3")
-        implementation("io.github.xxfast:kstore-file:0.5.0")
+        implementation(libs.ktor.client.cio)
+        implementation(libs.kstore.file)
       }
     }
 
     val desktopMain by getting {
       dependencies {
-        implementation("io.ktor:ktor-client-cio:2.0.3")
-        implementation("io.github.xxfast:kstore-file:0.5.0")
+        implementation(libs.ktor.client.cio)
+        implementation(libs.kstore.file)
       }
     }
 
@@ -82,14 +82,15 @@ kotlin {
       iosArm64Main.dependsOn(this)
       iosSimulatorArm64Main.dependsOn(this)
       dependencies {
-        implementation("io.ktor:ktor-client-darwin:2.2.4")
-        implementation("io.github.xxfast:kstore-file:0.5.0")
+        implementation(libs.ktor.client.darwin)
+        implementation(libs.kstore.file)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation("io.github.xxfast:kstore-storage:0.5.0")
+        implementation(libs.ktor.client.js)
+        implementation(libs.kstore.storage)
       }
     }
   }
