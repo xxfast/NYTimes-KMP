@@ -2,7 +2,7 @@
 agp = "7.4.2"
 androidx-activity-compose="1.7.0"
 buildkonfig = "0.13.3"
-decompose = "2.0.0-compose-experimental-alpha-01"
+decompose = "2.0.0-compose-experimental-alpha-02"
 essenty = "1.1.0"
 harawata-appdirs = "1.2.1"
 kotlin = "1.8.20"
