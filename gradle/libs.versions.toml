@@ -2,6 +2,7 @@
 agp = "7.4.2"
 androidx-activity-compose="1.7.0"
 buildkonfig = "0.13.3"
+compose-multiplatform = "1.4.0"
 decompose = "2.0.0-compose-experimental-alpha-02"
 essenty = "1.1.0"
 harawata-appdirs = "1.2.1"
@@ -16,7 +17,9 @@ qdsfdhvh-image-loader = "1.2.10"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+compose-multiplatform = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 essenty-parcelable = { module = "com.arkivanov.essenty:parcelable", version.ref = "essenty" }
