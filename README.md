@@ -14,7 +14,7 @@ A KMP template of the New York Times App using Compose multiplatform
 <img src="https://user-images.githubusercontent.com/13775137/227819428-324fd0ea-4812-42c9-85c9-f8c79bfc839e.png" align="center"/>
 
 ## The stack
-- 🌐 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
+- 🧩 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
 - 🌐 [Ktor](https://github.com/ktorio/ktor); for networking
 - 📦 [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization); for content negotiation
 - 🕰️ [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime); for datetime
