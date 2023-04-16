@@ -15,9 +15,9 @@ dependencies {
   implementation(compose.material3)
   implementation(compose.materialIconsExtended)
   implementation(compose.preview)
-  implementation("com.arkivanov.decompose:decompose:1.0.0-compose-experimental")
-  implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
-  implementation("net.harawata:appdirs:1.2.1")
+  implementation(libs.decompose)
+  implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.harawata.appdirs)
 }
 
 val appVersion = "1.0.0"
@@ -45,7 +45,7 @@ compose.desktop {
 
       windows {
         iconFile.set { iconsRoot.resolve("nytimes-desktop.ico") }
-        menuGroup = "PSCore Multiplatform"
+        menuGroup = "NYTimes"
         // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
         upgradeUuid = "18159995-d967-4CD2-8885-77BFA97CFA9F"
         packageVersion = appVersion

@@ -33,9 +33,8 @@ kotlin {
         implementation(compose.foundation)
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)
-
-        implementation("com.arkivanov.decompose:decompose:1.0.0")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+        implementation(libs.decompose)
+        implementation(libs.decompose.compose.multiplatform)
       }
     }
   }

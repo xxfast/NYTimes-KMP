@@ -13,8 +13,8 @@ kotlin {
     val jsMain by getting {
       dependencies {
         implementation(project(":app"))
-        implementation("com.arkivanov.decompose:decompose:1.0.0-compose-experimental")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:1.0.0-compose-experimental")
+        implementation(libs.decompose)
+        implementation(libs.decompose.compose.multiplatform)
       }
     }
   }

@@ -3,7 +3,7 @@
 # NYTimes-KMP
 
 [![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.10-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.8.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
@@ -14,6 +14,7 @@ A KMP template of the New York Times App using Compose multiplatform
 <img src="https://user-images.githubusercontent.com/13775137/227819428-324fd0ea-4812-42c9-85c9-f8c79bfc839e.png" align="center"/>
 
 ## The stack
+- 🌐 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
 - 🌐 [Ktor](https://github.com/ktorio/ktor); for networking
 - 📦 [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization); for content negotiation
 - 🕰️ [Kotlinx Datetime](https://github.com/Kotlin/kotlinx-datetime); for datetime
