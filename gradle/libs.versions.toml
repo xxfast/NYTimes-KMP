@@ -11,7 +11,7 @@ kotlinx-coroutines = "1.6.4"
 kotlinx-datetime = "0.4.0"
 kotlinx-serialization = "1.5.0"
 kstore = "0.6.0-SNAPSHOT"
-ktor = "2.2.4"
+ktor = "2.3.0"
 molecule = "0.7.1"
 qdsfdhvh-image-loader = "1.2.10"
 
