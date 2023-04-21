@@ -13,7 +13,7 @@ kotlinx-serialization = "1.5.0"
 kstore = "0.6.0-SNAPSHOT"
 ktor = "2.2.4"
 molecule = "0.7.1"
-qdsfdhvh-image-loader = "1.2.10"
+qdsfdhvh-image-loader = "1.4.0"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
