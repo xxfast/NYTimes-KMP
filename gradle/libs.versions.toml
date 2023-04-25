@@ -3,6 +3,7 @@ agp = "8.0.0"
 androidx-activity-compose="1.7.1"
 buildkonfig = "0.13.3"
 compose-multiplatform = "1.4.0"
+compose-compiler = "1.4.5"
 decompose = "2.0.0-compose-experimental-alpha-02"
 essenty = "1.1.0"
 harawata-appdirs = "1.2.1"
@@ -14,6 +15,7 @@ kstore = "0.6.0-SNAPSHOT"
 ktor = "2.3.0"
 molecule = "0.9.0"
 qdsfdhvh-image-loader = "1.4.0"
+wear-compose = "1.2.0-alpha07"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -42,3 +44,5 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 molecule-gradle-plugin = { module = "app.cash.molecule:molecule-gradle-plugin", version.ref = "molecule" }
 molecule-runtime = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
 qdsfdhvh-image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "qdsfdhvh-image-loader" }
+wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wear-compose" }
+wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "wear-compose" }
