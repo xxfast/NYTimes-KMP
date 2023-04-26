@@ -51,8 +51,14 @@ android {
 }
 
 dependencies {
+  implementation(project(":app"))
   implementation(compose.uiTooling)
+  implementation(compose.materialIconsExtended)
   implementation(libs.wear.compose.foundation)
   implementation(libs.wear.compose.material)
   implementation(libs.androidx.activity.compose)
+  implementation(libs.essenty.parcelable)
+  implementation(libs.decompose)
+  implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.qdsfdhvh.image.loader)
 }

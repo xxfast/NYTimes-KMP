@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.wear.presentation.theme
+package io.github.xxfast.nytimes.wear.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors
