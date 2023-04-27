@@ -15,3 +15,11 @@
 -keepclassmembers class <1>.<2> {
   <1>.<2>$Companion Companion;
 }
+
+# TODO: Remove after transitive dependency on okhttp is updated
+# https://stackoverflow.com/questions/73748946/proguard-r8-warnings
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+-dontwarn org.slf4j.**
