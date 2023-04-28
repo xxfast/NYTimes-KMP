@@ -16,6 +16,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import io.github.xxfast.krouter.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.wear.screens.home.HomeScreen
 import io.github.xxfast.nytimes.wear.screens.topStories.TopStoriesScreen
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 
@@ -28,7 +29,7 @@ class NewsActivity : ComponentActivity() {
     setContent {
       CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
         NYTimesWearTheme {
-          TopStoriesScreen()
+          HomeScreen()
         }
       }
     }

@@ -1,6 +1,8 @@
 package io.github.xxfast.nytimes.wear.screens.topStories
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,15 +16,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -49,6 +55,7 @@ import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
+import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
@@ -56,10 +63,13 @@ import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
+import kotlinx.coroutines.launch
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 
 @Composable
-fun TopStoriesScreen() {
+fun TopStoriesScreen(
+  onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
+) {
   val viewModel: TopStoriesViewModel =
     rememberViewModel(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
@@ -67,29 +77,41 @@ fun TopStoriesScreen() {
 
   TopStoriesView(
     state = state,
-    onSelectSection = viewModel::onSelectSection
+    onSelectSection = viewModel::onSelectSection,
+    onSelectArticle = onSelectArticle
   )
 }
 
 @Composable
 fun TopStoriesView(
   state: TopStoriesState,
+  onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
 ) {
 
   val listState: ScalingLazyListState = rememberScalingLazyListState()
-  val vignettePosition: VignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
+  val focusRequester: FocusRequester = remember { FocusRequester() }
+  val coroutineScope = rememberCoroutineScope()
 
   Scaffold(
     positionIndicator = { PositionIndicator(scalingLazyListState = listState) },
-    vignette = { Vignette(vignettePosition) },
+    vignette = { Vignette(VignettePosition.TopAndBottom) },
     timeText = { TimeText() }
   ) {
     ScalingLazyColumn(
       state = listState,
       modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colors.background),
+        .background(MaterialTheme.colors.background)
+        .onRotaryScrollEvent {
+          coroutineScope.launch {
+            listState.scrollBy(it.verticalScrollPixels)
+          }
+          return@onRotaryScrollEvent true
+        }
+        .focusRequester(focusRequester)
+        .focusable()
+      ,
       anchorType = ScalingLazyListAnchorType.ItemStart,
       verticalArrangement = Arrangement.spacedBy(8.dp),
       contentPadding = PaddingValues(16.dp),
@@ -143,7 +165,7 @@ fun TopStoriesView(
         }
       } else items(state.articles.orEmpty()) { article ->
         TitleCard(
-          onClick = { },
+          onClick = { onSelectArticle(article.section, article.uri, article.title) },
           title = { Text(article.title) },
           backgroundPainter = CardDefaults.imageWithScrimBackgroundPainter(
             backgroundImagePainter = rememberAsyncImagePainter(
@@ -187,6 +209,8 @@ fun TopStoriesView(
         )
       }
     }
+
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
   }
 }
 
@@ -195,6 +219,7 @@ fun TopStoriesView(
 fun TopStoriesPreview() {
   TopStoriesView(
     state = TopStoriesState(),
-    onSelectSection = {}
+    onSelectArticle = { _, _, _, -> },
+    onSelectSection = {},
   )
 }
