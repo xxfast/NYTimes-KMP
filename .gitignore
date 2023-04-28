@@ -1,6 +1,5 @@
 *.iml
 .gradle
-.idea
 .DS_Store
 build
 captures
@@ -11,8 +10,9 @@ xcuserdata
 /keys/
 /app/ios/Pods/
 
-# Allow code styles and run configurations
 # Idea
+**/.idea/*
+# Allow code styles and run configurations
 !**/.idea/codeStyles
 !**/.idea/runConfigurations
 !**/.idea/icon.png
