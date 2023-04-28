@@ -10,3 +10,9 @@ local.properties
 xcuserdata
 /keys/
 /app/ios/Pods/
+
+# Allow code styles and run configurations
+# Idea
+!**/.idea/codeStyles
+!**/.idea/runConfigurations
+!**/.idea/icon.png
