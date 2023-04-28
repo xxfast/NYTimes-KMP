@@ -5,6 +5,7 @@
 [![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.8.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
+![badge-wearos](http://img.shields.io/badge/platform-wearos-8ECDA0.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
 ![badge-browser](https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat)
@@ -27,6 +28,9 @@ A KMP template of the New York Times App using Compose multiplatform
 
 ### Android
 https://user-images.githubusercontent.com/13775137/226222818-b560acc0-53ba-4205-875f-39fdb4b2c370.mp4
+
+### WearOs
+https://user-images.githubusercontent.com/13775137/235043887-022d5e03-87bb-438c-b4bd-16fc804fded6.mp4
 
 ### iOS
 https://user-images.githubusercontent.com/13775137/226222910-df74f449-ec01-4a72-88c4-d2ab0e98ff5b.mp4
