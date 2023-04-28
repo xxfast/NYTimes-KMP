@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
@@ -38,9 +37,9 @@ import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.CompactButton
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.OutlinedButton
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TitleCard
@@ -69,12 +68,14 @@ fun StoryScreen(
 
   val state: StoryState by viewModel.states.collectAsState()
 
-  StoryView(
-    state = state,
-    onRefresh = viewModel::onRefresh,
-    onBack = onBack,
-    onSave = viewModel::onSave
-  )
+  SwipeToDismissBox(onDismissed = onBack) {
+    StoryView(
+      state = state,
+      onRefresh = viewModel::onRefresh,
+      onBack = onBack,
+      onSave = viewModel::onSave
+    )
+  }
 }
 
 @Composable
