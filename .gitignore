@@ -15,4 +15,5 @@ xcuserdata
 # Allow code styles and run configurations
 !**/.idea/codeStyles
 !**/.idea/runConfigurations
-!**/.idea/icon.png
+!**/.idea/icon.svg
+!**/.idea/.name
