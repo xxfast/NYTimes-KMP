@@ -16,6 +16,9 @@
   <1>.<2>$Companion Companion;
 }
 
+# Models for serialisation/deseiralisation
+-keep class io.github.xxfast.nytimes.models.** { *; }
+
 # TODO: Remove after transitive dependency on okhttp is updated
 # https://stackoverflow.com/questions/73748946/proguard-r8-warnings
 -dontwarn okhttp3.internal.platform.**
@@ -23,3 +26,6 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
 -dontwarn org.slf4j.**
+
+# TODO: https://youtrack.jetbrains.com/issue/KTOR-5564/Request-parameters-encodes-to-empty-string-with-Android-R8-for-release-build-after-update-kotlin-language-version-up-to-1.8.10
+-keepclassmembers class io.ktor.http.** { *; }
