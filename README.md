@@ -12,7 +12,7 @@
 
 A KMP template of the New York Times App using Compose multiplatform
 
-<img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="580" align="right">
+<img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
 
 ## The stack
 - 🧩 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
