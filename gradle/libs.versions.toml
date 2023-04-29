@@ -15,7 +15,7 @@ kstore = "0.6.0-SNAPSHOT"
 ktor = "2.3.0"
 molecule = "0.9.0"
 qdsfdhvh-image-loader = "1.4.0"
-wear-compose = "1.2.0-alpha07"
+wear-compose = "1.2.0-alpha09"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -26,6 +26,7 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 essenty-parcelable = { module = "com.arkivanov.essenty:parcelable", version.ref = "essenty" }
 harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
+horologist-compose-layouts = "com.google.android.horologist:horologist-compose-layout:0.4.4"
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }

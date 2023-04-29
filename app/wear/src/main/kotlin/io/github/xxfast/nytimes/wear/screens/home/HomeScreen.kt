@@ -3,7 +3,6 @@ package io.github.xxfast.nytimes.wear.screens.home
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import io.github.xxfast.krouter.RoutedContent
 import io.github.xxfast.krouter.Router
@@ -30,8 +29,7 @@ fun HomeScreen() {
       is Details -> StoryScreen(
         section = screen.section,
         uri = screen.uri,
-        title = screen.title,
-        onBack = { router.pop() }
+        title = screen.title
       )
     }
   }

@@ -1,12 +1,10 @@
+@file:OptIn(ExperimentalHorologistApi::class)
+
 package io.github.xxfast.nytimes.wear.screens.topStories
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,29 +14,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.ScalingLazyListAnchorType
-import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.compose.material.ChipDefaults
@@ -46,13 +31,14 @@ import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.CompactChip
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.PositionIndicator
-import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TitleCard
-import androidx.wear.compose.material.Vignette
-import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
+import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
+import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.compose.layout.ScalingLazyColumn
+import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -63,7 +49,9 @@ import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
-import kotlinx.coroutines.launch
+import io.github.xxfast.nytimes.screens.topStories.TopStorySummaryState
+import io.github.xxfast.nytimes.wear.screens.navigation.NavigationBox
+import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 
 @Composable
@@ -75,81 +63,59 @@ fun TopStoriesScreen(
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
-  TopStoriesView(
-    state = state,
-    onSelectSection = viewModel::onSelectSection,
-    onSelectArticle = onSelectArticle
-  )
+  NavigationBox(
+  ) {
+    TopStoriesView(
+      state = state,
+      columnState = it,
+      onSelectSection = viewModel::onSelectSection,
+      onSelectArticle = onSelectArticle
+    )
+  }
 }
 
 @Composable
 fun TopStoriesView(
   state: TopStoriesState,
+  columnState: ScalingLazyColumnState,
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
 ) {
-
-  val listState: ScalingLazyListState = rememberScalingLazyListState()
-  val focusRequester: FocusRequester = remember { FocusRequester() }
-  val coroutineScope = rememberCoroutineScope()
-
-  Scaffold(
-    positionIndicator = { PositionIndicator(scalingLazyListState = listState) },
-    vignette = { Vignette(VignettePosition.TopAndBottom) },
-    timeText = { TimeText() }
+  ScalingLazyColumn(
+    columnState = columnState,
   ) {
-    ScalingLazyColumn(
-      state = listState,
-      modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background)
-        .onRotaryScrollEvent {
-          coroutineScope.launch {
-            listState.scrollBy(it.verticalScrollPixels)
-          }
-          return@onRotaryScrollEvent true
-        }
-        .focusRequester(focusRequester)
-        .focusable()
-      ,
-      anchorType = ScalingLazyListAnchorType.ItemStart,
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-      contentPadding = PaddingValues(16.dp),
-    ) {
-      item {
-        Icon(
-          modifier = Modifier
-            .height(32.dp),
-          painter = rememberVectorPainter(
-            image = NyTimesIcons.MyTimesNews
-          ),
-          contentDescription = null
-        )
-      }
+    item {
+      Icon(
+        modifier = Modifier.fillMaxWidth(0.8f),
+        imageVector = NyTimesIcons.MyTimesNews,
+        contentDescription = null
+      )
+    }
 
-      item {
-        LazyRow(
-          horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-          items(sections) { section ->
-            CompactChip(
-              onClick = { onSelectSection(section) },
-              colors = ChipDefaults.chipColors(
-                backgroundColor = if (state.section == section) MaterialTheme.colors.primary
-                else MaterialTheme.colors.surface
-              ),
-              label = {
-                Text(
-                  text = section.name,
-                  maxLines = 2, overflow = TextOverflow.Ellipsis
-                )
-              },
-            )
-          }
+    item {
+      LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        items(sections) { section ->
+          CompactChip(
+            onClick = { onSelectSection(section) },
+            colors = ChipDefaults.chipColors(
+              backgroundColor = if (state.section == section) MaterialTheme.colors.primary
+              else MaterialTheme.colors.surface
+            ),
+            label = {
+              Text(
+                text = section.name,
+                maxLines = 2, overflow = TextOverflow.Ellipsis
+              )
+            },
+          )
         }
       }
+    }
 
-      if (state.articles == Loading) item {
+    if (state.articles == Loading) {
+      item {
         Card(
           onClick = {},
         ) {
@@ -163,7 +129,9 @@ fun TopStoriesView(
               .align(CenterHorizontally)
           )
         }
-      } else items(state.articles.orEmpty()) { article ->
+      }
+    } else {
+      items(state.articles.orEmpty()) { article ->
         TitleCard(
           onClick = { onSelectArticle(article.section, article.uri, article.title) },
           title = { Text(article.title) },
@@ -187,7 +155,7 @@ fun TopStoriesView(
               else Icons.Rounded.FavoriteBorder
 
             Icon(
-              painter = rememberVectorPainter(image = icon),
+              imageVector = icon,
               contentDescription = null,
               tint = MaterialTheme.colors.primary,
               modifier = Modifier
@@ -196,30 +164,54 @@ fun TopStoriesView(
           }
         }
       }
-
-      item {
-        Icon(
-          modifier = Modifier
-            .padding(8.dp)
-            .height(64.dp),
-          painter = rememberVectorPainter(
-            image = NyTimesIcons.NewYorkTimesAttribution
-          ),
-          contentDescription = null
-        )
-      }
     }
 
-    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    item {
+      Icon(
+        modifier = Modifier
+          .padding(8.dp)
+          .height(64.dp),
+        imageVector = NyTimesIcons.NewYorkTimesAttribution,
+        contentDescription = null
+      )
+    }
   }
 }
 
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
+@WearPreviewSmallRound
+@WearPreviewLargeRound
 @Composable
-fun TopStoriesPreview() {
-  TopStoriesView(
-    state = TopStoriesState(),
-    onSelectArticle = { _, _, _, -> },
-    onSelectSection = {},
+fun TopStoriesPreviewLoading() {
+  val state = TopStoriesState()
+  TopStoriesPreview(state)
+}
+
+@WearPreviewSmallRound
+@WearPreviewLargeRound
+@Composable
+fun TopStoriesPreviewLoaded() {
+  val state = TopStoriesState(
+    section = TopStorySection("Sports"), articles = listOf(
+      TopStorySummaryState(
+        ArticleUri(value = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html"),
+        null,
+        "Harry Kane and the End of the Line",
+        "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
+        TopStorySection("Sports")
+      )
+    )
   )
+  TopStoriesPreview(state)
+}
+
+@Composable
+private fun TopStoriesPreview(state: TopStoriesState) {
+  NYTimesWearTheme {
+    TopStoriesView(
+      state = state,
+      onSelectArticle = { _, _, _ -> },
+      onSelectSection = {},
+      columnState = ScalingLazyColumnDefaults.belowTimeText().create()
+    )
+  }
 }

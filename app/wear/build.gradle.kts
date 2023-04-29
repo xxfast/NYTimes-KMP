@@ -54,6 +54,7 @@ dependencies {
   implementation(project(":app"))
   implementation(compose.uiTooling)
   implementation(compose.materialIconsExtended)
+  implementation(libs.horologist.compose.layouts)
   implementation(libs.wear.compose.foundation)
   implementation(libs.wear.compose.material)
   implementation(libs.androidx.activity.compose)
@@ -61,4 +62,7 @@ dependencies {
   implementation(libs.decompose)
   implementation(libs.decompose.compose.multiplatform)
   implementation(libs.qdsfdhvh.image.loader)
+  implementation(libs.kotlinx.datetime)
+
+  implementation("androidx.wear.compose:compose-ui-tooling:1.2.0-alpha09")
 }
