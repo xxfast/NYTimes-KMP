@@ -19,65 +19,63 @@ import androidx.wear.compose.foundation.HierarchicalFocusCoordinator
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import androidx.wear.compose.material.scrollAway
-import com.arkivanov.decompose.router.stack.pop
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnState
-import io.github.xxfast.krouter.LocalRouter
 
 @Composable
 fun NavigationBox(
   scrollStateFactory: ScalingLazyColumnState.Factory =
     ScalingLazyColumnDefaults.belowTimeText(
-//      contentPadding = PaddingValues(bottom = 20.dp)
+      contentPadding = PaddingValues(start = 10.dp, bottom = 50.dp, end = 10.dp)
     ),
   content: @Composable (ScalingLazyColumnState) -> Unit
 ) {
-  val router = LocalRouter.current
-
-  val scrollState = scrollStateFactory.create()
+  val scrollState = rememberScalingLazyColumnState(scrollStateFactory)
 
   val offsetDp = with(LocalDensity.current) {
     (scrollState.initialScrollPosition.offsetPx).toDp()
   }
 
-  scrollState.state = rememberSaveable(saver = ScalingLazyListState.Saver) {
+  FocusedDestination {
+    Scaffold(
+      positionIndicator = { PositionIndicator(scalingLazyListState = scrollState.state) },
+      timeText = {
+        TimeText(
+          modifier = Modifier.scrollAway(
+            scrollState = scrollState.state,
+            itemIndex = scrollState.initialScrollPosition.index,
+            offset = offsetDp
+          )
+        )
+      },
+      vignette = { Vignette(VignettePosition.TopAndBottom) },
+    ) {
+      content(scrollState)
+    }
+  }
+}
+
+// TODO move to horologist
+@Composable
+private fun rememberScalingLazyColumnState(scrollStateFactory: ScalingLazyColumnState.Factory): ScalingLazyColumnState {
+  val scrollState = scrollStateFactory.create()
+  val scalingLazyColumnState = rememberSaveable(saver = ScalingLazyListState.Saver) {
     ScalingLazyListState(
       scrollState.initialScrollPosition.index,
       scrollState.initialScrollPosition.offsetPx
     )
   }
+  scrollState.state = scalingLazyColumnState
 
-  SwipeToDismissBox(onDismissed = { router?.pop() }) { isBackground ->
-    if (!isBackground) {
-      FocusedDestination {
-        Scaffold(
-          positionIndicator = { PositionIndicator(scalingLazyListState = scrollState.state) },
-          timeText = {
-            TimeText(
-              modifier = Modifier.scrollAway(
-                scrollState = scrollState.state,
-                itemIndex = scrollState.initialScrollPosition.index,
-                offset = offsetDp
-              )
-            )
-          },
-          vignette = { Vignette(VignettePosition.TopAndBottom) },
-        ) {
-          content(scrollState)
-        }
-      }
-    } else {
-      // TODO show screen below
-    }
-  }
+  return scrollState
 }
 
+// TODO move to horologist
 @Composable
 internal fun FocusedDestination(content: @Composable () -> Unit) {
   // TODO check if this can be done by the navigation stack instead of the lifecycle
