@@ -34,7 +34,7 @@ fun <C : Parcelable> SwipeDismissContent(
   val active = stack.active
   val background = stack.backStack.lastOrNull()
   val holder = rememberSaveableStateHolder()
-  holder.retainStates(stack.getConfigurations())
+  holder.RetainStates(stack.getConfigurations())
 
   CompositionLocalProvider(LocalRouter provides router) {
     SwipeToDismissBox(
