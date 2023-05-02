@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.HierarchicalFocusCoordinator
 import androidx.wear.compose.material.MaterialTheme
@@ -22,7 +23,6 @@ import com.arkivanov.decompose.router.stack.pop
 import io.github.xxfast.krouter.LocalComponentContext
 import io.github.xxfast.krouter.LocalRouter
 import io.github.xxfast.krouter.Router
-import io.github.xxfast.nytimes.wear.screens.home.fudge
 
 @OptIn(ExperimentalWearFoundationApi::class)
 @Composable
@@ -37,12 +37,18 @@ fun <C : Parcelable> RoutedSwipeDismissContent(
   val holder: SaveableStateHolder = rememberSaveableStateHolder()
   holder.RetainStates(stack.getConfigurations())
 
+  // TODO fix in wear compose
+  // without this the wrong state is remembered in SwipeToDismissBox
+  val fudgeFactor: Int = stack.items.size
+  val fudgeAmount: Float = 1f - ((fudgeFactor % 2) * 0.01f)
+  val backgroundScrimColor: Color = MaterialTheme.colors.background.copy(alpha = fudgeAmount)
+
   CompositionLocalProvider(LocalRouter provides router) {
     SwipeToDismissBox(
       onDismissed = { router.pop() },
       state = rememberSwipeToDismissBoxState(),
       modifier = modifier,
-      backgroundScrimColor = MaterialTheme.colors.background.fudge(stack.items.size),
+      backgroundScrimColor = backgroundScrimColor,
       backgroundKey = background?.configuration ?: SwipeToDismissKeys.Background,
       hasBackground = background != null,
       contentKey = active.configuration,

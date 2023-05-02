@@ -29,18 +29,17 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.krouter.rememberViewModel
+import io.github.xxfast.krouter.wear.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
-import io.github.xxfast.krouter.wear.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 @Composable
@@ -55,90 +54,88 @@ fun StoryScreen(
 
   val state: StoryState by viewModel.states.collectAsState()
 
-  NavigationBox {
-    StoryView(
-      state = state,
-      onSave = viewModel::onSave,
-      columnState = it
-    )
-  }
+  StoryView(
+    state = state,
+    onSave = viewModel::onSave,
+  )
 }
 
 @Composable
 fun StoryView(
   state: StoryState,
-  columnState: ScalingLazyColumnState,
   onSave: () -> Unit,
 ) {
-  ScalingLazyColumn(
-    columnState = columnState,
-  ) {
-    item {
-      Row(modifier = Modifier.animateContentSize()) {
-        CompactButton(
-          onClick = onSave,
-          colors = ButtonDefaults.primaryButtonColors(),
-        ) {
-          Icon(
-            imageVector = if (state.isSaved == true) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-            contentDescription = null
-          )
-        }
-
-        val article = state.article
-
-        if (article != Loading) {
-          val handler: UriHandler = LocalUriHandler.current
+  NavigationBox { columnState ->
+    ScalingLazyColumn(
+      columnState = columnState,
+    ) {
+      item {
+        Row(modifier = Modifier.animateContentSize()) {
           CompactButton(
-            onClick = { handler.openUri(article.url) },
-            colors = ButtonDefaults.outlinedButtonColors(),
+            onClick = onSave,
+            colors = ButtonDefaults.primaryButtonColors(),
           ) {
             Icon(
-              imageVector = Icons.Rounded.OpenInNew,
+              imageVector = if (state.isSaved == true) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
               contentDescription = null
             )
           }
+
+          val article = state.article
+
+          if (article != Loading) {
+            val handler: UriHandler = LocalUriHandler.current
+            CompactButton(
+              onClick = { handler.openUri(article.url) },
+              colors = ButtonDefaults.outlinedButtonColors(),
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.OpenInNew,
+                contentDescription = null
+              )
+            }
+          }
         }
       }
-    }
 
-    item {
-      Text(
-        text = state.title,
-        style = MaterialTheme.typography.title3,
-        textAlign = TextAlign.Center
-      )
-    }
-
-    val article: Article? = state.article
-    if (article == Loading) {
-      item { CircularProgressIndicator() }
-      return@ScalingLazyColumn
-    }
-
-    val url = article.multimedia?.firstOrNull()?.url
-    if (url != null) {
       item {
-        Image(
-          painter = rememberAsyncImagePainter(
-            url = url,
-            contentScale = ContentScale.Crop,
-          ),
-          contentDescription = null,
-          modifier = Modifier
-            .clip(MaterialTheme.shapes.large)
+        Text(
+          text = state.title,
+          style = MaterialTheme.typography.title3,
+          textAlign = TextAlign.Center
         )
       }
-    }
 
-    item {
-      TitleCard(
-        onClick = {},
-        title = {
-          Text(text = article.byline, style = MaterialTheme.typography.caption1)
-        },
-      ) {
-        Text(text = article.abstract, style = MaterialTheme.typography.body1)
+      val article: Article? = state.article
+      if (article == Loading) {
+        item { CircularProgressIndicator() }
+        return@ScalingLazyColumn
+      }
+
+      val url = article.multimedia?.firstOrNull()?.url
+      if (url != null) {
+        item {
+          Image(
+            painter = rememberAsyncImagePainter(
+              url = url,
+              contentScale = ContentScale.Crop,
+            ),
+            contentDescription = null,
+            modifier = Modifier
+              .clip(MaterialTheme.shapes.large)
+          )
+        }
+      }
+
+      item {
+        TitleCard(
+          onClick = {},
+          title = {
+            Text(text = article.byline, style = MaterialTheme.typography.caption1)
+          },
+        ) {
+          Text(text = article.abstract, style = MaterialTheme.typography.body1)
+        }
       }
     }
   }
@@ -157,15 +154,16 @@ fun StoryPreviewLoading() {
 @Composable
 fun StoryPreviewLoaded() {
   val state = StoryState(
-    "Harry Kane and the End of the Line", article = Article(
-      ArticleUri(value = ""),
-      TopStorySection("Sports"),
-      "Soccer",
-      "Harry Kane and the End of the Line",
-      "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
-      "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html",
-      "By Rory Smith",
-      Instant.fromEpochMilliseconds(System.currentTimeMillis())
+    title = "Harry Kane and the End of the Line",
+    article = Article(
+      uri = ArticleUri(value = ""),
+      section = TopStorySection("Sports"),
+      subsection = "Soccer",
+      title = "Harry Kane and the End of the Line",
+      abstract = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
+      url = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html",
+      byline = "By Rory Smith",
+      published_date = Clock.System.now()
     )
   )
   StorePreview(state)
@@ -176,7 +174,6 @@ private fun StorePreview(state: StoryState) {
   NYTimesWearTheme {
     StoryView(
       state = state,
-      columnState = ScalingLazyColumnDefaults.belowTimeText().create(),
       onSave = {}
     )
   }
