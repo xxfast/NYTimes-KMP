@@ -1,6 +1,6 @@
-@file:OptIn(ExperimentalHorologistApi::class, ExperimentalWearFoundationApi::class)
+@file:OptIn(ExperimentalHorologistApi::class)
 
-package io.github.xxfast.nytimes.wear.screens.navigation
+package io.github.xxfast.krouter.wear
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable

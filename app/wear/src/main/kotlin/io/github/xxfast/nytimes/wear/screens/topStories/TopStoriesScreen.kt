@@ -50,7 +50,7 @@ import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
 import io.github.xxfast.nytimes.screens.topStories.TopStorySummaryState
-import io.github.xxfast.nytimes.wear.screens.navigation.NavigationBox
+import io.github.xxfast.krouter.wear.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 

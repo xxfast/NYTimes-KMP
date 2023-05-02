@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalWearFoundationApi::class)
-
-package io.github.xxfast.nytimes.wear.screens.navigation
+package io.github.xxfast.krouter.wear
 
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
@@ -17,6 +15,8 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.SwipeToDismissKeys
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
+import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.pop
 import io.github.xxfast.krouter.LocalComponentContext
@@ -24,16 +24,17 @@ import io.github.xxfast.krouter.LocalRouter
 import io.github.xxfast.krouter.Router
 import io.github.xxfast.nytimes.wear.screens.home.fudge
 
+@OptIn(ExperimentalWearFoundationApi::class)
 @Composable
-fun <C : Parcelable> SwipeDismissContent(
+fun <C : Parcelable> RoutedSwipeDismissContent(
   router: Router<C>,
   modifier: Modifier = Modifier,
   content: @Composable (C) -> Unit,
 ) {
-  val stack by router.stack
-  val active = stack.active
-  val background = stack.backStack.lastOrNull()
-  val holder = rememberSaveableStateHolder()
+  val stack: ChildStack<C, ComponentContext> by router.stack
+  val active: Child.Created<C, ComponentContext> = stack.active
+  val background: Child.Created<C, ComponentContext>? = stack.backStack.lastOrNull()
+  val holder: SaveableStateHolder = rememberSaveableStateHolder()
   holder.RetainStates(stack.getConfigurations())
 
   CompositionLocalProvider(LocalRouter provides router) {

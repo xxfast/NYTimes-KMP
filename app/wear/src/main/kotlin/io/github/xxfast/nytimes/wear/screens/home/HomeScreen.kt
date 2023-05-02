@@ -10,7 +10,7 @@ import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen.Details
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen.List
-import io.github.xxfast.nytimes.wear.screens.navigation.SwipeDismissContent
+import io.github.xxfast.krouter.wear.SwipeDismissContent
 import io.github.xxfast.nytimes.wear.screens.story.StoryScreen
 import io.github.xxfast.nytimes.wear.screens.topStories.TopStoriesScreen
 

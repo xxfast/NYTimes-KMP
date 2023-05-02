@@ -39,7 +39,7 @@ import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
-import io.github.xxfast.nytimes.wear.screens.navigation.NavigationBox
+import io.github.xxfast.krouter.wear.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import kotlinx.datetime.Instant
 
