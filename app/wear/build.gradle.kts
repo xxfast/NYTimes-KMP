@@ -57,12 +57,11 @@ dependencies {
   implementation(libs.horologist.compose.layouts)
   implementation(libs.wear.compose.foundation)
   implementation(libs.wear.compose.material)
+  implementation(libs.wear.compose.ui.tooling)
   implementation(libs.androidx.activity.compose)
   implementation(libs.essenty.parcelable)
   implementation(libs.decompose)
   implementation(libs.decompose.compose.multiplatform)
   implementation(libs.qdsfdhvh.image.loader)
   implementation(libs.kotlinx.datetime)
-
-  implementation("androidx.wear.compose:compose-ui-tooling:1.2.0-alpha09")
 }

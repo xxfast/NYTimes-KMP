@@ -7,6 +7,7 @@ compose-compiler = "1.4.5"
 decompose = "2.0.0-compose-experimental-alpha-02"
 essenty = "1.1.0"
 harawata-appdirs = "1.2.1"
+horologist = "0.4.4"
 kotlin = "1.8.20"
 kotlinx-coroutines = "1.6.4"
 kotlinx-datetime = "0.4.0"
@@ -26,7 +27,7 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 essenty-parcelable = { module = "com.arkivanov.essenty:parcelable", version.ref = "essenty" }
 harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
-horologist-compose-layouts = "com.google.android.horologist:horologist-compose-layout:0.4.4"
+horologist-compose-layouts = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologist" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -47,3 +48,4 @@ molecule-runtime = { module = "app.cash.molecule:molecule-runtime", version.ref 
 qdsfdhvh-image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "qdsfdhvh-image-loader" }
 wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wear-compose" }
 wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "wear-compose" }
+wear-compose-ui-tooling = { module = "androidx.wear.compose:compose-ui-tooling", version.ref = "wear-compose" }
