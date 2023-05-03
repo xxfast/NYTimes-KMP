@@ -30,8 +30,8 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.krouter.rememberViewModel
-import io.github.xxfast.krouter.wear.NavigationBox
+import io.github.xxfast.decompose.router.rememberViewModel
+import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
@@ -40,7 +40,6 @@ import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 
 @Composable
 fun StoryScreen(

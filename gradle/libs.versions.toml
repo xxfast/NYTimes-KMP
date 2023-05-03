@@ -5,6 +5,7 @@ buildkonfig = "0.13.3"
 compose-multiplatform = "1.4.0"
 compose-compiler = "1.4.5"
 decompose = "2.0.0-compose-experimental-alpha-02"
+decompose-router = "0.1.0"
 essenty = "1.1.0"
 harawata-appdirs = "1.2.1"
 horologist = "0.4.4"
@@ -24,6 +25,8 @@ buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 compose-multiplatform = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decompose-router" }
+decompose-router-wear = { module = "io.github.xxfast:decompose-router-wear", version.ref = "decompose-router" }
 decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 essenty-parcelable = { module = "com.arkivanov.essenty:parcelable", version.ref = "essenty" }
 harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }

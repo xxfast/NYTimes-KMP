@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalHorologistApi::class)
-
-package io.github.xxfast.krouter.wear
+package io.github.xxfast.nytimes.wear.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -8,7 +6,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
@@ -20,6 +17,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 
+@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun NavigationBox(
   scrollStateFactory: ScalingLazyColumnState.Factory =
@@ -52,6 +50,7 @@ fun NavigationBox(
 }
 
 // TODO move to horologist
+@OptIn(ExperimentalHorologistApi::class)
 @Composable
 private fun rememberScalingLazyColumnState(scrollStateFactory: ScalingLazyColumnState.Factory): ScalingLazyColumnState {
   val scrollState = scrollStateFactory.create()

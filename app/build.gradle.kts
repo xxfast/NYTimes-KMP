@@ -48,6 +48,7 @@ kotlin {
         implementation(libs.molecule.runtime)
         implementation(libs.decompose)
         implementation(libs.decompose.compose.multiplatform)
+        implementation(libs.decompose.router)
         implementation(libs.essenty.parcelable)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)

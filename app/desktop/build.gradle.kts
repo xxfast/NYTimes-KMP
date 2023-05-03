@@ -17,6 +17,7 @@ dependencies {
   implementation(compose.preview)
   implementation(libs.decompose)
   implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.decompose.router)
   implementation(libs.harawata.appdirs)
 }
 

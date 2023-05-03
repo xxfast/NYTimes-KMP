@@ -5,7 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import io.github.xxfast.krouter.LocalComponentContext
+import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import platform.Foundation.NSHomeDirectory

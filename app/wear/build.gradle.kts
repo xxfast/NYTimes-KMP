@@ -14,6 +14,7 @@ android {
     targetSdk = 33
     versionCode = 1
     versionName = "1.0"
+
     vectorDrawables {
       useSupportLibrary = true
     }
@@ -61,6 +62,8 @@ dependencies {
   implementation(libs.androidx.activity.compose)
   implementation(libs.essenty.parcelable)
   implementation(libs.decompose)
+  implementation(libs.decompose.router)
+  implementation(libs.decompose.router.wear)
   implementation(libs.decompose.compose.multiplatform)
   implementation(libs.qdsfdhvh.image.loader)
   implementation(libs.kotlinx.datetime)

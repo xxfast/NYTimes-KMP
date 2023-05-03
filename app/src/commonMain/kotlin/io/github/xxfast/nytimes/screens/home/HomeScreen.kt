@@ -5,9 +5,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import io.github.xxfast.krouter.RoutedContent
-import io.github.xxfast.krouter.Router
-import io.github.xxfast.krouter.rememberRouter
+import io.github.xxfast.decompose.router.Router
+import io.github.xxfast.decompose.router.content.RoutedContent
+import io.github.xxfast.decompose.router.rememberRouter
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen.Details
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen.List
 import io.github.xxfast.nytimes.screens.story.StoryScreen

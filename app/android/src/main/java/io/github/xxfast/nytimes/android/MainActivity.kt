@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
-import io.github.xxfast.krouter.LocalComponentContext
+import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 

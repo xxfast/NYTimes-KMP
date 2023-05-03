@@ -2,8 +2,8 @@ package io.github.xxfast.nytimes.screens.topStories
 
 import app.cash.molecule.RecompositionClock.Immediate
 import app.cash.molecule.moleculeFlow
-import io.github.xxfast.krouter.SavedStateHandle
-import io.github.xxfast.krouter.ViewModel
+import io.github.xxfast.decompose.router.SavedStateHandle
+import io.github.xxfast.nytimes.navigation.ViewModel
 import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.data.HttpClient
 import io.github.xxfast.nytimes.data.store

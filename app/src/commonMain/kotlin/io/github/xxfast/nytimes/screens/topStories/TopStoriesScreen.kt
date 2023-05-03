@@ -58,7 +58,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.krouter.rememberViewModel
+import io.github.xxfast.decompose.router.rememberViewModel
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections

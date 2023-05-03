@@ -75,8 +75,7 @@ dependencies {
   implementation(compose.material3)
   implementation(compose.preview)
   implementation(compose.uiTooling)
-
   implementation(libs.decompose)
-  implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.decompose.router)
   implementation(libs.androidx.activity.compose)
 }

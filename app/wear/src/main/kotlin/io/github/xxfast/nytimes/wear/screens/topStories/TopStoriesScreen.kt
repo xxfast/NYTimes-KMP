@@ -37,11 +37,8 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
-import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.krouter.rememberViewModel
-import io.github.xxfast.krouter.wear.NavigationBox
+import io.github.xxfast.decompose.router.rememberViewModel
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections
@@ -51,6 +48,7 @@ import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
 import io.github.xxfast.nytimes.screens.topStories.TopStorySummaryState
+import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 
