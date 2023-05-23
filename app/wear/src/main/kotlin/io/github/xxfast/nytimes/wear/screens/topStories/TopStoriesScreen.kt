@@ -38,7 +38,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.decompose.router.rememberViewModel
+import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections
@@ -57,7 +57,7 @@ fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
-    rememberViewModel(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
+    rememberOnRoute(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
