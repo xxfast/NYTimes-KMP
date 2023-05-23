@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,7 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.decompose.router.rememberViewModel
+import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.sections
@@ -75,7 +78,7 @@ fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
-    rememberViewModel(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
+    rememberOnRoute(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
@@ -207,8 +210,13 @@ fun TopStoriesView(
           }
         }
 
-        if (state.articles != Loading) FeedView(summaries = state.articles) { summary ->
-          StorySummaryView(summary, onSelect)
+        if (state.articles != Loading) LazyVerticalGrid(
+          verticalArrangement = Arrangement.spacedBy(16.dp),
+          horizontalArrangement = Arrangement.spacedBy(16.dp),
+          contentPadding = PaddingValues(16.dp),
+          columns = GridCells.Adaptive(250.dp),
+        ) {
+          items(state.articles) { article -> StorySummaryView(article, onSelect) }
         }
 
         AnimatedVisibility(
