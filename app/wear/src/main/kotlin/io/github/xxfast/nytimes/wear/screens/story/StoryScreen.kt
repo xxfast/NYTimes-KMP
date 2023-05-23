@@ -30,7 +30,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.decompose.router.rememberViewModel
+import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -47,7 +47,7 @@ fun StoryScreen(
   uri: ArticleUri,
   title: String,
 ) {
-  val viewModel: StoryViewModel = rememberViewModel(StoryViewModel::class) { savedState ->
+  val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class) { savedState ->
     StoryViewModel(savedState, section, uri, title)
   }
 

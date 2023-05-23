@@ -44,7 +44,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.decompose.router.rememberViewModel
+import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.topStories.Loading
@@ -57,7 +57,7 @@ fun StoryScreen(
   title: String,
   onBack: () -> Unit,
 ) {
-  val viewModel: StoryViewModel = rememberViewModel(StoryViewModel::class) { savedState ->
+  val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class, key = uri) { savedState ->
     StoryViewModel(savedState, section, uri, title)
   }
 
