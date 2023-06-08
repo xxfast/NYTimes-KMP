@@ -1,11 +1,16 @@
 package io.github.xxfast.nytimes.web
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.DpSize
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import io.github.xxfast.nytimes.utils.LocalWindowSizeClass
+import io.github.xxfast.nytimes.utils.WindowSizeClass
+import io.github.xxfast.nytimes.utils.calculateWindowSizeClass
 import io.github.xxfast.nytimes.web.utils.BrowserViewportWindow
 import org.jetbrains.skiko.wasm.onWasmReady
 
@@ -15,9 +20,19 @@ fun main() {
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
 
     BrowserViewportWindow("NYTime-KMP") {
-      CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
-        MaterialTheme {
-          HomeScreen()
+
+      /**
+       * TODO: Maybe we can use [LocalUIViewController], but there's no real way to hook into [ComposeWindow.viewDidLoad]
+       * */
+      BoxWithConstraints {
+        val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(DpSize(maxWidth, maxHeight))
+        CompositionLocalProvider(
+          LocalComponentContext provides rootComponentContext,
+          LocalWindowSizeClass provides windowSizeClass,
+        ) {
+          MaterialTheme {
+            HomeScreen()
+          }
         }
       }
     }
