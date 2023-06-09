@@ -13,7 +13,6 @@ val Loading: Nothing? = null
 data class TopStoriesState(
   val section: TopStorySection? = home,
   val articles: List<TopStorySummaryState>? = Loading,
-  val favourites: List<TopStorySummaryState>? = Loading,
   val numberOfFavourites: Int? = Loading,
 ): Parcelable
 
@@ -23,7 +22,8 @@ data class TopStorySummaryState(
   val imageUrl: String?,
   val title: String,
   val description: String,
-  val section: TopStorySection
+  val section: TopStorySection,
+  val byline: String,
 ): Parcelable
 
 sealed interface TopStoriesEvent {

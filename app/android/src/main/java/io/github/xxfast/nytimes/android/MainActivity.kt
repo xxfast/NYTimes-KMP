@@ -14,6 +14,9 @@ import com.arkivanov.decompose.defaultComponentContext
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import io.github.xxfast.nytimes.utils.LocalWindowSizeClass
+import io.github.xxfast.nytimes.utils.calculateWindowSizeClass
+import io.github.xxfast.nytimes.utils.WindowSizeClass
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,13 @@ class MainActivity : ComponentActivity() {
     appStorage = filesDir.path
 
     setContent {
-      CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
+      val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(this)
+      println(windowSizeClass)
+
+      CompositionLocalProvider(
+        LocalComponentContext provides rootComponentContext,
+        LocalWindowSizeClass provides windowSizeClass,
+      ) {
         NyTimesTheme {
           Surface(
             modifier = Modifier.fillMaxSize(),

@@ -13,6 +13,7 @@ import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.TopStorySections.home
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,6 +31,7 @@ fun TopStoriesDomain(
     title = article.title,
     description = article.abstract,
     section = article.section,
+    byline = article.byline,
   )
 
   var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
@@ -37,7 +39,7 @@ fun TopStoriesDomain(
 
   val favourites: List<TopStorySummaryState>? by store.updates
     .map{ savedArticles -> savedArticles.orEmpty().map(::stateFrom) }
-    .collectAsState(initialState.favourites)
+    .collectAsState(Loading)
 
   var refreshes: Int by remember { mutableStateOf(0) }
   val numberOfFavourites: Int? = favourites?.size
@@ -50,6 +52,11 @@ fun TopStoriesDomain(
     val section: TopStorySection = section ?: return@LaunchedEffect
 
     articles = Loading
+
+    if (section == TopStorySections.favourites){
+      articles = favourites
+      return@LaunchedEffect
+    }
 
     val topStory: TopStoryResponse = webService.topStories(section).getOrNull()
       ?: return@LaunchedEffect // TODO: Handle errors
@@ -71,5 +78,5 @@ fun TopStoriesDomain(
     }
   }
 
-  return TopStoriesState(section, articles, favourites, numberOfFavourites)
+  return TopStoriesState(section, articles, numberOfFavourites)
 }
