@@ -1,6 +1,6 @@
 [versions]
 agp = "8.0.2"
-androidx-activity-compose="1.7.1"
+androidx-activity-compose="1.7.2"
 buildkonfig = "0.13.3"
 compose-multiplatform = "1.4.0"
 compose-compiler = "1.4.5"
