@@ -1,9 +1,8 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import kotlinx.cinterop.useContents
 import platform.UIKit.UIViewController
@@ -26,9 +25,10 @@ fun calculateWindowSizeClass(controller: UIViewController): WindowSizeClass {
   }
 
   val size = with(density) { rect.size.toDpSize() }
-  return WindowSizeClass.calculateFromSize(size)
+  return CommonWindowSizeClass.calculateFromSize(size)
 }
 
 @Composable
-fun calculateWindowSizeClass(size: DpSize): WindowSizeClass = WindowSizeClass.calculateFromSize(size)
+fun calculateWindowSizeClass(size: DpSize): WindowSizeClass =
+  CommonWindowSizeClass.calculateFromSize(size)
 

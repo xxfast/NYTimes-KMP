@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
 expect value class WindowHeightSizeClass private constructor(private val value: Int)
 

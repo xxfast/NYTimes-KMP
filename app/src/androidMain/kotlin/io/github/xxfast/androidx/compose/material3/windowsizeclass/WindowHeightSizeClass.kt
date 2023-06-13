@@ -1,6 +1,8 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
-actual typealias WindowHeightSizeClass = CommonWindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+
+actual typealias WindowHeightSizeClass = WindowHeightSizeClass
 
 actual object WindowHeightSizeClasses {
   actual val Compact: WindowHeightSizeClass = WindowHeightSizeClass.Compact

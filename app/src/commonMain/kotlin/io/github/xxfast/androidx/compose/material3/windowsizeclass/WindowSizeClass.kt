@@ -1,5 +1,5 @@
 
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
 @Suppress("ConvertSecondaryConstructorToPrimary") // To mirror android api
 expect class WindowSizeClass {

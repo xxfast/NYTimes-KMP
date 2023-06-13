@@ -13,9 +13,9 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
-import io.github.xxfast.nytimes.utils.LocalWindowSizeClass
-import io.github.xxfast.nytimes.utils.WindowSizeClass
-import io.github.xxfast.nytimes.utils.calculateWindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import net.harawata.appdirs.AppDirsFactory
 
 @OptIn(ExperimentalDecomposeApi::class)

@@ -26,9 +26,9 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
-import io.github.xxfast.nytimes.utils.LocalWindowSizeClass
-import io.github.xxfast.nytimes.utils.WindowSizeClass
-import io.github.xxfast.nytimes.utils.WindowWidthSizeClasses.Compact
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses.Compact
 
 @Composable
 fun <C : Parcelable> RoutedListDetailContent(

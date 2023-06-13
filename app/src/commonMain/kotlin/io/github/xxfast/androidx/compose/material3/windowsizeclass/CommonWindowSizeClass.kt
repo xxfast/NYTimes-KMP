@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Dp
