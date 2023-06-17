@@ -5,7 +5,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses.Compact
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
@@ -34,6 +33,9 @@ fun HomeScreen() {
         uri = screen.uri,
         title = screen.title,
         onBack = { router.pop() },
+        onSelectRelated = { section, uri, title ->
+          router.push(Details(section, uri, title))
+        }
       )
     }
   }

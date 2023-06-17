@@ -40,10 +40,10 @@ import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
+import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
-import io.github.xxfast.nytimes.screens.topStories.TopStorySummaryState
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
@@ -175,7 +175,7 @@ fun TopStoriesPreviewLoaded() {
   val state = TopStoriesState(
     section = TopStorySection("Sports"),
     articles = listOf(
-      TopStorySummaryState(
+      SummaryState(
         uri = ArticleUri(value = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html"),
         imageUrl = null,
         title = "Harry Kane and the End of the Line",

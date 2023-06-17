@@ -4,19 +4,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -43,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,23 +45,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.router.stack.push
-import com.seiko.imageloader.AsyncImagePainter
-import com.seiko.imageloader.ImageRequestState
-import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses
 import io.github.xxfast.decompose.router.rememberOnRoute
+import io.github.xxfast.nytimes.screens.summary.StorySummaryView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -219,7 +206,7 @@ fun TopStoriesView(
       ) {
         items(state.articles, key = { it.uri }) { article ->
           StorySummaryView(
-            state = article,
+            summary = article,
             isSelected = article.uri == selected,
             onSelect = onSelect,
             modifier = Modifier
@@ -258,79 +245,3 @@ fun TopStoriesView(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun StorySummaryView(
-  state: TopStorySummaryState,
-  isSelected: Boolean,
-  onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
-  modifier: Modifier,
-) {
-  Surface(
-    shape = MaterialTheme.shapes.extraLarge,
-    tonalElevation = if (isSelected) 2.dp else 0.dp,
-    modifier = modifier
-      .clip(MaterialTheme.shapes.extraLarge)
-      .clickable { onSelect(state.section, state.uri, state.title) }
-  ) {
-    Column(
-      verticalArrangement = Arrangement.spacedBy(4.dp),
-      modifier = Modifier.padding(8.dp)
-    ) {
-      if (state.imageUrl != null) Box(
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(180.dp)
-          .clip(MaterialTheme.shapes.extraLarge)
-          .background(MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp))
-      ) {
-        val painter: AsyncImagePainter = rememberAsyncImagePainter(state.imageUrl)
-
-        if (painter.requestState is ImageRequestState.Loading)
-          CircularProgressIndicator(modifier = Modifier.align(Center))
-
-        Image(
-          painter = painter,
-          contentDescription = null,
-          contentScale = ContentScale.Crop,
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-        )
-      }
-
-      Text(
-        text = state.title,
-        style = MaterialTheme.typography.headlineSmall,
-      )
-
-      Text(
-        text = state.description,
-        style = MaterialTheme.typography.bodySmall,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis
-      )
-
-      Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        ElevatedAssistChip(
-          onClick = { },
-          label = {
-            Text(
-              text = state.section.name,
-              style = MaterialTheme.typography.labelMedium
-            )
-          },
-          shape = RoundedCornerShape(16.dp),
-        )
-
-        Text(
-          text = state.byline,
-          style = MaterialTheme.typography.labelSmall,
-        )
-      }
-    }
-  }
-}
