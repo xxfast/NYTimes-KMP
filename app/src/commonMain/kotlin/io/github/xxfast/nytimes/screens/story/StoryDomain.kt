@@ -12,6 +12,7 @@ import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.SavedArticles
+import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,7 @@ fun StoryDomain(
   store: KStore<SavedArticles>,
 ): StoryState {
   var article: Article? by remember { mutableStateOf(initialState.article) }
+  var related: List<Article>? by remember { mutableStateOf(initialState.related) }
   var refreshes: Int by remember { mutableStateOf(0) }
 
   val isSaved: Boolean? by store.updates
@@ -41,10 +43,17 @@ fun StoryDomain(
 
     article = Loading
 
+    val stories: List<Article>? = webService.topStories(section).getOrNull()?.results
+
     // Get the article from store, if not found get a fresh one
     article = store.get().orEmpty()
       .find { article -> article.uri == uri }
-      ?: webService.story(section, uri).getOrNull()
+      ?: stories?.find { it.uri == uri }
+
+    // Related would be just the top 3 articles under the same sections
+    related = stories
+      ?.filter { it.uri != uri }
+      ?.take(3)
   }
 
   LaunchedEffect(Unit) {
@@ -66,5 +75,5 @@ fun StoryDomain(
     }
   }
 
-  return StoryState(title, article, isSaved)
+  return StoryState(title, article, related, isSaved)
 }

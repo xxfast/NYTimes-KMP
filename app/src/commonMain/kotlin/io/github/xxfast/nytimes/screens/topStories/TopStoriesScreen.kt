@@ -45,8 +45,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -56,22 +60,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.router.stack.push
 import com.seiko.imageloader.AsyncImagePainter
 import com.seiko.imageloader.ImageRequestState
 import com.seiko.imageloader.rememberAsyncImagePainter
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses
 import io.github.xxfast.decompose.router.rememberOnRoute
+import io.github.xxfast.nytimes.components.TwoPanelScaffold
+import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
+import io.github.xxfast.nytimes.screens.home.StoryHomeScreen
+import io.github.xxfast.nytimes.screens.story.StoryScreen
 import io.github.xxfast.nytimes.utils.statusBarPadding
 import io.github.xxfast.nytimes.resources.Icons as SampleIcons
 
 @Composable
 fun TopStoriesScreen(
-  selected: ArticleUri?,
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
@@ -79,12 +90,53 @@ fun TopStoriesScreen(
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
-  TopStoriesView(
-    state = state,
-    selected = selected,
-    onSelect = onSelectArticle,
-    onRefresh = viewModel::onRefresh,
-    onSelectSection = viewModel::onSelectSection,
+  var selection: StoryHomeScreen? by rememberSaveable { mutableStateOf(null) }
+  val details: StoryHomeScreen.Details? = selection as? StoryHomeScreen.Details
+  val windowSizeClass: WindowSizeClass = LocalWindowSizeClass.current
+  var showPanel: Boolean by rememberSaveable { mutableStateOf(details != null) }
+
+  // Reset selection if the window size class changes to compact
+  LaunchedEffect(windowSizeClass) {
+    selection = selection.takeIf { windowSizeClass.widthSizeClass != WindowWidthSizeClasses.Compact }
+    showPanel = selection != null
+  }
+
+  TwoPanelScaffold(
+    panelVisibility = showPanel,
+    animationSpec = TwoPanelScaffoldAnimationSpec(
+      finishedListener = { fraction -> if (fraction == 1f) selection = null }
+    ),
+    body = {
+      TopStoriesView(
+        state = state,
+        selected = details?.uri,
+        onSelect = { section, uri, title ->
+          val next = StoryHomeScreen.Details(section, uri, title)
+          if (windowSizeClass.widthSizeClass == WindowWidthSizeClasses.Compact) {
+            onSelectArticle(section, uri, title)
+            return@TopStoriesView
+          }
+
+          selection = next
+          showPanel = true
+        },
+        onRefresh = viewModel::onRefresh,
+        onSelectSection = viewModel::onSelectSection,
+      )
+    },
+    panel = {
+      Surface(tonalElevation = 1.dp) {
+        if (details != null) StoryScreen(
+          section = details.section,
+          uri = details.uri,
+          title = details.title,
+          onBack = { showPanel = false },
+          onFullScreen = {
+            onSelectArticle(details.section, details.uri, details.title)
+          }
+        )
+      }
+    },
   )
 }
 
@@ -170,7 +222,8 @@ fun TopStoriesView(
             state = article,
             isSelected = article.uri == selected,
             onSelect = onSelect,
-            modifier = Modifier.animateItemPlacement()
+            modifier = Modifier
+              .animateItemPlacement()
           )
         }
 

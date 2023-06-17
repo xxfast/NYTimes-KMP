@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExitToApp
+import androidx.compose.material.icons.rounded.OpenInFull
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,7 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.surfaceColorAtElevation
@@ -65,6 +65,7 @@ fun StoryScreen(
   uri: ArticleUri,
   title: String,
   onBack: () -> Unit,
+  onFullScreen: (() -> Unit)? = null,
 ) {
   val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class, key = uri) { savedState ->
     StoryViewModel(savedState, section, uri, title)
@@ -76,7 +77,8 @@ fun StoryScreen(
     state = state,
     onRefresh = viewModel::onRefresh,
     onBack = onBack,
-    onSave = viewModel::onSave
+    onSave = viewModel::onSave,
+    onFullScreen = onFullScreen
   )
 }
 
@@ -87,6 +89,7 @@ fun StoryView(
   onRefresh: () -> Unit,
   onSave: () -> Unit,
   onBack: () -> Unit,
+  onFullScreen: (() -> Unit)?,
 ) {
   val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -119,6 +122,10 @@ fun StoryView(
           }
 
           IconButton(onClick = onRefresh) { Icon(Icons.Rounded.Refresh, contentDescription = null) }
+
+          if(onFullScreen!=null) IconButton(onClick = onFullScreen) {
+            Icon(Icons.Rounded.OpenInFull, contentDescription = null)
+          }
         },
         scrollBehavior = scrollBehavior,
         modifier = Modifier

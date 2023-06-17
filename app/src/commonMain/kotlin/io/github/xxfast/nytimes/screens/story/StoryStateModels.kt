@@ -12,6 +12,7 @@ data class StoryState(
   val title: String,
   // We can save the whole model in state here because we can fit it in state
   val article: Article? = Loading,
+  val related: List<Article>? = Loading,
   val isSaved: Boolean? = DontKnowYet,
 ): Parcelable
 
