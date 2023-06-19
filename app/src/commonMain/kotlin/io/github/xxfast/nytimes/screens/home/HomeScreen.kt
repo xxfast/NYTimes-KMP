@@ -19,18 +19,23 @@ fun HomeScreen() {
 
   RoutedContent(
     router = router,
-    animation = stackAnimation(slide())
+    animation = stackAnimation(slide()),
   ) { screen ->
-    when(screen){
+    when (screen) {
       List -> TopStoriesScreen(
-        onSelectArticle = { section, uri, title -> router.push(Details(section, uri, title))}
+        onSelectArticle = { section, uri, title ->
+          router.push(Details(section, uri, title))
+        }
       )
 
       is Details -> StoryScreen(
         section = screen.section,
         uri = screen.uri,
         title = screen.title,
-        onBack = { router.pop() }
+        onBack = { router.pop() },
+        onSelectRelated = { section, uri, title ->
+          router.push(Details(section, uri, title))
+        }
       )
     }
   }

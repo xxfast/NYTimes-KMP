@@ -3,25 +3,20 @@
 package io.github.xxfast.nytimes.wear.screens.topStories
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.Card
@@ -41,13 +36,14 @@ import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
+import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
-import io.github.xxfast.nytimes.screens.topStories.TopStorySummaryState
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
@@ -91,6 +87,10 @@ fun TopStoriesView(
           horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
           items(sections) { section ->
+            val icon: @Composable (BoxScope.() -> Unit) = {
+              Icon(imageVector = Icons.Default.Favorite, contentDescription = null)
+            }
+
             CompactChip(
               onClick = { onSelectSection(section) },
               colors = ChipDefaults.chipColors(
@@ -98,11 +98,15 @@ fun TopStoriesView(
                 else MaterialTheme.colors.surface
               ),
               label = {
-                Text(
-                  text = section.name,
-                  maxLines = 2, overflow = TextOverflow.Ellipsis
-                )
+                val numberOfFavourites: Int? = state.numberOfFavourites
+                if (
+                  section == TopStorySections.favourites &&
+                  numberOfFavourites != Loading &&
+                  numberOfFavourites > 0
+                ) Text("${section.name} (${state.numberOfFavourites})")
+                else Text(section.name)
               },
+              icon = icon.takeIf { section == TopStorySections.favourites }
             )
           }
         }
@@ -138,24 +142,7 @@ fun TopStoriesView(
             contentColor = MaterialTheme.colors.onSurface,
             titleColor = MaterialTheme.colors.onSurface,
           ) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-              CompactChip(onClick = {}, label = { Text(article.section.name) })
-
-              val icon: ImageVector =
-                if (article in state.favourites.orEmpty()) Icons.Rounded.Favorite
-                else Icons.Rounded.FavoriteBorder
-
-              Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colors.primary,
-                modifier = Modifier
-                  .size(16.dp)
-              )
-            }
+            CompactChip(onClick = {}, label = { Text(article.section.name) })
           }
         }
       }
@@ -188,12 +175,13 @@ fun TopStoriesPreviewLoaded() {
   val state = TopStoriesState(
     section = TopStorySection("Sports"),
     articles = listOf(
-      TopStorySummaryState(
+      SummaryState(
         uri = ArticleUri(value = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html"),
         imageUrl = null,
         title = "Harry Kane and the End of the Line",
         description = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
-        section = TopStorySection("Sports")
+        section = TopStorySection("Sports"),
+        byline = "Isuru Rajapakse",
       )
     )
   )

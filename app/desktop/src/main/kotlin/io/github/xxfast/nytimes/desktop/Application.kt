@@ -13,6 +13,9 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
+import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import net.harawata.appdirs.AppDirsFactory
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -22,6 +25,7 @@ fun main() {
 
   application {
     val windowState: WindowState = rememberWindowState()
+    val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(windowState)
     LifecycleController(lifecycle, windowState)
     appStorage = AppDirsFactory.getInstance()
       .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
@@ -31,7 +35,10 @@ fun main() {
       state = windowState,
       onCloseRequest = { exitApplication() }
     ) {
-      CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {
+      CompositionLocalProvider(
+        LocalComponentContext provides rootComponentContext,
+        LocalWindowSizeClass provides windowSizeClass,
+      ) {
         MaterialTheme {
           HomeScreen()
         }

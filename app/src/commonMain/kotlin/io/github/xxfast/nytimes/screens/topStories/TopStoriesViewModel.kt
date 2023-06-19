@@ -12,6 +12,7 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class TopStoriesViewModel(savedState: SavedStateHandle) : ViewModel() {
   private val initialState: TopStoriesState = savedState.get() ?: TopStoriesState()
   private val webService = NyTimesWebService(HttpClient)
 
-  val states by lazy {
+  val states: StateFlow<TopStoriesState> by lazy {
     moleculeFlow(Immediate) { TopStoriesDomain(initialState, eventsFlow, webService, store) }
       .onEach { state -> savedState.set(state) }
       .stateIn(this, SharingStarted.Lazily, initialState)

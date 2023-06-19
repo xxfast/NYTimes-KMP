@@ -13,7 +13,9 @@ import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.TopStorySections.home
+import io.github.xxfast.nytimes.screens.summary.SummaryState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -24,20 +26,12 @@ fun TopStoriesDomain(
   webService: NyTimesWebService,
   store: KStore<SavedArticles>,
 ): TopStoriesState {
-  fun stateFrom(article: Article) = TopStorySummaryState(
-    uri = article.uri,
-    imageUrl = article.multimedia?.first()?.url,
-    title = article.title,
-    description = article.abstract,
-    section = article.section,
-  )
-
   var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
-  var articles: List<TopStorySummaryState>? by remember { mutableStateOf(initialState.articles) }
+  var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
 
-  val favourites: List<TopStorySummaryState>? by store.updates
-    .map{ savedArticles -> savedArticles.orEmpty().map(::stateFrom) }
-    .collectAsState(initialState.favourites)
+  val favourites: List<SummaryState>? by store.updates
+    .map{ savedArticles -> savedArticles.orEmpty().map(::SummaryState) }
+    .collectAsState(Loading)
 
   var refreshes: Int by remember { mutableStateOf(0) }
   val numberOfFavourites: Int? = favourites?.size
@@ -51,10 +45,15 @@ fun TopStoriesDomain(
 
     articles = Loading
 
+    if (section == TopStorySections.favourites){
+      articles = favourites
+      return@LaunchedEffect
+    }
+
     val topStory: TopStoryResponse = webService.topStories(section).getOrNull()
       ?: return@LaunchedEffect // TODO: Handle errors
 
-    articles = topStory.results.map(::stateFrom)
+    articles = topStory.results.map(::SummaryState)
   }
 
   LaunchedEffect(Unit) {
@@ -71,5 +70,5 @@ fun TopStoriesDomain(
     }
   }
 
-  return TopStoriesState(section, articles, favourites, numberOfFavourites)
+  return TopStoriesState(section, articles, numberOfFavourites)
 }

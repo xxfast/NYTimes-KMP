@@ -8,6 +8,7 @@ import io.github.xxfast.nytimes.models.TopStorySections.automobiles
 import io.github.xxfast.nytimes.models.TopStorySections.books
 import io.github.xxfast.nytimes.models.TopStorySections.business
 import io.github.xxfast.nytimes.models.TopStorySections.fashion
+import io.github.xxfast.nytimes.models.TopStorySections.favourites
 import io.github.xxfast.nytimes.models.TopStorySections.food
 import io.github.xxfast.nytimes.models.TopStorySections.health
 import io.github.xxfast.nytimes.models.TopStorySections.home
@@ -40,6 +41,7 @@ import kotlin.jvm.JvmInline
 value class TopStorySection(val name: String): Parcelable
 
 object TopStorySections {
+  val favourites = TopStorySection("favourites")
   val arts = TopStorySection("arts")
   val automobiles = TopStorySection("automobiles")
   val books = TopStorySection("books")
@@ -69,7 +71,7 @@ object TopStorySections {
 }
 
 val sections = listOf(
-  arts, automobiles, books, business, fashion, food, health, insider, magazine, movies,
+  favourites, arts, automobiles, books, business, fashion, food, health, insider, magazine, movies,
   nyRegion, obituaries, opinion, politics, realestate, science, sports, sundayReview, technology,
   theater, tMagazine, travel, upshot, us, world,
 )
