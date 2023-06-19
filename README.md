@@ -28,16 +28,21 @@ A KMP template of the New York Times App using Compose multiplatform
 ## Showcase
 
 ### Android
-https://user-images.githubusercontent.com/13775137/226222818-b560acc0-53ba-4205-875f-39fdb4b2c370.mp4
+
+https://github.com/xxfast/NYTimes-KMP/assets/13775137/25adabad-400e-4178-8a14-aaca531c8062
 
 ### WearOs
-https://user-images.githubusercontent.com/13775137/235043887-022d5e03-87bb-438c-b4bd-16fc804fded6.mp4
+
+https://github.com/xxfast/NYTimes-KMP/assets/13775137/e9ce8ab6-6c08-49a5-b80c-123733bf466c
 
 ### iOS
-https://user-images.githubusercontent.com/13775137/226222910-df74f449-ec01-4a72-88c4-d2ab0e98ff5b.mp4
+
+https://github.com/xxfast/NYTimes-KMP/assets/13775137/43855864-a4e3-4efb-8047-3e80b0594b02
 
 ### Desktop
-https://user-images.githubusercontent.com/13775137/226222948-861e5362-a5db-4ee1-8992-de758dcea7db.mp4
+
+https://github.com/xxfast/NYTimes-KMP/assets/13775137/97da961c-ef9a-40d0-9cee-f322ad8aa6ef
 
 ### Web
-https://user-images.githubusercontent.com/13775137/227819941-c86f7e7d-9586-4c2d-a20a-627d7eae1442.mp4
+
+https://github.com/xxfast/NYTimes-KMP/assets/13775137/eb37d767-d241-4aa8-9083-25a4b9ad3dfa
