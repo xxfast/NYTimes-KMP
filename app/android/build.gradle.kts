@@ -10,12 +10,12 @@ plugins {
 
 android {
   namespace = "io.github.xxfast.nytimes.android"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "io.github.xxfast.nytimes.android"
     minSdk = 24
-    targetSdk = 33
+    targetSdk = 34
     versionCode = 1
     versionName = "1.0"
   }
