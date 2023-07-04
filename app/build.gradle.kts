@@ -45,6 +45,9 @@ kotlin {
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)
 
+        @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+        implementation(compose.components.resources)
+
         implementation(libs.molecule.runtime)
         implementation(libs.decompose)
         implementation(libs.decompose.compose.multiplatform)
@@ -107,6 +110,9 @@ kotlin {
 android {
   namespace = "io.github.xxfast.nytimes.app"
   compileSdk = 33
+
+  sourceSets["main"].res.srcDirs("src/androidMain/res", "src/commonMain/resources")
+
   defaultConfig {
     minSdk = 24
     targetSdk = 33
