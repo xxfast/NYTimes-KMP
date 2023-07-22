@@ -11,7 +11,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.decompose.LocalComponentContext
-import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.di.appStorageDir
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -27,7 +27,7 @@ fun main() {
     val windowState: WindowState = rememberWindowState()
     val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(windowState)
     LifecycleController(lifecycle, windowState)
-    appStorage = AppDirsFactory.getInstance()
+    appStorageDir = AppDirsFactory.getInstance()
       .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
 
     Window(
