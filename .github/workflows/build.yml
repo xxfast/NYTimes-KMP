@@ -171,7 +171,7 @@ jobs:
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ github.workspace }}/app/web/build/distributions
+          path: ${{ github.workspace }}/app/web/build/dist/js/productionExecutable
 
       - name: Deploy to GitHub Pages
         id: deployment
