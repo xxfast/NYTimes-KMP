@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.UIKit.UIViewController
 
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 fun calculateWindowSizeClass(controller: UIViewController): WindowSizeClass {
   val density = LocalDensity.current

@@ -12,22 +12,16 @@ plugins {
   id("com.codingfeline.buildkonfig")
 }
 
-// TODO: Remove once a compiler with support for >1.8.22 available
+// TODO: Remove once a compiler with support for >1.9.10 available
 compose {
-  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.8.20"))
-  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.8.22")
+  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.9.0"))
+  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.9.10")
 }
 
 kotlin {
-  android()
+  androidTarget()
 
-  jvm("desktop") {
-    compilations.all {
-      kotlinOptions {
-        jvmTarget = "15"
-      }
-    }
-  }
+  jvm("desktop")
 
   iosX64()
   iosArm64()

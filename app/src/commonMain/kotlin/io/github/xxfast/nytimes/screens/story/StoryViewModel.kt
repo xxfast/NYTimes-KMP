@@ -1,6 +1,6 @@
 package io.github.xxfast.nytimes.screens.story
 
-import app.cash.molecule.RecompositionClock.Immediate
+import app.cash.molecule.RecompositionMode.Immediate
 import app.cash.molecule.moleculeFlow
 import io.github.xxfast.decompose.router.SavedStateHandle
 import io.github.xxfast.nytimes.navigation.ViewModel

@@ -24,6 +24,10 @@ android {
     compose = true
   }
 
+  composeOptions {
+    kotlinCompilerExtensionVersion = "1.5.0"
+  }
+
   packagingOptions {
     resources {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -61,10 +65,10 @@ android {
   }
 }
 
-// TODO: Remove once a compiler with support for >1.8.22 available
+// TODO: Remove once a compiler with support for >1.9.10 available
 compose {
-  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.8.20"))
-  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.8.22")
+  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.9.0"))
+  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.9.10")
 }
 
 dependencies {

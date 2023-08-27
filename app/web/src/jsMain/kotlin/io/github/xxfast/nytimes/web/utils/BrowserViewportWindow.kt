@@ -52,7 +52,7 @@ fun BrowserViewportWindow(
     setAttribute("height", "${window.innerHeight}")
   }
 
-  var canvas = (document.getElementById(CANVAS_ELEMENT_ID) as HTMLCanvasElement).apply {
+  val canvas = (document.getElementById(CANVAS_ELEMENT_ID) as HTMLCanvasElement).apply {
     fillViewportSize()
   }
 

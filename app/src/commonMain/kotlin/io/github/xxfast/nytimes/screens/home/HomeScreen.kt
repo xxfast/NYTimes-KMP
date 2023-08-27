@@ -19,7 +19,7 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesScreen
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun HomeScreen() {
-  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class, listOf(List))
+  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class, stack = listOf(List))
 
   RoutedContent(
     router = router,
