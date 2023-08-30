@@ -12,7 +12,7 @@ import androidx.core.view.WindowCompat
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import io.github.xxfast.decompose.LocalComponentContext
-import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.di.appStorageDir
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     val rootComponentContext: DefaultComponentContext = defaultComponentContext()
-    appStorage = filesDir.path
+    appStorageDir = filesDir.path
 
     setContent {
       val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(this)

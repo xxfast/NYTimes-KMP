@@ -13,7 +13,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import io.github.xxfast.decompose.LocalComponentContext
-import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.di.appStorageDir
 import io.github.xxfast.nytimes.wear.screens.home.HomeScreen
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 
@@ -21,7 +21,7 @@ class NewsActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val rootComponentContext: DefaultComponentContext = defaultComponentContext()
-    appStorage = filesDir.path
+    appStorageDir = filesDir.path
 
     setContent {
       CompositionLocalProvider(LocalComponentContext provides rootComponentContext) {

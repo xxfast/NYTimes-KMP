@@ -15,10 +15,9 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureIcon
 import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureOverlay
 import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.xxfast.decompose.LocalComponentContext
-import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.di.appStorageDir
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -36,7 +35,7 @@ fun Main(): UIViewController = ComposeUIViewController {
     backHandler = backDispatcher
   )
 
-  appStorage = NSHomeDirectory()
+  appStorageDir = NSHomeDirectory()
 
   /**
    * TODO: Maybe we can use [LocalUIViewController], but there's no real way to hook into [ComposeWindow.viewDidLoad]

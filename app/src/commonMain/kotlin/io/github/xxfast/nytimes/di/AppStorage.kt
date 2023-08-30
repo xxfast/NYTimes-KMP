@@ -1,3 +1,3 @@
 package io.github.xxfast.nytimes.di
 
-var appStorage: String? = ""
+var appStorageDir: String? = ""
