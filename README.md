@@ -11,7 +11,7 @@
 ![badge-desktop](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
 ![badge-browser](https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat)
 
-A KMP template of the New York Times App using Compose multiplatform
+A KMP template of the New York Times App using Compose multiplatform. To build and run this application you will need [an API key from the New York Times](https://developer.nytimes.com/).
 
 <img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
 
