@@ -24,12 +24,6 @@ dependencies {
 val appVersion = "1.0.0"
 version = appVersion
 
-// TODO: Remove once a compiler with support for >1.9.10 available
-compose {
-  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.9.0"))
-  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.9.10")
-}
-
 compose.desktop {
   application {
     mainClass = "io.github.xxfast.nytimes.desktop.ApplicationKt"

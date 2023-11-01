@@ -24,12 +24,6 @@ kotlin {
   }
 }
 
-// TODO: Remove once a compiler with support for >1.9.10 available
-compose {
-  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.9.0"))
-  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.9.10")
-}
-
 compose.experimental {
   web.application {
   }

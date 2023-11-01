@@ -25,7 +25,7 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = "1.5.0"
+    kotlinCompilerExtensionVersion = "1.5.2"
   }
 
   packagingOptions {
@@ -63,12 +63,6 @@ android {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
-}
-
-// TODO: Remove once a compiler with support for >1.9.10 available
-compose {
-  kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.9.0"))
-  kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.9.10")
 }
 
 dependencies {
