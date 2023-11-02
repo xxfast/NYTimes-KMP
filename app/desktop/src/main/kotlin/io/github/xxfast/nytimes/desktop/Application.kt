@@ -6,27 +6,25 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import io.github.xxfast.decompose.LocalComponentContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import io.github.xxfast.decompose.router.LocalRouterContext
+import io.github.xxfast.decompose.router.RouterContext
+import io.github.xxfast.decompose.router.defaultRouterContext
 import net.harawata.appdirs.AppDirsFactory
 
-@OptIn(ExperimentalDecomposeApi::class)
 fun main() {
-  val lifecycle = LifecycleRegistry()
-  val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
-
   application {
     val windowState: WindowState = rememberWindowState()
+    val rootRouterContext: RouterContext = defaultRouterContext(windowState = windowState)
     val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(windowState)
-    LifecycleController(lifecycle, windowState)
+
     appStorage = AppDirsFactory.getInstance()
       .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
 
@@ -36,7 +34,7 @@ fun main() {
       onCloseRequest = { exitApplication() }
     ) {
       CompositionLocalProvider(
-        LocalComponentContext provides rootComponentContext,
+        LocalRouterContext provides rootRouterContext,
         LocalWindowSizeClass provides windowSizeClass,
       ) {
         MaterialTheme {

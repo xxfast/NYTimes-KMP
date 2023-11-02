@@ -13,7 +13,7 @@ import io.github.xxfast.nytimes.wear.screens.topStories.TopStoriesScreen
 
 @Composable
 fun HomeScreen() {
-  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class, stack = listOf(List))
+  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class) { listOf(List) }
 
   RoutedContent(router = router) { screen ->
     when (screen) {

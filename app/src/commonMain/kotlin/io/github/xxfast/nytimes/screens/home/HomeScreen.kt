@@ -7,7 +7,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import io.github.xxfast.decompose.LocalComponentContext
+import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.Router
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
@@ -19,12 +19,12 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesScreen
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun HomeScreen() {
-  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class, stack = listOf(List))
+  val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class) { listOf(List) }
 
   RoutedContent(
     router = router,
     animation = predictiveBackAnimation(
-      backHandler = LocalComponentContext.current.backHandler,
+      backHandler = LocalRouterContext.current.backHandler,
       onBack = { router.pop() },
       animation = stackAnimation(slide())
     ),
