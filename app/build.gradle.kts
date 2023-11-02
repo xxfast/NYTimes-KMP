@@ -17,9 +17,19 @@ kotlin {
 
   jvm("desktop")
 
-  iosX64()
-  iosArm64()
-  iosSimulatorArm64()
+  listOf(
+    iosX64(),
+    iosArm64(),
+    iosSimulatorArm64(),
+  ).forEach { target ->
+    target.binaries {
+      framework {
+        baseName = "NyTimes"
+
+        export(libs.decompose.router)
+      }
+    }
+  }
 
   js(IR) {
     browser()
@@ -106,7 +116,6 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 }
-
 
 buildkonfig {
   packageName = "io.github.xxfast.nytimes.app"
