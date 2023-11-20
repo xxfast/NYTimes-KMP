@@ -16,7 +16,7 @@ kotlinx-serialization = "1.5.1"
 kstore = "0.6.0"
 ktor = "2.3.5"
 molecule = "1.2.0"
-qdsfdhvh-image-loader = "1.5.1"
+qdsfdhvh-image-loader = "1.7.1"
 wear-compose = "1.2.0-beta02"
 
 [libraries]
