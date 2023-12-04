@@ -19,6 +19,8 @@ import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeCla
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
+import io.github.xxfast.kstore.file.utils.DocumentDirectory
+import io.github.xxfast.kstore.utils.ExperimentalKStoreApi
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import kotlinx.cinterop.BetaInteropApi
@@ -27,7 +29,7 @@ import kotlinx.cinterop.autoreleasepool
 import kotlinx.cinterop.cstr
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCValues
-import platform.Foundation.NSHomeDirectory
+import platform.Foundation.NSFileManager
 import platform.Foundation.NSStringFromClass
 import platform.UIKit.UIApplicationMain
 import platform.UIKit.UIViewController
@@ -44,9 +46,9 @@ fun main() {
   }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class, ExperimentalKStoreApi::class)
 fun HomeUIViewController(routerContext: RouterContext): UIViewController = ComposeUIViewController {
-  appStorage = NSHomeDirectory()
+  appStorage = NSFileManager.defaultManager.DocumentDirectory?.relativePath
 
   /**
    * TODO: Maybe we can use [LocalUIViewController], but there's no real way to hook into [ComposeWindow.viewDidLoad]
