@@ -58,6 +58,7 @@
 				7555FF7D242A565900829871 /* ios */,
 				7555FF7C242A565900829871 /* Products */,
 				7555FFB0242A642200829871 /* Frameworks */,
+				93564D066D52DCD69F6A585B /* xcschemes */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,6 +86,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		93564D066D52DCD69F6A585B /* xcschemes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = xcschemes;
+			path = ios.xcodeproj/project.xcworkspace/xcuserdata/TFNX46.xcuserdatad/xcschemes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
