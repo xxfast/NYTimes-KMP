@@ -13,6 +13,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.rpc.RPCClient
 import kotlinx.rpc.serialization.json
+import kotlinx.rpc.transport.ktor.client.installRPC
 import kotlinx.rpc.transport.ktor.client.rpc
 import kotlinx.rpc.transport.ktor.client.rpcConfig
 import kotlinx.serialization.json.Json
@@ -21,6 +22,8 @@ val HttpClient = HttpClient {
   install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
   install(Logging) { logger = Logger.SIMPLE }
   install(WebSockets)
+
+  installRPC { waitForServices = true }
 
   defaultRequest {
     url {

@@ -18,6 +18,7 @@ import kotlinx.rpc.transport.ktor.server.rpc
 fun main() {
   embeddedServer(Netty, 8080) {
     install(RPC)
+
     routing {
       route("hello", HttpMethod.Get) {
         handle {
@@ -27,6 +28,8 @@ fun main() {
 
       rpc("/topStories") {
         rpcConfig {
+          waitForServices = false
+
           serialization {
             json()
           }
