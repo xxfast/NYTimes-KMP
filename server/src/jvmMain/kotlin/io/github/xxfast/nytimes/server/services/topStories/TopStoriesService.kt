@@ -1,5 +1,6 @@
 package io.github.xxfast.nytimes.server.services.topStories
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,43 +29,52 @@ class TopStoriesService(
     initialState: TopStoriesState,
     events: Flow<TopStoriesEvent>,
   ) : Flow<TopStoriesState> = moleculeFlow(RecompositionMode.Immediate) {
-    var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
-    var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
+    TopStoriesDomain(initialState, events, webService)
+  }
+}
 
-    var refreshes: Int by remember { mutableStateOf(0) }
+@Composable
+fun TopStoriesDomain(
+  initialState: TopStoriesState,
+  events: Flow<TopStoriesEvent>,
+  webService: NyTimesWebService,
+): TopStoriesState {
+  var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
+  var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
 
-    // TODO: Consume client storage here
-    val numberOfFavourites: Int? = 0
+  var refreshes: Int by remember { mutableStateOf(0) }
 
-    LaunchedEffect(refreshes) {
-      // Don't autoload the stories when restored from process death
-      if (refreshes == 0 && articles != Loading) return@LaunchedEffect
+  // TODO: Consume client storage here
+  val numberOfFavourites: Int? = 0
 
-      // If no section select, skip this
-      val section: TopStorySection = section ?: return@LaunchedEffect
+  LaunchedEffect(refreshes) {
+    // Don't autoload the stories when restored from process death
+    if (refreshes == 0 && articles != Loading) return@LaunchedEffect
 
-      articles = Loading
+    // If no section select, skip this
+    val section: TopStorySection = section ?: return@LaunchedEffect
 
-      val topStory: TopStoryResponse = webService.topStories(section).getOrNull()
-        ?: return@LaunchedEffect // TODO: Handle errors
+    articles = Loading
 
-      articles = topStory.results.map(::SummaryState)
-    }
+    val topStory: TopStoryResponse = webService.topStories(section).getOrNull()
+      ?: return@LaunchedEffect // TODO: Handle errors
 
-    LaunchedEffect(Unit) {
-      events.collect { event ->
-        when (event) {
-          TopStoriesEvent.Refresh -> refreshes++
+    articles = topStory.results.map(::SummaryState)
+  }
 
-          is TopStoriesEvent.SelectSection -> {
-            // reset the section to home if it is already selected
-            section = if (event.section == section) TopStorySections.home else event.section
-            refreshes++
-          }
+  LaunchedEffect(Unit) {
+    events.collect { event ->
+      when (event) {
+        TopStoriesEvent.Refresh -> refreshes++
+
+        is TopStoriesEvent.SelectSection -> {
+          // reset the section to home if it is already selected
+          section = if (event.section == section) TopStorySections.home else event.section
+          refreshes++
         }
       }
     }
-
-    return@moleculeFlow TopStoriesState(section, articles, numberOfFavourites)
   }
+
+  return TopStoriesState(section, articles, numberOfFavourites)
 }
