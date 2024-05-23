@@ -1,4 +1,7 @@
-plugins { }
+plugins {
+  id("com.google.devtools.ksp") version "1.9.24-1.0.20"
+  id("org.jetbrains.kotlinx.rpc.plugin") version "0.1.0"
+}
 
 buildscript {
   repositories {

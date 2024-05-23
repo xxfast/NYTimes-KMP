@@ -67,10 +67,11 @@ import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeCla
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses.Compact
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
-import io.github.xxfast.nytimes.screens.topStories.Loading
+import io.github.xxfast.nytimes.shared.domains.topStories.Loading
+import io.github.xxfast.nytimes.shared.models.Multimedia
 import io.github.xxfast.nytimes.utils.statusBarPadding
 
 @Composable
@@ -169,14 +170,15 @@ fun StoryView(
               .verticalScroll(rememberScrollState())
               .padding(8.dp)
           ) {
-            if (!state.article.multimedia.isNullOrEmpty()) Box(
+            val media: List<Multimedia>? = state.article.multimedia
+            if (!media.isNullOrEmpty()) Box(
               modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.extraLarge)
                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp))
             ) {
               val painter: AsyncImagePainter =
-                rememberAsyncImagePainter(state.article.multimedia.first().url)
+                rememberAsyncImagePainter(media.first().url)
 
               if (painter.requestState is ImageRequestState.Loading)
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

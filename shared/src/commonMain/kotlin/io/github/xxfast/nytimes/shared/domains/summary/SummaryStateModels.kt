@@ -1,8 +1,8 @@
-package io.github.xxfast.nytimes.screens.summary
+package io.github.xxfast.nytimes.shared.domains.summary
 
-import io.github.xxfast.nytimes.models.Article
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.Article
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
 import kotlinx.serialization.Serializable
 
 @Serializable

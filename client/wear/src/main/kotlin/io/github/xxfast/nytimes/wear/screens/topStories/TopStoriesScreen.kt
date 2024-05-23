@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -18,7 +17,6 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.Card
 import androidx.wear.compose.material.CardDefaults
 import androidx.wear.compose.material.ChipDefaults
@@ -34,15 +32,15 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.models.TopStorySections
-import io.github.xxfast.nytimes.models.sections
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.TopStorySections
+import io.github.xxfast.nytimes.shared.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
-import io.github.xxfast.nytimes.screens.summary.SummaryState
-import io.github.xxfast.nytimes.screens.topStories.Loading
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
+import io.github.xxfast.nytimes.shared.domains.topStories.Loading
+import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
@@ -50,12 +48,12 @@ import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 
 @Composable
 fun TopStoriesScreen(
-  onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
+  onSelectArticle: (section: io.github.xxfast.nytimes.shared.models.TopStorySection, uri: io.github.xxfast.nytimes.shared.models.ArticleUri, title: String) -> Unit,
 ) {
   val viewModel: TopStoriesViewModel =
     rememberOnRoute(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
 
-  val state: TopStoriesState by viewModel.states.collectAsState()
+  val state: io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState by viewModel.states.collectAsState()
 
   TopStoriesView(
     state = state,
@@ -66,9 +64,9 @@ fun TopStoriesScreen(
 
 @Composable
 fun TopStoriesView(
-  state: TopStoriesState,
-  onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
-  onSelectSection: (section: TopStorySection) -> Unit,
+  state: io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState,
+  onSelectArticle: (section: io.github.xxfast.nytimes.shared.models.TopStorySection, uri: io.github.xxfast.nytimes.shared.models.ArticleUri, title: String) -> Unit,
+  onSelectSection: (section: io.github.xxfast.nytimes.shared.models.TopStorySection) -> Unit,
 ) {
   NavigationBox { columnState ->
     ScalingLazyColumn(
@@ -86,7 +84,7 @@ fun TopStoriesView(
         LazyRow(
           horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-          items(sections) { section ->
+          items(io.github.xxfast.nytimes.shared.models.sections) { section ->
             val icon: @Composable (BoxScope.() -> Unit) = {
               Icon(imageVector = Icons.Default.Favorite, contentDescription = null)
             }
@@ -100,19 +98,19 @@ fun TopStoriesView(
               label = {
                 val numberOfFavourites: Int? = state.numberOfFavourites
                 if (
-                  section == TopStorySections.favourites &&
-                  numberOfFavourites != Loading &&
+                  section == io.github.xxfast.nytimes.shared.models.TopStorySections.favourites &&
+                  numberOfFavourites != io.github.xxfast.nytimes.shared.domains.topStories.Loading &&
                   numberOfFavourites > 0
                 ) Text("${section.name} (${state.numberOfFavourites})")
                 else Text(section.name)
               },
-              icon = icon.takeIf { section == TopStorySections.favourites }
+              icon = icon.takeIf { section == io.github.xxfast.nytimes.shared.models.TopStorySections.favourites }
             )
           }
         }
       }
 
-      if (state.articles == Loading) {
+      if (state.articles == io.github.xxfast.nytimes.shared.domains.topStories.Loading) {
         item {
           Card(
             onClick = {},
@@ -164,7 +162,7 @@ fun TopStoriesView(
 @WearPreviewLargeRound
 @Composable
 fun TopStoriesPreviewLoading() {
-  val state = TopStoriesState()
+  val state = io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState()
   TopStoriesPreview(state)
 }
 
@@ -172,15 +170,15 @@ fun TopStoriesPreviewLoading() {
 @WearPreviewLargeRound
 @Composable
 fun TopStoriesPreviewLoaded() {
-  val state = TopStoriesState(
-    section = TopStorySection("Sports"),
+  val state = io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState(
+    section = io.github.xxfast.nytimes.shared.models.TopStorySection("Sports"),
     articles = listOf(
-      SummaryState(
-        uri = ArticleUri(value = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html"),
+      io.github.xxfast.nytimes.shared.domains.summary.SummaryState(
+        uri = io.github.xxfast.nytimes.shared.models.ArticleUri(value = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html"),
         imageUrl = null,
         title = "Harry Kane and the End of the Line",
         description = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
-        section = TopStorySection("Sports"),
+        section = io.github.xxfast.nytimes.shared.models.TopStorySection("Sports"),
         byline = "Isuru Rajapakse",
       )
     )
@@ -189,7 +187,7 @@ fun TopStoriesPreviewLoaded() {
 }
 
 @Composable
-private fun TopStoriesPreview(state: TopStoriesState) {
+private fun TopStoriesPreview(state: io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState) {
   NYTimesWearTheme {
     TopStoriesView(
       state = state,

@@ -32,9 +32,9 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
-import io.github.xxfast.nytimes.models.Article
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.Article
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
@@ -43,8 +43,8 @@ import kotlinx.datetime.Clock
 
 @Composable
 fun StoryScreen(
-  section: TopStorySection,
-  uri: ArticleUri,
+  section: io.github.xxfast.nytimes.shared.models.TopStorySection,
+  uri: io.github.xxfast.nytimes.shared.models.ArticleUri,
   title: String,
 ) {
   val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class) { savedState ->
@@ -105,7 +105,7 @@ fun StoryView(
         )
       }
 
-      val article: Article? = state.article
+      val article: io.github.xxfast.nytimes.shared.models.Article? = state.article
       if (article == Loading) {
         item { CircularProgressIndicator() }
         return@ScalingLazyColumn
@@ -154,9 +154,9 @@ fun StoryPreviewLoading() {
 fun StoryPreviewLoaded() {
   val state = StoryState(
     title = "Harry Kane and the End of the Line",
-    article = Article(
-      uri = ArticleUri(value = ""),
-      section = TopStorySection("Sports"),
+    article = io.github.xxfast.nytimes.shared.models.Article(
+      uri = io.github.xxfast.nytimes.shared.models.ArticleUri(value = ""),
+      section = io.github.xxfast.nytimes.shared.models.TopStorySection("Sports"),
       subsection = "Soccer",
       title = "Harry Kane and the End of the Line",
       abstract = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",

@@ -57,14 +57,17 @@ import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.models.TopStorySections
-import io.github.xxfast.nytimes.models.sections
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.TopStorySections
+import io.github.xxfast.nytimes.shared.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen
 import io.github.xxfast.nytimes.screens.story.StoryScreen
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
+import io.github.xxfast.nytimes.shared.domains.topStories.Loading
+import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState
 import io.github.xxfast.nytimes.utils.statusBarPadding
 import io.github.xxfast.nytimes.resources.Icons as SampleIcons
 
@@ -184,10 +187,11 @@ fun TopStoriesView(
           ElevatedAssistChip(
             onClick = { onSelectSection(section) },
             label = {
+              val numberOfFavourites: Int? = state.numberOfFavourites
               if (
                 section == TopStorySections.favourites &&
-                state.numberOfFavourites != Loading &&
-                state.numberOfFavourites > 0
+                numberOfFavourites != Loading &&
+                numberOfFavourites > 0
               ) Text("${section.name} (${state.numberOfFavourites})")
               else Text(section.name)
             },
@@ -198,13 +202,14 @@ fun TopStoriesView(
         }
       }
 
-      if (state.articles != Loading) LazyVerticalGrid(
+      val articles: List<SummaryState>? = state.articles
+      if (articles != Loading) LazyVerticalGrid(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Adaptive(248.dp),
       ) {
-        items(state.articles, key = { it.uri.value }) { article ->
+        items(articles, key = { it.uri.value }) { article ->
           StorySummaryView(
             summary = article,
             isSelected = article.uri == selected,

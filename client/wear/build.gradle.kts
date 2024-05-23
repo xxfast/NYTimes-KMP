@@ -6,6 +6,11 @@ plugins {
   id("org.jetbrains.compose")
 }
 
+repositories {
+  // TODO: Remove once kotlinx-rpc in central
+  maven("https://maven.pkg.jetbrains.space/public/p/krpc/maven")
+}
+
 android {
   namespace = "io.github.xxfast.nytimes.wear"
   compileSdk = 34

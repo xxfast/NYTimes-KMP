@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.api
+package io.github.xxfast.nytimes.server.api
 
 import io.github.xxfast.nytimes.shared.models.TopStoryResponse
 import io.github.xxfast.nytimes.shared.models.TopStorySection
