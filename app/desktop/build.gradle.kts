@@ -29,6 +29,14 @@ compose.desktop {
     mainClass = "io.github.xxfast.nytimes.desktop.ApplicationKt"
 
     nativeDistributions {
+      buildTypes.release {
+        proguard {
+          configurationFiles.from("proguard-rules.pro")
+          obfuscate.set(false)
+          optimize.set(false)
+        }
+      }
+
       targetFormats(Dmg, Msi, Deb)
 
       modules("java.instrument", "java.management", "jdk.unsupported")

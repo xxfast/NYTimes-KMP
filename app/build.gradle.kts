@@ -108,7 +108,7 @@ android {
   namespace = "io.github.xxfast.nytimes.app"
   compileSdk = 34
   defaultConfig {
-    minSdk = 24
+    minSdk = 25
     targetSdk = 34
   }
 

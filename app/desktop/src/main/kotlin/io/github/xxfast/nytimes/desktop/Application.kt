@@ -6,17 +6,14 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import io.github.xxfast.nytimes.di.appStorage
-import io.github.xxfast.nytimes.screens.home.HomeScreen
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.defaultRouterContext
+import io.github.xxfast.nytimes.di.appStorage
+import io.github.xxfast.nytimes.screens.home.HomeScreen
 import net.harawata.appdirs.AppDirsFactory
 
 fun main() {

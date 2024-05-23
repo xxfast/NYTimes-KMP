@@ -2,8 +2,8 @@ package io.github.xxfast.nytimes.wear.screens.home
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.router.stack.push
-import io.github.xxfast.decompose.router.Router
-import io.github.xxfast.decompose.router.rememberRouter
+import io.github.xxfast.decompose.router.stack.Router
+import io.github.xxfast.decompose.router.stack.rememberRouter
 import io.github.xxfast.decompose.router.wear.content.RoutedContent
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen
 import io.github.xxfast.nytimes.screens.home.StoryHomeScreen.Details

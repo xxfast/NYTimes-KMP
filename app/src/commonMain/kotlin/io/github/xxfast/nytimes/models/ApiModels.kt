@@ -1,8 +1,6 @@
 package io.github.xxfast.nytimes.models
 
 import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.WriteWith
 import io.github.xxfast.nytimes.models.TopStorySections.arts
 import io.github.xxfast.nytimes.models.TopStorySections.automobiles
 import io.github.xxfast.nytimes.models.TopStorySections.books
@@ -11,7 +9,6 @@ import io.github.xxfast.nytimes.models.TopStorySections.fashion
 import io.github.xxfast.nytimes.models.TopStorySections.favourites
 import io.github.xxfast.nytimes.models.TopStorySections.food
 import io.github.xxfast.nytimes.models.TopStorySections.health
-import io.github.xxfast.nytimes.models.TopStorySections.home
 import io.github.xxfast.nytimes.models.TopStorySections.insider
 import io.github.xxfast.nytimes.models.TopStorySections.magazine
 import io.github.xxfast.nytimes.models.TopStorySections.movies
@@ -30,15 +27,13 @@ import io.github.xxfast.nytimes.models.TopStorySections.travel
 import io.github.xxfast.nytimes.models.TopStorySections.upshot
 import io.github.xxfast.nytimes.models.TopStorySections.us
 import io.github.xxfast.nytimes.models.TopStorySections.world
-import io.github.xxfast.nytimes.utils.InstantParceler
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 @JvmInline
 @Serializable
-@Parcelize
-value class TopStorySection(val name: String): Parcelable
+value class TopStorySection(val name: String)
 
 object TopStorySections {
   val favourites = TopStorySection("favourites")
@@ -83,11 +78,9 @@ data class TopStoryResponse(
 
 @JvmInline
 @Serializable
-@Parcelize
-value class ArticleUri(val value: String): Parcelable
+value class ArticleUri(val value: String): CharSequence by value
 
 @Serializable
-@Parcelize
 data class Article(
   val uri: ArticleUri,
   val section: TopStorySection,
@@ -96,13 +89,12 @@ data class Article(
   val abstract: String,
   val url: String,
   val byline: String,
-  val published_date: @WriteWith<InstantParceler> Instant,
+  val published_date: Instant,
   val multimedia: List<Multimedia>? = emptyList(),
-): Parcelable
+)
 
 @Serializable
-@Parcelize
 data class Multimedia(
   val url: String,
   val caption: String,
-): Parcelable
+)

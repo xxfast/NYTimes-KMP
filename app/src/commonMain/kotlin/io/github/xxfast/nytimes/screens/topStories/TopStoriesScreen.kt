@@ -204,7 +204,7 @@ fun TopStoriesView(
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Adaptive(248.dp),
       ) {
-        items(state.articles, key = { it.uri }) { article ->
+        items(state.articles, key = { it.uri.value }) { article ->
           StorySummaryView(
             summary = article,
             isSelected = article.uri == selected,
