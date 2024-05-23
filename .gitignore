@@ -8,7 +8,7 @@ captures
 local.properties
 xcuserdata
 /keys/
-/app/ios/Pods/
+/client/ios/Pods/
 
 # Idea
 **/.idea/*

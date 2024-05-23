@@ -12,7 +12,7 @@ kotlin {
   sourceSets {
     val jsMain by getting {
       dependencies {
-        implementation(project(":app"))
+        implementation(project(":client"))
         implementation(compose.runtime)
         implementation(compose.foundation)
         implementation(compose.material3)
