@@ -77,7 +77,9 @@ android {
 }
 
 dependencies {
+  implementation(project(":shared"))
   implementation(project(":client"))
+
   implementation(compose.uiTooling)
   implementation(compose.materialIconsExtended)
   implementation(libs.horologist.compose.layouts)

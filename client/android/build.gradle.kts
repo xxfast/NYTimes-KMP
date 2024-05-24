@@ -6,6 +6,8 @@ plugins {
   id("com.android.application")
   kotlin("android")
   id("org.jetbrains.compose")
+  id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlinx.rpc.platform")
 }
 
 repositories {

@@ -7,11 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.xxfast.nytimes.api.client
-import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesDomain
+import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesApi
 import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesEvent
 import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.rpc.client.withService
+import kotlinx.rpc.internal.streamScoped
 
 @Composable
 fun TopStoriesDomain(
@@ -20,10 +21,13 @@ fun TopStoriesDomain(
 ): TopStoriesState {
   var state: TopStoriesState by remember { mutableStateOf(initialState) }
 
-  LaunchedEffect(Unit){
-    client("ws://localhost:8080/topStories").withService<TopStoriesDomain>()
-      .state(initialState, events)
-      .collect { state = it }
+  LaunchedEffect(Unit) {
+    streamScoped {
+      client("ws://192.168.1.103:8080/topStories")
+        .withService<TopStoriesApi>()
+        .state(initialState, events)
+        .collect { state = it }
+    }
   }
 
   return state

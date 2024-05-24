@@ -2,6 +2,9 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
   kotlin("plugin.serialization")
+
+  id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlinx.rpc.plugin")
 }
 
 repositories {

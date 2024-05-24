@@ -11,20 +11,22 @@ import app.cash.molecule.moleculeFlow
 import io.github.xxfast.nytimes.server.api.NyTimesWebService
 import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
 import io.github.xxfast.nytimes.shared.domains.topStories.Loading
-import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesDomain
+import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesApi
 import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesEvent
 import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState
 import io.github.xxfast.nytimes.shared.models.TopStoryResponse
 import io.github.xxfast.nytimes.shared.models.TopStorySection
 import io.github.xxfast.nytimes.shared.models.TopStorySections
+import io.github.xxfast.nytimes.shared.models.TopStorySections.magazine
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.rpc.RPC
 import kotlin.coroutines.CoroutineContext
 
 class TopStoriesService(
   override val coroutineContext: CoroutineContext,
   private val webService: NyTimesWebService,
-) : TopStoriesDomain, RPC {
+) : TopStoriesApi, RPC {
   override suspend fun state(
     initialState: TopStoriesState,
     events: Flow<TopStoriesEvent>,

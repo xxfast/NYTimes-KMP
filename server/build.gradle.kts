@@ -6,6 +6,9 @@ plugins {
   kotlin("plugin.serialization")
 
   id("com.codingfeline.buildkonfig")
+  id("org.jetbrains.compose")
+  id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlinx.rpc.platform")
 }
 
 repositories {
@@ -29,6 +32,7 @@ kotlin {
         implementation(libs.ktor.client.logging)
         implementation(libs.ktor.serialization.kotlinx.json)
         implementation(libs.ktor.server.netty.jvm)
+        implementation(libs.ktor.server.call.logging)
         implementation(libs.molecule.runtime)
       }
     }

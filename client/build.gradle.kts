@@ -9,6 +9,8 @@ plugins {
   id("org.jetbrains.compose")
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
+  id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlinx.rpc.platform")
 }
 
 repositories {
