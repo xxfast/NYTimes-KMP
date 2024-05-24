@@ -7,6 +7,11 @@ plugins {
   id("org.jetbrains.compose")
 }
 
+repositories {
+  // TODO: Remove once kotlinx-rpc in central
+  maven("https://maven.pkg.jetbrains.space/public/p/krpc/maven")
+}
+
 dependencies {
   implementation(project(":client"))
   implementation(compose.desktop.currentOs)

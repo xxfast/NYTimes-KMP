@@ -7,9 +7,15 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
   id("org.jetbrains.compose")
-  id("kotlin-parcelize")
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
+  id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlinx.rpc.platform")
+}
+
+repositories {
+  // TODO: Remove once kotlinx-rpc in central
+  maven("https://maven.pkg.jetbrains.space/public/p/krpc/maven")
 }
 
 kotlin {
@@ -18,9 +24,8 @@ kotlin {
   jvm("desktop")
 
   listOf(
-    iosX64(),
     iosArm64(),
-    iosSimulatorArm64(),
+    iosSimulatorArm64()
   ).forEach { target ->
     target.binaries {
       framework {
@@ -35,9 +40,13 @@ kotlin {
     browser()
   }
 
+  applyDefaultHierarchyTemplate()
+
   sourceSets {
     val commonMain by getting {
       dependencies {
+        implementation(project(":shared"))
+
         api(libs.decompose.router)
 
         implementation(compose.runtime)
@@ -49,6 +58,9 @@ kotlin {
         implementation(libs.decompose)
         implementation(libs.decompose.compose.multiplatform)
         implementation(libs.essenty.parcelable)
+        implementation(libs.kotlinx.rpc.transport.ktor.client)
+        implementation(libs.kotlinx.rpc.runtime.client)
+        implementation(libs.kotlinx.rpc.runtime.serialization.json)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.logging)
@@ -81,14 +93,7 @@ kotlin {
       }
     }
 
-    val iosX64Main by getting
-    val iosArm64Main by getting
-    val iosSimulatorArm64Main by getting
-    val iosMain by creating {
-      dependsOn(commonMain)
-      iosX64Main.dependsOn(this)
-      iosArm64Main.dependsOn(this)
-      iosSimulatorArm64Main.dependsOn(this)
+    val iosMain by getting {
       dependencies {
         implementation(libs.ktor.client.darwin)
         implementation(libs.kstore.file)

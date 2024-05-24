@@ -1,7 +1,7 @@
 package io.github.xxfast.nytimes.screens.story
 
-import io.github.xxfast.nytimes.models.Article
-import io.github.xxfast.nytimes.screens.summary.SummaryState
+import io.github.xxfast.nytimes.shared.models.Article
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
 import kotlinx.serialization.Serializable
 
 val Loading: Nothing? = null

@@ -1,8 +1,8 @@
-package io.github.xxfast.nytimes.screens.topStories
+package io.github.xxfast.nytimes.shared.domains.topStories
 
-import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.models.TopStorySections.home
-import io.github.xxfast.nytimes.screens.summary.SummaryState
+import io.github.xxfast.nytimes.shared.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.TopStorySections.home
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
 import kotlinx.serialization.Serializable
 
 val Loading: Nothing? = null

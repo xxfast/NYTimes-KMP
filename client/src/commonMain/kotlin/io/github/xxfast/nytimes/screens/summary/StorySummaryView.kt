@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.AsyncImagePainter
 import com.seiko.imageloader.ImageRequestState
 import com.seiko.imageloader.rememberAsyncImagePainter
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,14 +51,15 @@ fun StorySummaryView(
       verticalArrangement = Arrangement.spacedBy(4.dp),
       modifier = Modifier.padding(8.dp)
     ) {
-      if (summary.imageUrl != null) Box(
+      val imageUrl: String? = summary.imageUrl
+      if (imageUrl != null) Box(
         modifier = Modifier
           .fillMaxWidth()
           .height(180.dp)
           .clip(MaterialTheme.shapes.extraLarge)
           .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
       ) {
-        val painter: AsyncImagePainter = rememberAsyncImagePainter(summary.imageUrl)
+        val painter: AsyncImagePainter = rememberAsyncImagePainter(imageUrl)
 
         if (painter.requestState is ImageRequestState.Loading)
           CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

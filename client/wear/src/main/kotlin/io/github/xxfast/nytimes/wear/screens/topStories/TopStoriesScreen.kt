@@ -34,15 +34,15 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
-import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.models.TopStorySections
-import io.github.xxfast.nytimes.models.sections
+import io.github.xxfast.nytimes.shared.models.ArticleUri
+import io.github.xxfast.nytimes.shared.models.TopStorySection
+import io.github.xxfast.nytimes.shared.models.TopStorySections
+import io.github.xxfast.nytimes.shared.models.sections
 import io.github.xxfast.nytimes.resources.icons.MyTimesNews
 import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
-import io.github.xxfast.nytimes.screens.summary.SummaryState
-import io.github.xxfast.nytimes.screens.topStories.Loading
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
+import io.github.xxfast.nytimes.shared.domains.summary.SummaryState
+import io.github.xxfast.nytimes.shared.domains.topStories.Loading
+import io.github.xxfast.nytimes.shared.domains.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
@@ -64,6 +64,7 @@ fun TopStoriesScreen(
   )
 }
 
+@OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun TopStoriesView(
   state: TopStoriesState,

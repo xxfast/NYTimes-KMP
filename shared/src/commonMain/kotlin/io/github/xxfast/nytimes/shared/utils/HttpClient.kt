@@ -1,4 +1,4 @@
-package io.github.xxfast.nytimes.utils
+package io.github.xxfast.nytimes.shared.utils
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

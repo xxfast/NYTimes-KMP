@@ -1,6 +1,6 @@
-package io.github.xxfast.nytimes.data
+package io.github.xxfast.nytimes.server.api
 
-import io.github.xxfast.nytimes.app.BuildKonfig
+import io.github.xxfast.nytimes.server.BuildKonfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
