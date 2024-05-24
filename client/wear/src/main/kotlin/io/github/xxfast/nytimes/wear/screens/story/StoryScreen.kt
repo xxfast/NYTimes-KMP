@@ -32,7 +32,6 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
-import io.github.xxfast.nytimes.shared.models.Article
 import io.github.xxfast.nytimes.shared.models.ArticleUri
 import io.github.xxfast.nytimes.shared.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.Loading
@@ -43,8 +42,8 @@ import kotlinx.datetime.Clock
 
 @Composable
 fun StoryScreen(
-  section: io.github.xxfast.nytimes.shared.models.TopStorySection,
-  uri: io.github.xxfast.nytimes.shared.models.ArticleUri,
+  section: TopStorySection,
+  uri: ArticleUri,
   title: String,
 ) {
   val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class) { savedState ->
