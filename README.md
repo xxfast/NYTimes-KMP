@@ -9,13 +9,14 @@
 ![badge-wearos](http://img.shields.io/badge/platform-wearos-8ECDA0.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
-![badge-browser](https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat)
+![badge-browser-js](https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat)
+![badge-browser-wasm](https://img.shields.io/badge/platform-wasm-F8DB5D.svg?style=flat)
 
 A KMP template of the New York Times App using Compose multiplatform. To build and run this application you will need [an API key from the New York Times](https://developer.nytimes.com/).
 
 <img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
 
-## The stack
+## Libraries used
 - 🧩 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
 - 🌐 [Ktor](https://github.com/ktorio/ktor); for networking
 - 📦 [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization); for content negotiation
@@ -24,6 +25,21 @@ A KMP template of the New York Times App using Compose multiplatform. To build a
 - 🚏 [Decompose](https://github.com/arkivanov/Decompose) + [Router](https://github.com/xxfast/Decompose-Router); for navigation
 - 🧪 [Molecule](https://github.com/cashapp/molecule); for modeling state
 - 🏞️ [Compose-imageloader](https://github.com/qdsfdhvh/compose-imageloader); for loading images
+
+## Run instructions
+
+Run configurations available on `.idea/runConfigurations` for each platform.
+
+![run-config.png](artwork%2Frun-config.png)
+
+| platform | gradle command                                                                                                                      |
+|----------|-------------------------------------------------------------------------------------------------------------------------------------|
+| android  | `./gradlew :app:android:assembleDebug`                                                                                              |
+| wear     | `./gradlew :app:wear:assembleDebug`                                                                                                 |
+| ios      | `/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project app/ios/ios.xcodeproj -scheme NYTimes -configuration Debug` |
+| desktop  | `./gradlew :app:desktop:run`                                                                                                        |
+| js       | `./gradlew :app:web:jsBrowserDevelopmentRun`                                                                                        |
+| wasm     | `./gradlew :app:web:wasmJsBrowserDevelopmentRun`                                                                                    |
 
 ## Showcase
 
@@ -43,6 +59,6 @@ https://github.com/xxfast/NYTimes-KMP/assets/13775137/43855864-a4e3-4efb-8047-3e
 
 https://github.com/xxfast/NYTimes-KMP/assets/13775137/97da961c-ef9a-40d0-9cee-f322ad8aa6ef
 
-### Web
+### Web (Js & WasmJs)
 
 https://github.com/xxfast/NYTimes-KMP/assets/13775137/eb37d767-d241-4aa8-9083-25a4b9ad3dfa
