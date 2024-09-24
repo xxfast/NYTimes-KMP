@@ -32,7 +32,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
@@ -134,13 +134,13 @@ fun TopStoriesView(
             onClick = { onSelectArticle(article.section, article.uri, article.title) },
             title = { Text(article.title) },
             backgroundPainter = CardDefaults.imageWithScrimBackgroundPainter(
-              backgroundImagePainter = rememberAsyncImagePainter(
+              backgroundImagePainter = rememberImagePainter(
                 url = article.imageUrl.orEmpty(),
-                contentScale = ContentScale.Crop,
               )
             ),
             contentColor = MaterialTheme.colors.onSurface,
             titleColor = MaterialTheme.colors.onSurface,
+            modifier = Modifier.height(120.dp),
           ) {
             CompactChip(onClick = {}, label = { Text(article.section.name) })
           }

@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.style.TextAlign
@@ -29,12 +27,12 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewLargeRound
 import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
-import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.screens.story.ArticleImage
 import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
@@ -114,15 +112,7 @@ fun StoryView(
       val url = article.multimedia?.firstOrNull()?.url
       if (url != null) {
         item {
-          Image(
-            painter = rememberAsyncImagePainter(
-              url = url,
-              contentScale = ContentScale.Crop,
-            ),
-            contentDescription = null,
-            modifier = Modifier
-              .clip(MaterialTheme.shapes.large)
-          )
+          ArticleImage(imageUrl = url)
         }
       }
 
