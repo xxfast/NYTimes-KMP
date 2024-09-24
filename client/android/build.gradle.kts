@@ -5,7 +5,9 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
   id("com.android.application")
   kotlin("android")
-  id("org.jetbrains.compose")
+
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
 }
 
 android {

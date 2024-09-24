@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Foundation
-import NyTimes
+import App
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

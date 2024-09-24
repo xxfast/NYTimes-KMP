@@ -1,14 +1,15 @@
 package io.github.xxfast.nytimes.desktop
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.defaultRouterContext
@@ -20,7 +21,7 @@ fun main() {
   application {
     val windowState: WindowState = rememberWindowState()
     val rootRouterContext: RouterContext = defaultRouterContext(windowState = windowState)
-    val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(windowState)
+
 
     appStorage = AppDirsFactory.getInstance()
       .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
@@ -30,6 +31,9 @@ fun main() {
       state = windowState,
       onCloseRequest = { exitApplication() }
     ) {
+      @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+      val windowSizeClass: WindowSizeClass = calculateWindowSizeClass()
+
       CompositionLocalProvider(
         LocalRouterContext provides rootRouterContext,
         LocalWindowSizeClass provides windowSizeClass,

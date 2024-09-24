@@ -1,4 +1,7 @@
-plugins { }
+plugins {
+  alias(libs.plugins.compose.multiplatform) apply false
+  alias(libs.plugins.compose.compiler) apply false
+}
 
 buildscript {
   repositories {
@@ -9,7 +12,6 @@ buildscript {
 
   dependencies {
     classpath(libs.agp)
-    classpath(libs.compose.multiplatform)
     classpath(libs.kotlin.gradle.plugin)
     classpath(libs.kotlin.serialization)
     classpath(libs.molecule.gradle.plugin)

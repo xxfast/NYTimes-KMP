@@ -4,7 +4,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi
 
 plugins {
   kotlin("jvm")
-  id("org.jetbrains.compose")
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
 }
 
 dependencies {
@@ -15,8 +16,9 @@ dependencies {
   implementation(compose.material3)
   implementation(compose.materialIconsExtended)
   implementation(compose.preview)
+  implementation(libs.compose.multiplatform.material3.windowsizeclass)
   implementation(libs.decompose)
-  implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.decompose.compose)
   implementation(libs.decompose.router)
   implementation(libs.harawata.appdirs)
 }

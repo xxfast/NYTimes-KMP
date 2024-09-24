@@ -6,12 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.defaultRouterContext
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     appStorage = filesDir.path
 
     setContent {
+      @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
       val windowSizeClass: WindowSizeClass = calculateWindowSizeClass(this)
       println(windowSizeClass)
 

@@ -38,6 +38,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Compact
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,8 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
@@ -84,7 +84,7 @@ fun TopStoriesScreen(
 
   // Reset selection if the window size class changes to compact
   LaunchedEffect(windowSizeClass) {
-    selection = selection.takeIf { windowSizeClass.widthSizeClass != WindowWidthSizeClasses.Compact }
+    selection = selection.takeIf { windowSizeClass.widthSizeClass != Compact }
     showPanel = selection != null
   }
 
@@ -99,7 +99,7 @@ fun TopStoriesScreen(
         selected = details?.uri,
         onSelect = { section, uri, title ->
           val next = StoryHomeScreen.Details(section, uri, title)
-          if (windowSizeClass.widthSizeClass == WindowWidthSizeClasses.Compact) {
+          if (windowSizeClass.widthSizeClass == Compact) {
             onSelectArticle(section, uri, title)
             return@TopStoriesView
           }

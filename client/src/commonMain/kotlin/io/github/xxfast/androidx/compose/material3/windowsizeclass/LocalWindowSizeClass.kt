@@ -1,5 +1,6 @@
 package io.github.xxfast.androidx.compose.material3.windowsizeclass
 
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 

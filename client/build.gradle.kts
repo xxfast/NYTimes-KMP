@@ -6,13 +6,18 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 plugins {
   kotlin("multiplatform")
   id("com.android.library")
-  id("org.jetbrains.compose")
+
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
+
   id("kotlin-parcelize")
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
+  applyDefaultHierarchyTemplate()
+
   androidTarget()
 
   jvm("desktop")
@@ -24,8 +29,7 @@ kotlin {
   ).forEach { target ->
     target.binaries {
       framework {
-        baseName = "NyTimes"
-
+        baseName = "App"
         export(libs.decompose.router)
       }
     }
@@ -46,8 +50,9 @@ kotlin {
         implementation(compose.materialIconsExtended)
 
         implementation(libs.molecule.runtime)
+        implementation(libs.compose.multiplatform.material3.windowsizeclass)
         implementation(libs.decompose)
-        implementation(libs.decompose.compose.multiplatform)
+        implementation(libs.decompose.compose)
         implementation(libs.essenty.parcelable)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
@@ -81,14 +86,7 @@ kotlin {
       }
     }
 
-    val iosX64Main by getting
-    val iosArm64Main by getting
-    val iosSimulatorArm64Main by getting
-    val iosMain by creating {
-      dependsOn(commonMain)
-      iosX64Main.dependsOn(this)
-      iosArm64Main.dependsOn(this)
-      iosSimulatorArm64Main.dependsOn(this)
+    val iosMain by getting {
       dependencies {
         implementation(libs.ktor.client.darwin)
         implementation(libs.kstore.file)

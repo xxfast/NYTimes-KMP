@@ -3,7 +3,8 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
   id("com.android.application")
   kotlin("android")
-  id("org.jetbrains.compose")
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -84,7 +85,7 @@ dependencies {
   implementation(libs.decompose)
   implementation(libs.decompose.router)
   implementation(libs.decompose.router.wear)
-  implementation(libs.decompose.compose.multiplatform)
+  implementation(libs.decompose.compose)
   implementation(libs.qdsfdhvh.image.loader)
   implementation(libs.kotlinx.datetime)
 }

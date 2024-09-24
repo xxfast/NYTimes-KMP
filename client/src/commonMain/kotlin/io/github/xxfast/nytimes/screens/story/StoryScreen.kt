@@ -1,6 +1,5 @@
 package io.github.xxfast.nytimes.screens.story
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Compact
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,8 +64,6 @@ import com.seiko.imageloader.AsyncImagePainter
 import com.seiko.imageloader.ImageRequestState
 import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowSizeClass
-import io.github.xxfast.androidx.compose.material3.windowsizeclass.WindowWidthSizeClasses.Compact
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -98,7 +97,7 @@ fun StoryScreen(
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoryView(
   state: StoryState,
