@@ -1,6 +1,5 @@
 package io.github.xxfast.nytimes.models
 
-import com.arkivanov.essenty.parcelable.Parcelable
 import io.github.xxfast.nytimes.models.TopStorySections.arts
 import io.github.xxfast.nytimes.models.TopStorySections.automobiles
 import io.github.xxfast.nytimes.models.TopStorySections.books

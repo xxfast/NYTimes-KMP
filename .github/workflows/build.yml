@@ -160,12 +160,12 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew :app:web:jsBrowserDistribution
+        run: ./gradlew :app:web:wasmJsBrowserDistribution
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ${{ github.workspace }}/app/web/build/dist/js/productionExecutable
+          path: ${{ github.workspace }}/app/web/build/dist/wasmJs/productionExecutable
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -2,6 +2,7 @@
 
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
   kotlin("multiplatform")
@@ -39,6 +40,11 @@ kotlin {
     browser()
   }
 
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    browser()
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -53,7 +59,6 @@ kotlin {
         implementation(libs.compose.multiplatform.material3.windowsizeclass)
         implementation(libs.decompose)
         implementation(libs.decompose.compose)
-        implementation(libs.essenty.parcelable)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.logging)
@@ -94,6 +99,13 @@ kotlin {
     }
 
     val jsMain by getting {
+      dependencies {
+        implementation(libs.ktor.client.js)
+        implementation(libs.kstore.storage)
+      }
+    }
+
+    val wasmJsMain by getting {
       dependencies {
         implementation(libs.ktor.client.js)
         implementation(libs.kstore.storage)

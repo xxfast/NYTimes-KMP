@@ -3,7 +3,7 @@
 # <img src=".idea/icon.svg" height="23"/>  NYTimes-KMP
 
 [![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.10-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-wearos](http://img.shields.io/badge/platform-wearos-8ECDA0.svg?style=flat)

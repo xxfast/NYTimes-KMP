@@ -81,7 +81,6 @@ dependencies {
   implementation(libs.wear.compose.material)
   implementation(libs.wear.compose.ui.tooling)
   implementation(libs.androidx.activity.compose)
-  implementation(libs.essenty.parcelable)
   implementation(libs.decompose)
   implementation(libs.decompose.router)
   implementation(libs.decompose.router.wear)
