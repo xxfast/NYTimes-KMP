@@ -30,7 +30,7 @@ A KMP template of the New York Times App using Compose multiplatform. To build a
 
 Run configurations available on `.idea/runConfigurations` for each platform.
 
-<img alt="run-config.png" src="artwork%2Frun-config.png" align="right" " width="250"/>
+<img alt="run-config.png" src="artwork/run-config.png" align="right" width="250"/>
 
 | platform | gradle command                                                                                                                      |
 |----------|-------------------------------------------------------------------------------------------------------------------------------------|
