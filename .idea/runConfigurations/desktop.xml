@@ -3,7 +3,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="17" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="io.github.xxfast.nytimes.desktop.ApplicationKt" />
-    <module name="NYTimes-KMP.client.desktop.main" />
+    <module name="NYTimes-KMP.app.desktop.main" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />

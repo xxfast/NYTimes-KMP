@@ -73,7 +73,7 @@ android {
 }
 
 dependencies {
-  implementation(project(":client"))
+  implementation(project(":app"))
   implementation(compose.uiTooling)
   implementation(compose.materialIconsExtended)
   implementation(libs.horologist.compose.layouts)

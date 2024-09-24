@@ -68,7 +68,7 @@ android {
 }
 
 dependencies {
-  implementation(project(":client"))
+  implementation(project(":app"))
   implementation(compose.runtime)
   implementation(compose.foundation)
   implementation(compose.material3)

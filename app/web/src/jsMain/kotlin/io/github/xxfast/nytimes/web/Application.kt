@@ -8,11 +8,13 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.defaultRouterContext
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import kotlinx.browser.document
 import org.jetbrains.skiko.wasm.onWasmReady
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
@@ -20,7 +22,7 @@ fun main() {
   onWasmReady {
     val rootRouterContext: RouterContext = defaultRouterContext()
 
-    CanvasBasedWindow(title = "NYTime-KMP", canvasElementId = "ComposeTargetContainer") {
+    ComposeViewport(document.body!!) {
       BoxWithConstraints {
         val windowSizeClass: WindowSizeClass = calculateWindowSizeClass()
         CompositionLocalProvider(
