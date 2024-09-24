@@ -25,13 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.seiko.imageloader.AsyncImagePainter
-import com.seiko.imageloader.ImageRequestState
-import com.seiko.imageloader.rememberAsyncImagePainter
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.screens.story.ArticleImage
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StorySummaryView(
   summary: SummaryState,
@@ -57,19 +54,7 @@ fun StorySummaryView(
           .clip(MaterialTheme.shapes.extraLarge)
           .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
       ) {
-        val painter: AsyncImagePainter = rememberAsyncImagePainter(summary.imageUrl)
-
-        if (painter.requestState is ImageRequestState.Loading)
-          CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-
-        Image(
-          painter = painter,
-          contentDescription = null,
-          contentScale = ContentScale.Crop,
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-        )
+        ArticleImage(summary.imageUrl)
       }
 
       Text(

@@ -14,7 +14,6 @@ buildscript {
     classpath(libs.agp)
     classpath(libs.kotlin.gradle.plugin)
     classpath(libs.kotlin.serialization)
-    classpath(libs.molecule.gradle.plugin)
     classpath(libs.buildkonfig.gradle.plugin)
   }
 }
