@@ -1,3 +1,5 @@
 package io.github.xxfast.nytimes.di
 
-var appStorage: String? = ""
+import kotlinx.io.files.Path
+
+var appStorage: Path? = null

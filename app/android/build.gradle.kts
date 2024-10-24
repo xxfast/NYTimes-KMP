@@ -78,4 +78,6 @@ dependencies {
   implementation(libs.decompose.router)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.compose.windowsizeclass)
+  implementation(libs.kstore)
+  implementation(libs.kstore.file)
 }

@@ -87,7 +87,6 @@ kotlin {
       dependencies {
         implementation(libs.ktor.client.cio)
         implementation(libs.kstore.file)
-        implementation(libs.okio)
       }
     }
 

@@ -19,8 +19,6 @@ import com.arkivanov.essenty.backhandler.BackDispatcher
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.LocalRouterContext
 import io.github.xxfast.decompose.router.RouterContext
-import io.github.xxfast.kstore.file.utils.DocumentDirectory
-import io.github.xxfast.kstore.utils.ExperimentalKStoreApi
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import kotlinx.cinterop.BetaInteropApi
@@ -29,8 +27,12 @@ import kotlinx.cinterop.autoreleasepool
 import kotlinx.cinterop.cstr
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCValues
+import kotlinx.io.files.Path
+import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSStringFromClass
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 import platform.UIKit.UIApplicationMain
 import platform.UIKit.UIViewController
 
@@ -48,33 +50,45 @@ fun main() {
 
 @OptIn(
   ExperimentalDecomposeApi::class,
-  ExperimentalKStoreApi::class,
-  ExperimentalMaterial3WindowSizeClassApi::class
+  ExperimentalMaterial3WindowSizeClassApi::class,
+  ExperimentalForeignApi::class
 )
-fun HomeUIViewController(routerContext: RouterContext): UIViewController = ComposeUIViewController {
-  appStorage = NSFileManager.defaultManager.DocumentDirectory?.relativePath
+fun HomeUIViewController(routerContext: RouterContext): UIViewController {
+  val fileManager:NSFileManager = NSFileManager.defaultManager
+  val documentsUrl: NSURL? = fileManager.URLForDirectory(
+    directory = NSDocumentDirectory,
+    appropriateForURL = null,
+    create = false,
+    inDomain = NSUserDomainMask,
+    error = null
+  )
 
-  /**
-   * TODO: Maybe we can use [LocalUIViewController], but there's no real way to hook into [ComposeWindow.viewDidLoad]
-   * */
-  BoxWithConstraints {
-    val windowSizeClass: WindowSizeClass = calculateWindowSizeClass()
-    CompositionLocalProvider(
-      LocalRouterContext provides routerContext,
-      LocalWindowSizeClass provides windowSizeClass,
-    ) {
-      MaterialTheme {
-        PredictiveBackGestureOverlay(
-          backDispatcher = routerContext.backHandler as BackDispatcher, // Use the same BackDispatcher as above
-          backIcon = { progress, _ ->
-            PredictiveBackGestureIcon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              progress = progress,
-            )
-          },
-          modifier = Modifier.fillMaxSize(),
-        ) {
-          HomeScreen()
+  val path: String = requireNotNull(documentsUrl?.path) { "Documents directory not found" }
+  appStorage = Path(path)
+
+  return ComposeUIViewController {
+    /**
+     * TODO: Maybe we can use [LocalUIViewController], but there's no real way to hook into [ComposeWindow.viewDidLoad]
+     * */
+    BoxWithConstraints {
+      val windowSizeClass: WindowSizeClass = calculateWindowSizeClass()
+      CompositionLocalProvider(
+        LocalRouterContext provides routerContext,
+        LocalWindowSizeClass provides windowSizeClass,
+      ) {
+        MaterialTheme {
+          PredictiveBackGestureOverlay(
+            backDispatcher = routerContext.backHandler as BackDispatcher, // Use the same BackDispatcher as above
+            backIcon = { progress, _ ->
+              PredictiveBackGestureIcon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                progress = progress,
+              )
+            },
+            modifier = Modifier.fillMaxSize(),
+          ) {
+            HomeScreen()
+          }
         }
       }
     }

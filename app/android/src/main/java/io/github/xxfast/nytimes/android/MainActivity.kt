@@ -18,6 +18,7 @@ import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.defaultRouterContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
+import kotlinx.io.files.Path
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     val rootComponentContext: RouterContext = defaultRouterContext()
-    appStorage = filesDir.path
+    appStorage = Path(filesDir.path)
 
     setContent {
       @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

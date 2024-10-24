@@ -5,5 +5,5 @@ import io.github.xxfast.kstore.storage.storeOf
 import io.github.xxfast.nytimes.models.SavedArticles
 
 actual val store: KStore<SavedArticles> by lazy {
-  storeOf("saved", emptySet())
+  storeOf(key = "saved", default = emptySet())
 }

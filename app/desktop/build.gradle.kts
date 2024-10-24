@@ -21,6 +21,7 @@ dependencies {
   implementation(libs.decompose.compose)
   implementation(libs.decompose.router)
   implementation(libs.harawata.appdirs)
+  implementation(libs.kstore.file)
 }
 
 val appVersion = "1.0.0"

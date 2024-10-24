@@ -16,15 +16,20 @@ import io.github.xxfast.decompose.router.defaultRouterContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.screens.home.HomeScreen
 import net.harawata.appdirs.AppDirsFactory
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 
 fun main() {
   application {
     val windowState: WindowState = rememberWindowState()
     val rootRouterContext: RouterContext = defaultRouterContext(windowState = windowState)
 
-
-    appStorage = AppDirsFactory.getInstance()
+    val userDataDir: String = AppDirsFactory.getInstance()
       .getUserDataDir("io.github.xxfast.nytimes", "1.0.0", "xxfast")
+
+    val path = Path(userDataDir)
+    with(SystemFileSystem) { if(!exists(path)) createDirectories(path) }
+    appStorage = path
 
     Window(
       title = "The New York Times",
