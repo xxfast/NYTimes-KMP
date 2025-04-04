@@ -163,7 +163,7 @@ jobs:
         run: ./gradlew :app:web:wasmJsBrowserDistribution
 
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ github.workspace }}/app/web/build/dist/wasmJs/productionExecutable
 
