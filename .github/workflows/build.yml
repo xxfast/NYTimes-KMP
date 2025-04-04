@@ -57,7 +57,7 @@ jobs:
       run: ./gradlew :app:android:assemble
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: android
         path: |
