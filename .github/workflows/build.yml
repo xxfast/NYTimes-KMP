@@ -28,7 +28,7 @@ jobs:
         cache: gradle
 
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/actions/setup-gradle@v3
         
     - name: Retrieve the keystore and decode it to a file
       env:
