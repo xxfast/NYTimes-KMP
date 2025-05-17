@@ -140,7 +140,7 @@ buildkonfig {
   packageName = "io.github.xxfast.nytimes.app"
 
   defaultConfigs {
-    val apiKey: String = gradleLocalProperties(rootDir).getProperty("apiKey")
+    val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("apiKey")
 
     require(apiKey.isNotEmpty()) {
       "Register your api key from developer.nytimes.com and place it in local.properties as `apiKey`"

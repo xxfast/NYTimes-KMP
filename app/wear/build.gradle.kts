@@ -9,12 +9,12 @@ plugins {
 
 android {
   namespace = "io.github.xxfast.nytimes.wear"
-  compileSdk = 34
+  compileSdk = 35
 
   defaultConfig {
     applicationId = "io.github.xxfast.nytimes.wear"
     minSdk = 30
-    targetSdk = 34
+    targetSdk = 35
     versionCode = 1
     versionName = "1.0"
 
@@ -24,7 +24,7 @@ android {
   }
 
   signingConfigs {
-    val localProperties: java.util.Properties = gradleLocalProperties(rootDir)
+    val localProperties: java.util.Properties = gradleLocalProperties(rootDir, providers)
     val localStoreFile: String = localProperties.getProperty("androidReleaseStoreFile", ".")
     val localStorePassword: String = localProperties.getProperty("androidReleaseStorePassword", "")
     val localKeyAlias: String = localProperties.getProperty("androidReleaseKeyAlias", "")
