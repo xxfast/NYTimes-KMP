@@ -3,7 +3,7 @@
 # <img src=".idea/icon.svg" height="23"/>  NYTimes-KMP
 
 [![Build](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml/badge.svg)](https://github.com/xxfast/NYTimes-KMP/actions/workflows/build.yml)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-wearos](http://img.shields.io/badge/platform-wearos-8ECDA0.svg?style=flat)
@@ -32,14 +32,14 @@ Run configurations available on `.idea/runConfigurations` for each platform.
 
 <img alt="run-config.png" src="artwork/run-config.png" />
 
-| platform | gradle command                                                                                                                      |
-|----------|-------------------------------------------------------------------------------------------------------------------------------------|
-| android  | `./gradlew :app:android:assembleDebug`                                                                                              |
-| wear     | `./gradlew :app:wear:assembleDebug`                                                                                                 |
-| ios      | `/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project app/ios/ios.xcodeproj -scheme NYTimes -configuration Debug` |
-| desktop  | `./gradlew :app:desktop:run`                                                                                                        |
-| js       | `./gradlew :app:web:jsBrowserDevelopmentRun`                                                                                        |
-| wasm     | `./gradlew :app:web:wasmJsBrowserDevelopmentRun`                                                                                    |
+| platform | gradle command                                                                   |
+|----------|----------------------------------------------------------------------------------|
+| android  | `./gradlew :app:android:assembleDebug`                                           |
+| wear     | `./gradlew :app:wear:assembleDebug`                                              |
+| ios      | `xcodebuild -project app/ios/ios.xcodeproj -scheme NYTimes -configuration Debug` |
+| desktop  | `./gradlew :app:desktop:run`                                                     |
+| js       | `./gradlew :app:web:jsBrowserDevelopmentRun`                                     |
+| wasm     | `./gradlew :app:web:wasmJsBrowserDevelopmentRun`                                 |
 
 ## Showcase
 
