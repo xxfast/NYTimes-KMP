@@ -45,8 +45,8 @@ fun StoryScreen(
   uri: ArticleUri,
   title: String,
 ) {
-  val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class) { savedState ->
-    StoryViewModel(savedState, section, uri, title)
+  val viewModel: StoryViewModel = rememberOnRoute {
+    StoryViewModel(this, section, uri, title)
   }
 
   val state: StoryState by viewModel.states.collectAsState()

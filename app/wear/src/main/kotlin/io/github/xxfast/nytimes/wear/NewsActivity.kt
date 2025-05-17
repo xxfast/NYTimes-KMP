@@ -16,12 +16,13 @@ import io.github.xxfast.decompose.router.defaultRouterContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.wear.screens.home.HomeScreen
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
+import kotlinx.io.files.Path
 
 class NewsActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val rootRouterContext: RouterContext = defaultRouterContext()
-    appStorage = filesDir.path
+    appStorage = Path(filesDir.path)
 
     setContent {
       CompositionLocalProvider(LocalRouterContext provides rootRouterContext) {

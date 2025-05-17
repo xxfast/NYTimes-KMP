@@ -52,8 +52,7 @@ import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
-  val viewModel: TopStoriesViewModel =
-    rememberOnRoute(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
+  val viewModel: TopStoriesViewModel = rememberOnRoute { TopStoriesViewModel(this) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
