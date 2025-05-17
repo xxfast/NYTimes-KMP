@@ -87,8 +87,8 @@ fun StoryScreen(
   onSelectRelated: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit = { _, _, _ -> },
   onFullScreen: (() -> Unit)? = null,
 ) {
-  val viewModel: StoryViewModel = rememberOnRoute(StoryViewModel::class, key = uri) { savedState ->
-    StoryViewModel(savedState, section, uri, title)
+  val viewModel: StoryViewModel = rememberOnRoute(key = uri) {
+    StoryViewModel(this, section, uri, title)
   }
 
   val state: StoryState by viewModel.states.collectAsState()

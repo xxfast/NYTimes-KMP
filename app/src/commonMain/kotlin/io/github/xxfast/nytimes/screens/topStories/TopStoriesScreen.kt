@@ -72,8 +72,7 @@ import io.github.xxfast.nytimes.resources.Icons as SampleIcons
 fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
-  val viewModel: TopStoriesViewModel =
-    rememberOnRoute(TopStoriesViewModel::class) { savedState -> TopStoriesViewModel(savedState) }
+  val viewModel: TopStoriesViewModel = rememberOnRoute { TopStoriesViewModel(this) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
@@ -210,7 +209,7 @@ fun TopStoriesView(
             isSelected = article.uri == selected,
             onSelect = onSelect,
             modifier = Modifier
-              .animateItemPlacement()
+              .animateItem()
           )
         }
 
