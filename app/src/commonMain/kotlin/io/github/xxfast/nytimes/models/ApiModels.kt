@@ -26,9 +26,9 @@ import io.github.xxfast.nytimes.models.TopStorySections.travel
 import io.github.xxfast.nytimes.models.TopStorySections.upshot
 import io.github.xxfast.nytimes.models.TopStorySections.us
 import io.github.xxfast.nytimes.models.TopStorySections.world
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
+import kotlin.time.Instant
 
 @JvmInline
 @Serializable

@@ -1,29 +1,30 @@
 [versions]
-agp = "8.10.0"
-androidx-activity-compose = "1.8.0"
-androidx-compose-material3 = "1.1.1"
-buildkonfig = "0.13.3"
-compose-multiplatform = "1.8.0"
-decompose = "3.4.0-alpha01"
-decompose-router = "0.10.0-SNAPSHOT"
-harawata-appdirs = "1.2.1"
-horologist = "0.4.11"
-kotlin = "2.1.20"
-kotlinx-coroutines = "1.10.2"
-kotlinx-serialization = "1.8.1"
-kotlinx-datetime = "0.6.2"
-kstore = "1.0.0-SNAPSHOT"
-ktor = "3.1.3"
-molecule = "2.1.0"
-qdsfdhvh-image-loader = "1.8.3"
-wear-compose = "1.3.1"
+agp = "9.2.1"
+androidx-activity-compose = "1.13.0"
+androidx-compose-material3 = "1.4.0"
+buildkonfig = "0.22.0"
+compose-multiplatform = "1.11.1"
+compose-material3-windowsizeclass = "1.9.0"
+decompose = "3.5.0"
+decompose-router = "0.10.0"
+harawata-appdirs = "1.5.0"
+horologist = "0.7.15"
+kotlin = "2.4.0"
+kotlinx-coroutines = "1.11.0"
+kotlinx-datetime = "0.8.0"
+kotlinx-serialization = "1.11.0"
+kstore = "1.1.0"
+ktor = "3.5.1"
+molecule = "2.2.0"
+qdsfdhvh-image-loader = "1.10.0"
+wear-compose = "1.6.2"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-compose-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "androidx-compose-material3" }
-compose-multiplatform-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-multiplatform" }
+compose-multiplatform-material3-windowsizeclass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-material3-windowsizeclass" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decompose-router" }
 decompose-router-wear = { module = "io.github.xxfast:decompose-router-wear", version.ref = "decompose-router" }

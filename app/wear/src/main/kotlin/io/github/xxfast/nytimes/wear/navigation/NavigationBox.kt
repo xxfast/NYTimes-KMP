@@ -1,11 +1,9 @@
 package io.github.xxfast.nytimes.wear.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
@@ -21,9 +19,7 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 @Composable
 fun NavigationBox(
   scrollStateFactory: ScalingLazyColumnState.Factory =
-    ScalingLazyColumnDefaults.belowTimeText(
-      contentPadding = PaddingValues(start = 10.dp, bottom = 50.dp, end = 10.dp)
-    ),
+    ScalingLazyColumnDefaults.responsive(),
   content: @Composable (ScalingLazyColumnState) -> Unit
 ) {
   val scrollState = rememberScalingLazyColumnState(scrollStateFactory)

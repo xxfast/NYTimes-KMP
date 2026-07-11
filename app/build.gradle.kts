@@ -1,10 +1,10 @@
 @file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import java.util.Properties
 
 plugins {
   kotlin("multiplatform")
@@ -31,7 +31,6 @@ kotlin {
   jvm("desktop")
 
   listOf(
-    iosX64(),
     iosArm64(),
     iosSimulatorArm64(),
   ).forEach { target ->
@@ -70,9 +69,10 @@ kotlin {
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.logging)
         implementation(libs.ktor.serialization.kotlinx.json)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.kotlinx.datetime)
         implementation(libs.qdsfdhvh.image.loader)
         implementation(libs.kstore)
-        implementation(libs.kotlinx.datetime)
       }
     }
 
@@ -122,10 +122,9 @@ kotlin {
 
 android {
   namespace = "io.github.xxfast.nytimes.app"
-  compileSdk = 34
+  compileSdk = 36
   defaultConfig {
     minSdk = 25
-    targetSdk = 34
   }
 
   compileOptions {
@@ -140,7 +139,9 @@ buildkonfig {
   packageName = "io.github.xxfast.nytimes.app"
 
   defaultConfigs {
-    val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("apiKey")
+    val apiKey: String = Properties()
+      .apply { rootProject.file("local.properties").inputStream().use { load(it) } }
+      .getProperty("apiKey")
 
     require(apiKey.isNotEmpty()) {
       "Register your api key from developer.nytimes.com and place it in local.properties as `apiKey`"

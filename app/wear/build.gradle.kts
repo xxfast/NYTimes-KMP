@@ -1,4 +1,5 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
   id("com.android.application")
@@ -9,7 +10,7 @@ plugins {
 
 android {
   namespace = "io.github.xxfast.nytimes.wear"
-  compileSdk = 35
+  compileSdk = 36
 
   defaultConfig {
     applicationId = "io.github.xxfast.nytimes.wear"
@@ -24,7 +25,10 @@ android {
   }
 
   signingConfigs {
-    val localProperties: java.util.Properties = gradleLocalProperties(rootDir, providers)
+    val localProperties: Properties = Properties().apply {
+      val file = rootProject.file("local.properties")
+      if (file.exists()) file.inputStream().use { load(it) }
+    }
     val localStoreFile: String = localProperties.getProperty("androidReleaseStoreFile", ".")
     val localStorePassword: String = localProperties.getProperty("androidReleaseStorePassword", "")
     val localKeyAlias: String = localProperties.getProperty("androidReleaseKeyAlias", "")
@@ -53,10 +57,6 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 
-  kotlinOptions {
-    jvmTarget = JavaVersion.VERSION_17.getMajorVersion()
-  }
-
   buildFeatures {
     compose = true
   }
@@ -69,6 +69,12 @@ android {
     resources {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+  }
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget.set(JvmTarget.JVM_17)
   }
 }
 
@@ -86,5 +92,4 @@ dependencies {
   implementation(libs.decompose.router.wear)
   implementation(libs.decompose.compose)
   implementation(libs.qdsfdhvh.image.loader)
-  implementation(libs.kotlinx.datetime)
 }

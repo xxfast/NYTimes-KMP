@@ -37,7 +37,7 @@ import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 @Composable
 fun StoryScreen(
