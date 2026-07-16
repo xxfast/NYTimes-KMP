@@ -24,12 +24,14 @@ struct TopStoriesView: View {
         )
 
         if model.state.articles == nil {
-          HStack {
-            Spacer()
+          VStack(spacing: 12) {
             ProgressView()
-              .padding(.top, 48)
-            Spacer()
+            Text("Loading")
+              .font(.subheadline)
+              .foregroundStyle(.secondary)
           }
+          .frame(maxWidth: .infinity)
+          .padding(.top, 48)
         } else if let articles = model.state.articles {
           LazyVGrid(columns: columns, spacing: 16) {
             ForEach(Array(articles.enumerated()), id: \.offset) { _, summary in

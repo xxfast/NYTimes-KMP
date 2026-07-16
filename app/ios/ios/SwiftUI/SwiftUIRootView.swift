@@ -31,7 +31,13 @@ struct SwiftUIRootView: View {
         }
       )
       .navigationDestination(for: StoryRoute.self) { route in
-        StoryStubDetailView(route: route)
+        StoryDetailView(
+          route: route,
+          routerContext: routerContext,
+          onSelectRelated: { related in
+            path.append(related)
+          }
+        )
       }
     }
     .task {
