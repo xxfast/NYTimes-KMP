@@ -13,6 +13,12 @@
 		DBE100012AF34A170002DDB5 /* UiMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100022AF34A170002DDB5 /* UiMode.swift */; };
 		DBE100032AF34A170002DDB5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100042AF34A170002DDB5 /* RootViewController.swift */; };
 		DBE100052AF34A170002DDB5 /* SwiftUIRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */; };
+		DBE100132AF34A170002DDB5 /* StoryRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100142AF34A170002DDB5 /* StoryRoute.swift */; };
+		DBE100152AF34A170002DDB5 /* TopStoriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100162AF34A170002DDB5 /* TopStoriesModel.swift */; };
+		DBE100172AF34A170002DDB5 /* SectionChipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100182AF34A170002DDB5 /* SectionChipsView.swift */; };
+		DBE100192AF34A170002DDB5 /* StorySummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1001A2AF34A170002DDB5 /* StorySummaryCard.swift */; };
+		DBE1001B2AF34A170002DDB5 /* TopStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1001C2AF34A170002DDB5 /* TopStoriesView.swift */; };
+		DBE1001D2AF34A170002DDB5 /* StoryStubDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE1001E2AF34A170002DDB5 /* StoryStubDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +43,12 @@
 		DBE100022AF34A170002DDB5 /* UiMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiMode.swift; sourceTree = "<group>"; };
 		DBE100042AF34A170002DDB5 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRootView.swift; sourceTree = "<group>"; };
+		DBE100142AF34A170002DDB5 /* StoryRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryRoute.swift; sourceTree = "<group>"; };
+		DBE100162AF34A170002DDB5 /* TopStoriesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopStoriesModel.swift; sourceTree = "<group>"; };
+		DBE100182AF34A170002DDB5 /* SectionChipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionChipsView.swift; sourceTree = "<group>"; };
+		DBE1001A2AF34A170002DDB5 /* StorySummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorySummaryCard.swift; sourceTree = "<group>"; };
+		DBE1001C2AF34A170002DDB5 /* TopStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopStoriesView.swift; sourceTree = "<group>"; };
+		DBE1001E2AF34A170002DDB5 /* StoryStubDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryStubDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +121,30 @@
 			isa = PBXGroup;
 			children = (
 				DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */,
+				DBE100142AF34A170002DDB5 /* StoryRoute.swift */,
+				DBE1001F2AF34A170002DDB5 /* TopStories */,
+				DBE100202AF34A170002DDB5 /* Story */,
 			);
 			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		DBE1001F2AF34A170002DDB5 /* TopStories */ = {
+			isa = PBXGroup;
+			children = (
+				DBE100162AF34A170002DDB5 /* TopStoriesModel.swift */,
+				DBE100182AF34A170002DDB5 /* SectionChipsView.swift */,
+				DBE1001A2AF34A170002DDB5 /* StorySummaryCard.swift */,
+				DBE1001C2AF34A170002DDB5 /* TopStoriesView.swift */,
+			);
+			path = TopStories;
+			sourceTree = "<group>";
+		};
+		DBE100202AF34A170002DDB5 /* Story */ = {
+			isa = PBXGroup;
+			children = (
+				DBE1001E2AF34A170002DDB5 /* StoryStubDetailView.swift */,
+			);
+			path = Story;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,6 +243,12 @@
 				DBE100012AF34A170002DDB5 /* UiMode.swift in Sources */,
 				DBE100032AF34A170002DDB5 /* RootViewController.swift in Sources */,
 				DBE100052AF34A170002DDB5 /* SwiftUIRootView.swift in Sources */,
+				DBE100132AF34A170002DDB5 /* StoryRoute.swift in Sources */,
+				DBE100152AF34A170002DDB5 /* TopStoriesModel.swift in Sources */,
+				DBE100172AF34A170002DDB5 /* SectionChipsView.swift in Sources */,
+				DBE100192AF34A170002DDB5 /* StorySummaryCard.swift in Sources */,
+				DBE1001B2AF34A170002DDB5 /* TopStoriesView.swift in Sources */,
+				DBE1001D2AF34A170002DDB5 /* StoryStubDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

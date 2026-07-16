@@ -4,6 +4,7 @@ import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.nytimes.di.appStorage
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
+import io.github.xxfast.nytimes.models.sections
 import io.github.xxfast.nytimes.screens.story.StoryViewModel
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -15,6 +16,9 @@ import platform.Foundation.NSUserDomainMask
 
 /**
  * Shared iOS entry points used by both Compose and SwiftUI hosts.
+ *
+ * Value classes (`TopStorySection`, `ArticleUri`) export poorly to Swift, so helpers
+ * surface `.name` / `.value` as plain strings.
  */
 object IosApp {
   @OptIn(ExperimentalForeignApi::class)
@@ -43,4 +47,15 @@ object IosApp {
     uri: ArticleUri,
     title: String,
   ): StoryViewModel = StoryViewModel(context, section, uri, title)
+
+  /** Chip labels and selection keys: `TopStorySection.name`. */
+  fun sectionNames(): List<String> = sections.map { it.name }
+
+  fun sectionName(section: TopStorySection?): String? = section?.name
+
+  fun topStorySection(name: String): TopStorySection = TopStorySection(name)
+
+  fun articleUriValue(uri: ArticleUri?): String? = uri?.value
+
+  fun articleUri(value: String): ArticleUri = ArticleUri(value)
 }
