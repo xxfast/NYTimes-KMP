@@ -17,6 +17,7 @@ kstore = "1.1.0"
 ktor = "3.5.1"
 molecule = "2.2.0"
 qdsfdhvh-image-loader = "1.10.0"
+skie = "0.10.13"
 wear-compose = "1.6.2"
 
 [libraries]
@@ -56,3 +57,4 @@ wear-compose-ui-tooling = { module = "androidx.wear.compose:compose-ui-tooling",
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }

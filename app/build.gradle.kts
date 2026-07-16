@@ -12,6 +12,7 @@ plugins {
 
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.skie)
 
   id("kotlin-parcelize")
   kotlin("plugin.serialization")

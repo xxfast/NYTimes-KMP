@@ -10,6 +10,9 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		DBD8EAAF2AF34A170002DDB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD8EAAE2AF34A170002DDB5 /* AppDelegate.swift */; };
+		DBE100012AF34A170002DDB5 /* UiMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100022AF34A170002DDB5 /* UiMode.swift */; };
+		DBE100032AF34A170002DDB5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100042AF34A170002DDB5 /* RootViewController.swift */; };
+		DBE100052AF34A170002DDB5 /* SwiftUIRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +34,9 @@
 		7555FF7B242A565900829871 /* NYTimes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NYTimes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DBD8EAAE2AF34A170002DDB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DBE100022AF34A170002DDB5 /* UiMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiMode.swift; sourceTree = "<group>"; };
+		DBE100042AF34A170002DDB5 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +83,9 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				DBD8EAAE2AF34A170002DDB5 /* AppDelegate.swift */,
+				DBE100022AF34A170002DDB5 /* UiMode.swift */,
+				DBE100042AF34A170002DDB5 /* RootViewController.swift */,
+				DBE100072AF34A170002DDB5 /* SwiftUI */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -94,6 +103,14 @@
 			);
 			name = xcschemes;
 			path = ios.xcodeproj/project.xcworkspace/xcuserdata/TFNX46.xcuserdatad/xcschemes;
+			sourceTree = "<group>";
+		};
+		DBE100072AF34A170002DDB5 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				DBE100062AF34A170002DDB5 /* SwiftUIRootView.swift */,
+			);
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,6 +206,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DBD8EAAF2AF34A170002DDB5 /* AppDelegate.swift in Sources */,
+				DBE100012AF34A170002DDB5 /* UiMode.swift in Sources */,
+				DBE100032AF34A170002DDB5 /* RootViewController.swift in Sources */,
+				DBE100052AF34A170002DDB5 /* SwiftUIRootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,7 +266,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -301,7 +321,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -318,7 +338,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = YT3BAXVWNZ;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -326,6 +346,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NYTimes;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -336,7 +357,7 @@
 					"-framework",
 					App,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.xxfast.nytimes.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.xxfast.sample.nytimes.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -351,7 +372,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = YT3BAXVWNZ;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -359,6 +380,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NYTimes;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -369,7 +391,7 @@
 					"-framework",
 					App,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.xxfast.nytimes.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.xxfast.sample.nytimes.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
