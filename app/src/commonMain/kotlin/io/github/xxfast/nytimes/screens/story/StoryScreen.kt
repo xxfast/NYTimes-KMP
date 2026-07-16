@@ -29,6 +29,7 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.material.icons.rounded.OpenInFull
+import androidx.compose.material.icons.rounded.PhoneIphone
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -86,6 +87,7 @@ fun StoryScreen(
   onBack: () -> Unit,
   onSelectRelated: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit = { _, _, _ -> },
   onFullScreen: (() -> Unit)? = null,
+  onSwitchUiFramework: (() -> Unit)? = null,
 ) {
   val viewModel: StoryViewModel = rememberOnRoute(key = uri) {
     StoryViewModel(this, section, uri, title)
@@ -99,7 +101,8 @@ fun StoryScreen(
     onBack = onBack,
     onSave = viewModel::onSave,
     onSelectRelated = onSelectRelated,
-    onFullScreen = onFullScreen
+    onFullScreen = onFullScreen,
+    onSwitchUiFramework = onSwitchUiFramework,
   )
 }
 
@@ -112,6 +115,7 @@ fun StoryView(
   onBack: () -> Unit,
   onSelectRelated: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onFullScreen: (() -> Unit)?,
+  onSwitchUiFramework: (() -> Unit)? = null,
 ) {
   val windowSizeClass: WindowSizeClass = LocalWindowSizeClass.current
   val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -149,6 +153,12 @@ fun StoryView(
 
           if (onFullScreen != null) IconButton(onClick = onFullScreen) {
             Icon(Icons.Rounded.OpenInFull, contentDescription = null)
+          }
+
+          if (onSwitchUiFramework != null) {
+            IconButton(onClick = onSwitchUiFramework) {
+              Icon(Icons.Rounded.PhoneIphone, contentDescription = "Switch to SwiftUI")
+            }
           }
         },
         scrollBehavior = scrollBehavior,

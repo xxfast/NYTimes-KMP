@@ -18,7 +18,9 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesScreen
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+  onSwitchUiFramework: (() -> Unit)? = null,
+) {
   val router: Router<StoryHomeScreen> = rememberRouter(StoryHomeScreen::class) { listOf(List) }
 
   RoutedContent(
@@ -33,7 +35,8 @@ fun HomeScreen() {
       List -> TopStoriesScreen(
         onSelectArticle = { section, uri, title ->
           router.push(Details(section, uri, title))
-        }
+        },
+        onSwitchUiFramework = onSwitchUiFramework,
       )
 
       is Details -> StoryScreen(
@@ -43,7 +46,8 @@ fun HomeScreen() {
         onBack = { router.pop() },
         onSelectRelated = { section, uri, title ->
           router.push(Details(section, uri, title))
-        }
+        },
+        onSwitchUiFramework = onSwitchUiFramework,
       )
     }
   }

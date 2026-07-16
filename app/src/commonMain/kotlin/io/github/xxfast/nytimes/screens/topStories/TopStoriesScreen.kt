@@ -25,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.rounded.PhoneIphone
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.AssistChipDefaults.assistChipColors
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -71,6 +72,7 @@ import io.github.xxfast.nytimes.resources.Icons as SampleIcons
 @Composable
 fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
+  onSwitchUiFramework: (() -> Unit)? = null,
 ) {
   val viewModel: TopStoriesViewModel = rememberOnRoute { TopStoriesViewModel(this) }
 
@@ -108,6 +110,7 @@ fun TopStoriesScreen(
         },
         onRefresh = viewModel::onRefresh,
         onSelectSection = viewModel::onSelectSection,
+        onSwitchUiFramework = onSwitchUiFramework,
       )
     },
     panel = {
@@ -119,7 +122,8 @@ fun TopStoriesScreen(
           onBack = { showPanel = false },
           onFullScreen = {
             onSelectArticle(details.section, details.uri, details.title)
-          }
+          },
+          onSwitchUiFramework = onSwitchUiFramework,
         )
       }
     },
@@ -134,6 +138,7 @@ fun TopStoriesView(
   onRefresh: () -> Unit,
   onSelect: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
+  onSwitchUiFramework: (() -> Unit)? = null,
   modifier: Modifier = Modifier
 ) {
   Scaffold(
@@ -153,6 +158,14 @@ fun TopStoriesView(
               Icons.Rounded.Refresh,
               contentDescription = null
             )
+          }
+          if (onSwitchUiFramework != null) {
+            IconButton(onClick = onSwitchUiFramework) {
+              Icon(
+                Icons.Rounded.PhoneIphone,
+                contentDescription = "Switch to SwiftUI"
+              )
+            }
           }
         },
         modifier = Modifier

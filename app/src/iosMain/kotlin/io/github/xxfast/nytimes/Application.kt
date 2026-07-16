@@ -69,8 +69,7 @@ fun HomeUIViewController(
             },
             modifier = Modifier.fillMaxSize(),
           ) {
-            // onSwitchToSwiftUI is plumbed in a later milestone (top bar switch)
-            HomeScreen()
+            HomeScreen(onSwitchUiFramework = onSwitchToSwiftUI)
           }
         }
       }

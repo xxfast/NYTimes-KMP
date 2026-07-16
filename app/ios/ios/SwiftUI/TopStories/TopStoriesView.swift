@@ -8,6 +8,7 @@ import App
 
 struct TopStoriesView: View {
   @ObservedObject var model: TopStoriesModel
+  var selectedUri: String? = nil
   let onSwitchToCompose: () -> Void
   let onSelectArticle: (StoryRoute) -> Void
 
@@ -35,8 +36,12 @@ struct TopStoriesView: View {
         } else if let articles = model.state.articles {
           LazyVGrid(columns: columns, spacing: 16) {
             ForEach(Array(articles.enumerated()), id: \.offset) { _, summary in
-              StorySummaryCard(summary: summary) {
-                onSelectArticle(StoryRoute(summary: summary))
+              let route = StoryRoute(summary: summary)
+              StorySummaryCard(
+                summary: summary,
+                isSelected: selectedUri == route.uri
+              ) {
+                onSelectArticle(route)
               }
             }
           }
@@ -72,7 +77,6 @@ struct TopStoriesView: View {
     }
     .refreshable {
       model.refresh()
-      // Give the molecule domain a beat to emit loading + results.
       try? await Task.sleep(nanoseconds: 600_000_000)
     }
   }

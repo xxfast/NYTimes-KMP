@@ -16,6 +16,16 @@ A KMP template of the New York Times App using Compose multiplatform. To build a
 
 <img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
 
+### iOS dual UI
+
+iOS ships **Compose Multiplatform** and a **SwiftUI** UI side by side. Shared domain (Molecule ViewModels, networking, storage) lives in the `App` framework; only the UI is reimplemented in SwiftUI.
+
+- Toggle frameworks from the top app bar (phone icon on Compose, **Compose** button on SwiftUI).
+- Preference is stored in `UserDefaults` (`ios.uiMode`) and survives relaunch.
+- Favourites/storage are shared via KStore; navigation state is not carried across the switch.
+- SwiftUI uses compact `NavigationStack` and regular-width `NavigationSplitView`.
+- [SKIE](https://skie.touchlab.co/) bridges Kotlin `StateFlow` to Swift `AsyncSequence`.
+
 ## Libraries used
 - 🧩 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
 - 🌐 [Ktor](https://github.com/ktorio/ktor); for networking
@@ -25,6 +35,7 @@ A KMP template of the New York Times App using Compose multiplatform. To build a
 - 🚏 [Decompose](https://github.com/arkivanov/Decompose) + [Router](https://github.com/xxfast/Decompose-Router); for navigation
 - 🧪 [Molecule](https://github.com/cashapp/molecule); for modeling state
 - 🏞️ [Compose-imageloader](https://github.com/qdsfdhvh/compose-imageloader); for loading images
+- 🦅 [SKIE](https://skie.touchlab.co/); Swift-friendly Kotlin APIs (Flows, etc.) on iOS
 
 ## Run instructions
 
