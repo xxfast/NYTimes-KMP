@@ -1,0 +1,30 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio user state and caches
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / IntelliJ IDEA
+.idea/
+*.sln.iml
+
+# Test and coverage outputs
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet packages and generated artifacts
+packages/
+artifacts/
+*.nupkg
+*.snupkg
+
+# Publish output
+publish/
+
