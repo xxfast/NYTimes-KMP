@@ -1,6 +1,5 @@
 package io.github.xxfast.nytimes.screens.story
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.material.icons.rounded.OpenInFull
 import androidx.compose.material.icons.rounded.PhoneIphone
@@ -44,7 +42,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Compact
 import androidx.compose.runtime.Composable
@@ -56,24 +53,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.seiko.imageloader.model.ImageAction
-import com.seiko.imageloader.model.ImageEvent
-import com.seiko.imageloader.model.ImageRequest
-import com.seiko.imageloader.model.ImageResult
-import com.seiko.imageloader.rememberImageAction
-import com.seiko.imageloader.rememberImageActionPainter
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.models.ArticleUri
-import io.github.xxfast.nytimes.models.Multimedia
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
 import io.github.xxfast.nytimes.screens.topStories.Loading
@@ -184,14 +172,14 @@ fun StoryView(
               .verticalScroll(rememberScrollState())
               .padding(8.dp)
           ) {
-            if (!state.article.multimedia.isNullOrEmpty()) Box(
-              contentAlignment = Alignment.Center,
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.extraLarge)
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp))
-            ) {
-              ArticleImage(state.article.multimedia.first().url)
+            if (!state.article.multimedia.isNullOrEmpty()) {
+              ArticleImage(
+                imageUrl = state.article.multimedia.first().url,
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .height(240.dp)
+                  .clip(MaterialTheme.shapes.extraLarge),
+              )
             }
 
             Column(
@@ -329,26 +317,6 @@ fun StoryView(
           }
         }
       },
-    )
-  }
-}
-
-@Composable
-fun ArticleImage(imageUrl: String) {
-  val action: ImageAction by rememberImageAction(ImageRequest(imageUrl))
-  val painter: Painter = rememberImageActionPainter(action)
-
-  when (action) {
-    is ImageEvent.Start -> CircularProgressIndicator()
-    is ImageResult.OfError -> Icon(Icons.Rounded.Error, null)
-    else -> Image(
-      painter = painter,
-      contentDescription = null,
-      contentScale = ContentScale.Crop,
-      modifier = Modifier
-        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp))
-        .fillMaxWidth()
-        .height(420.dp)
     )
   }
 }

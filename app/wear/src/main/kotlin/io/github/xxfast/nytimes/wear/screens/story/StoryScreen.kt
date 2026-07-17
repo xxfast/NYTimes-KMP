@@ -3,8 +3,9 @@
 package io.github.xxfast.nytimes.wear.screens.story
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.CompactButton
@@ -112,7 +114,12 @@ fun StoryView(
       val url = article.multimedia?.firstOrNull()?.url
       if (url != null) {
         item {
-          ArticleImage(imageUrl = url)
+          ArticleImage(
+            imageUrl = url,
+            modifier = Modifier
+              .fillMaxWidth()
+              .height(120.dp),
+          )
         }
       }
 
