@@ -80,6 +80,7 @@ kotlin {
 
 dependencies {
   implementation(project(":app"))
+  implementation(project(":app:compose"))
   implementation(compose.uiTooling)
   implementation(compose.materialIconsExtended)
   implementation(libs.horologist.compose.layouts)

@@ -1,5 +1,3 @@
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -10,11 +8,6 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
 
-  alias(libs.plugins.compose.multiplatform)
-  alias(libs.plugins.compose.compiler)
-  alias(libs.plugins.skie)
-
-  id("kotlin-parcelize")
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
 }
@@ -31,17 +24,9 @@ kotlin {
 
   jvm("desktop")
 
-  listOf(
-    iosArm64(),
-    iosSimulatorArm64(),
-  ).forEach { target ->
-    target.binaries {
-      framework {
-        baseName = "App"
-        export(libs.decompose.router)
-      }
-    }
-  }
+  iosArm64()
+  iosSimulatorArm64()
+  mingwX64()
 
   js(IR) {
     browser()
@@ -55,24 +40,12 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(libs.decompose.router)
-
-        implementation(compose.runtime)
-        implementation(compose.foundation)
-        implementation(compose.material3)
-        implementation(compose.materialIconsExtended)
-
-        implementation(libs.molecule.runtime)
-        implementation(libs.compose.multiplatform.material3.windowsizeclass)
-        implementation(libs.decompose)
-        implementation(libs.decompose.compose)
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content.negotiation)
         implementation(libs.ktor.client.logging)
         implementation(libs.ktor.serialization.kotlinx.json)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.datetime)
-        implementation(libs.qdsfdhvh.image.loader)
         implementation(libs.kstore)
       }
     }
@@ -87,7 +60,6 @@ kotlin {
       dependencies {
         implementation(libs.ktor.client.cio)
         implementation(libs.kstore.file)
-        implementation(libs.androidx.compose.windowsizeclass)
       }
     }
 
@@ -101,6 +73,13 @@ kotlin {
     val iosMain by getting {
       dependencies {
         implementation(libs.ktor.client.darwin)
+        implementation(libs.kstore.file)
+      }
+    }
+
+    val mingwX64Main by getting {
+      dependencies {
+        implementation(libs.ktor.client.cio)
         implementation(libs.kstore.file)
       }
     }

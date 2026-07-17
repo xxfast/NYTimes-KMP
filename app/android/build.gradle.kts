@@ -80,6 +80,7 @@ kotlin {
 
 dependencies {
   implementation(project(":app"))
+  implementation(project(":app:compose"))
   implementation(compose.runtime)
   implementation(compose.foundation)
   implementation(compose.material3)

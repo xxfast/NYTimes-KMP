@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
   implementation(project(":app"))
+  implementation(project(":app:compose"))
   implementation(compose.desktop.currentOs)
   implementation(compose.runtime)
   implementation(compose.foundation)

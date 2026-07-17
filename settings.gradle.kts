@@ -16,6 +16,7 @@ dependencyResolutionManagement {
 rootProject.name = "NYTimes-KMP"
 
 include(":app")
+include(":app:compose")
 include(":app:android")
 include(":app:desktop")
 include(":app:web")

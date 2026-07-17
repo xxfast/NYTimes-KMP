@@ -172,9 +172,10 @@ fun StoryView(
               .verticalScroll(rememberScrollState())
               .padding(8.dp)
           ) {
-            if (!state.article.multimedia.isNullOrEmpty()) {
+            val multimedia = state.article.multimedia
+            if (!multimedia.isNullOrEmpty()) {
               ArticleImage(
-                imageUrl = state.article.multimedia.first().url,
+                imageUrl = multimedia.first().url,
                 modifier = Modifier
                   .fillMaxWidth()
                   .height(240.dp)
