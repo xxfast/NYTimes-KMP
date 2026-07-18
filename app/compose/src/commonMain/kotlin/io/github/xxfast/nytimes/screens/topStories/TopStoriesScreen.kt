@@ -74,7 +74,7 @@ fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSwitchUiFramework: (() -> Unit)? = null,
 ) {
-  val viewModel: TopStoriesViewModel = rememberOnRoute { TopStoriesViewModel(this) }
+  val viewModel: TopStoriesRouteViewModel = rememberOnRoute { TopStoriesRouteViewModel(this) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 
@@ -141,6 +141,9 @@ fun TopStoriesView(
   onSwitchUiFramework: (() -> Unit)? = null,
   modifier: Modifier = Modifier
 ) {
+  val articles = state.articles
+  val numberOfFavourites = state.numberOfFavourites
+
   Scaffold(
     topBar = {
       CenterAlignedTopAppBar(
@@ -198,9 +201,9 @@ fun TopStoriesView(
             label = {
               if (
                 section == TopStorySections.favourites &&
-                state.numberOfFavourites != Loading &&
-                state.numberOfFavourites > 0
-              ) Text("${section.name} (${state.numberOfFavourites})")
+                numberOfFavourites != Loading &&
+                numberOfFavourites > 0
+              ) Text("${section.name} ($numberOfFavourites)")
               else Text(section.name)
             },
             colors = assistChipColors(containerColor = selectionColor(section == state.section)),
@@ -210,13 +213,13 @@ fun TopStoriesView(
         }
       }
 
-      if (state.articles != Loading) LazyVerticalGrid(
+      if (articles != Loading) LazyVerticalGrid(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Adaptive(248.dp),
       ) {
-        items(state.articles, key = { it.uri.value }) { article ->
+        items(articles, key = { it.uri.value }) { article ->
           StorySummaryView(
             summary = article,
             isSelected = article.uri == selected,
@@ -245,7 +248,7 @@ fun TopStoriesView(
       }
 
       AnimatedVisibility(
-        visible = state.articles == Loading,
+        visible = articles == Loading,
         enter = fadeIn(),
         exit = fadeOut(),
       ) {

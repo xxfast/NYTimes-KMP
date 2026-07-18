@@ -79,7 +79,7 @@ kotlin {
 
     val mingwX64Main by getting {
       dependencies {
-        implementation(libs.ktor.client.cio)
+        implementation(libs.ktor.client.winhttp)
         implementation(libs.kstore.file)
       }
     }

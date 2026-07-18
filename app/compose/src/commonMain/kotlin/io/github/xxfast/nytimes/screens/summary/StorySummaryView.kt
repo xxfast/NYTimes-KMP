@@ -40,9 +40,10 @@ fun StorySummaryView(
       verticalArrangement = Arrangement.spacedBy(4.dp),
       modifier = Modifier.padding(8.dp)
     ) {
-      if (summary.imageUrl != null) {
+      val imageUrl = summary.imageUrl
+      if (imageUrl != null) {
         ArticleImage(
-          imageUrl = summary.imageUrl,
+          imageUrl = imageUrl,
           modifier = Modifier
             .fillMaxWidth()
             .height(180.dp)

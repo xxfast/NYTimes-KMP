@@ -37,7 +37,7 @@ import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.ArticleImage
 import io.github.xxfast.nytimes.screens.story.Loading
 import io.github.xxfast.nytimes.screens.story.StoryState
-import io.github.xxfast.nytimes.screens.story.StoryViewModel
+import io.github.xxfast.nytimes.screens.story.StoryRouteViewModel
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import kotlin.time.Clock
 
@@ -47,8 +47,8 @@ fun StoryScreen(
   uri: ArticleUri,
   title: String,
 ) {
-  val viewModel: StoryViewModel = rememberOnRoute {
-    StoryViewModel(this, section, uri, title)
+  val viewModel: StoryRouteViewModel = rememberOnRoute {
+    StoryRouteViewModel(this, section, uri, title)
   }
 
   val state: StoryState by viewModel.states.collectAsState()

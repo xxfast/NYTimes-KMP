@@ -1,23 +1,22 @@
-﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace WpfApp;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
+    private readonly TopStoriesViewModel _viewModel;
+
     public MainWindow()
     {
         InitializeComponent();
+
+        // Follow Windows light/dark theme and keep Mica in sync.
+        SystemThemeWatcher.Watch(this);
+
+        _viewModel = new TopStoriesViewModel(Dispatcher);
+        DataContext = _viewModel;
+        Closed += async (_, _) => await _viewModel.DisposeAsync();
     }
 }

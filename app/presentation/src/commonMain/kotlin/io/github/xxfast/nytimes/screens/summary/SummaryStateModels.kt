@@ -23,5 +23,3 @@ data class SummaryState(
     byline = article.byline,
   )
 }
-
-

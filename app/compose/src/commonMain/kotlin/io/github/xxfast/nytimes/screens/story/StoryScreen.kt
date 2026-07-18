@@ -77,8 +77,8 @@ fun StoryScreen(
   onFullScreen: (() -> Unit)? = null,
   onSwitchUiFramework: (() -> Unit)? = null,
 ) {
-  val viewModel: StoryViewModel = rememberOnRoute(key = uri) {
-    StoryViewModel(this, section, uri, title)
+  val viewModel: StoryRouteViewModel = rememberOnRoute(key = uri) {
+    StoryRouteViewModel(this, section, uri, title)
   }
 
   val state: StoryState by viewModel.states.collectAsState()
@@ -108,6 +108,8 @@ fun StoryView(
   val windowSizeClass: WindowSizeClass = LocalWindowSizeClass.current
   val scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   var split: Float by remember { mutableStateOf(0.6f) }
+  val article = state.article
+  val related = state.related
 
   Scaffold(
     topBar = {
@@ -123,7 +125,7 @@ fun StoryView(
           IconButton(onClick = onBack) { Icon(Icons.Rounded.ArrowBack, contentDescription = null) }
         },
         actions = {
-          IconButton(onClick = onSave, enabled = state.article != null) {
+          IconButton(onClick = onSave, enabled = article != null) {
             val icon: ImageVector =
               if (state.isSaved == true) Icons.Filled.Favorite
               else Icons.Outlined.FavoriteBorder
@@ -156,7 +158,7 @@ fun StoryView(
     },
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
   ) { scaffoldPadding ->
-    if (state.article == Loading) Box(modifier = Modifier.fillMaxSize()) {
+    if (article == Loading) Box(modifier = Modifier.fillMaxSize()) {
       CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     } else TwoPanelScaffold(
       panelVisibility = windowSizeClass.widthSizeClass != Compact && onFullScreen == null,
@@ -172,7 +174,7 @@ fun StoryView(
               .verticalScroll(rememberScrollState())
               .padding(8.dp)
           ) {
-            val multimedia = state.article.multimedia
+            val multimedia = article.multimedia
             if (!multimedia.isNullOrEmpty()) {
               ArticleImage(
                 imageUrl = multimedia.first().url,
@@ -188,7 +190,7 @@ fun StoryView(
               modifier = Modifier.padding(16.dp)
             ) {
               Text(
-                text = state.article.title,
+                text = article.title,
                 style = MaterialTheme.typography.headlineSmall,
               )
 
@@ -200,7 +202,7 @@ fun StoryView(
                   onClick = { },
                   label = {
                     Text(
-                      text = state.article.section.name,
+                      text = article.section.name,
                       style = MaterialTheme.typography.labelMedium
                     )
                   },
@@ -208,13 +210,13 @@ fun StoryView(
                 )
 
                 Text(
-                  text = state.article.byline,
+                  text = article.byline,
                   style = MaterialTheme.typography.labelLarge,
                 )
               }
 
               Text(
-                text = state.article.abstract,
+                text = article.abstract,
                 style = MaterialTheme.typography.bodyMedium,
               )
 
@@ -227,7 +229,7 @@ fun StoryView(
                 val uriHandler = LocalUriHandler.current
 
                 TextButton(
-                  onClick = { uriHandler.openUri(state.article.url) },
+                  onClick = { uriHandler.openUri(article.url) },
                   shape = MaterialTheme.shapes.small,
                 ) {
                   Icon(
@@ -237,7 +239,7 @@ fun StoryView(
                   )
 
                   Text(
-                    text = state.article.url,
+                    text = article.url,
                     style = MaterialTheme.typography.bodySmall,
                   )
                 }
@@ -252,7 +254,7 @@ fun StoryView(
                 )
 
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                  val sections = listOf(state.article.section.name, state.article.subsection)
+                  val sections = listOf(article.section.name, article.subsection)
                   items(sections) { section ->
                     AssistChip(
                       onClick = {},
@@ -299,7 +301,7 @@ fun StoryView(
                   onClick = {},
                   label = {
                     Text(
-                      text = state.article.section.name,
+                      text = article.section.name,
                       style = MaterialTheme.typography.bodySmall
                     )
                   },
@@ -308,8 +310,8 @@ fun StoryView(
               }
             }
           }
-          if (state.related == Loading) item { CircularProgressIndicator() }
-          else items(state.related) { summary ->
+          if (related == Loading) item { CircularProgressIndicator() }
+          else items(related) { summary ->
             StorySummaryView(
               summary = summary,
               isSelected = false,

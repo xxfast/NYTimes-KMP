@@ -7,7 +7,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
-actual open class ViewModel : InstanceKeeper.Instance, CoroutineScope {
+actual open class RouteViewModel : InstanceKeeper.Instance, CoroutineScope {
   actual override val coroutineContext: CoroutineContext = Dispatchers.Unconfined + SupervisorJob()
   override fun onDestroy() { coroutineContext.cancel() }
 }

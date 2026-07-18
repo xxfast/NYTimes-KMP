@@ -1,32 +1,31 @@
 package io.github.xxfast.nytimes.screens.topStories
 
-import app.cash.molecule.RecompositionMode.Immediate
-import app.cash.molecule.moleculeFlow
 import io.github.xxfast.decompose.router.RouterContext
 import io.github.xxfast.decompose.router.state
-import io.github.xxfast.nytimes.api.NyTimesWebService
-import io.github.xxfast.nytimes.data.HttpClient
-import io.github.xxfast.nytimes.data.store
 import io.github.xxfast.nytimes.models.TopStorySection
-import io.github.xxfast.nytimes.navigation.ViewModel
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
+import io.github.xxfast.nytimes.navigation.RouteViewModel
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
-class TopStoriesViewModel(context: RouterContext) : ViewModel() {
-  private val eventsFlow: MutableSharedFlow<TopStoriesEvent> = MutableSharedFlow(5)
-  private val initialState: TopStoriesState = context.state(TopStoriesState()) { states.value }
-  private val webService = NyTimesWebService(HttpClient)
-
-  val states: StateFlow<TopStoriesState> by lazy {
-    moleculeFlow(Immediate) { TopStoriesDomain(initialState, eventsFlow, webService, store) }
-      .stateIn(this, SharingStarted.Lazily, initialState)
+/** Keeps Decompose saved-state and ownership outside the cross-platform view model. */
+class TopStoriesRouteViewModel(context: RouterContext) : RouteViewModel() {
+  private val snapshot = StateSnapshot(TopStoriesState())
+  private val restoredState: TopStoriesState = context.state(TopStoriesState()) { snapshot.value() }
+  private val sharedViewModel = TopStoriesViewModel(restoredState).also { viewModel ->
+    snapshot.value = viewModel::currentState
   }
 
-  fun onRefresh() { launch { eventsFlow.emit(Refresh) } }
-  fun onSelectSection(section: TopStorySection) { launch { eventsFlow.emit(SelectSection(section)) } }
+  val states: StateFlow<TopStoriesState>
+    get() = sharedViewModel.states
+
+  fun onRefresh() = sharedViewModel.onRefresh()
+  fun onSelectSection(section: TopStorySection) = sharedViewModel.onSelectSection(section)
+
+  override fun onDestroy() {
+    sharedViewModel.close()
+    super.onDestroy()
+  }
+}
+
+private class StateSnapshot<T>(initial: T) {
+  var value: () -> T = { initial }
 }

@@ -1,12 +1,332 @@
-﻿<Window x:Class="WpfApp.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+<ui:FluentWindow x:Class="WpfApp.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="The New York Times"
+                 Height="720"
+                 Width="1180"
+                 MinHeight="520"
+                 MinWidth="720"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowStartupLocation="CenterScreen">
+    <ui:FluentWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </ui:FluentWindow.Resources>
 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0"
+                     Title="The New York Times"
+                     ShowMinimize="True"
+                     ShowMaximize="True"
+                     ShowClose="True">
+            <ui:TitleBar.TrailingContent>
+                <ui:Button Margin="0,0,8,0"
+                           Appearance="Secondary"
+                           Command="{Binding RefreshCommand}"
+                           Icon="{ui:SymbolIcon ArrowClockwise24}"
+                           ToolTip="Refresh top stories" />
+            </ui:TitleBar.TrailingContent>
+        </ui:TitleBar>
+
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="180" />
+                <ColumnDefinition Width="*" MinWidth="260" />
+                <ColumnDefinition Width="1.15*" MinWidth="280" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Section navigation -->
+            <Border Grid.Column="0"
+                    Margin="12,0,8,0"
+                    Padding="0,4,0,8"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Margin="16,14,16,8"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="SECTIONS" />
+                    <ListBox x:Name="SectionsList"
+                             Margin="4,0,4,4"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ItemsSource="{Binding Sections}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             SelectedItem="{Binding SelectedSection}"
+                             SelectionMode="Single">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="12,10" />
+                                <Setter Property="Margin" Value="4,2" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock FontSize="14" Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <!-- Story list -->
+            <Border Grid.Column="1"
+                    Margin="0,0,8,0"
+                    Padding="0"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="16,14,16,8">
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Text="Top Stories" />
+                        <ui:ProgressRing Width="22"
+                                         Height="22"
+                                         Margin="12,0,0,0"
+                                         IsIndeterminate="True"
+                                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </DockPanel>
+
+                    <ListBox Grid.Row="1"
+                             x:Name="ArticlesList"
+                             Margin="4,0,4,8"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ItemsSource="{Binding Articles}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             SelectedItem="{Binding SelectedArticle}"
+                             SelectionMode="Single">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="12,10" />
+                                <Setter Property="Margin" Value="4,2" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Cursor" Value="Hand" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                               Text="{Binding SectionName}" />
+                                    <TextBlock Margin="0,4,0,0"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Text="{Binding Title}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock Margin="0,4,0,0"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               Text="{Binding Description}"
+                                               TextTrimming="CharacterEllipsis"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="40" />
+                                    <TextBlock Margin="0,6,0,0"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               Text="{Binding Byline}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Grid.Row="1"
+                               Margin="24"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="Loading top stories..."
+                               Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
+            </Border>
+
+            <!-- Detail pane -->
+            <Border Grid.Column="2"
+                    Margin="0,0,12,0"
+                    Padding="20"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <ContentControl Content="{Binding SelectedStory}">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <DockPanel Grid.Row="0" LastChildFill="True">
+                                                <StackPanel DockPanel.Dock="Right"
+                                                            Margin="12,0,0,0"
+                                                            Orientation="Horizontal">
+                                                    <ui:Button Margin="0,0,8,0"
+                                                               Appearance="Primary"
+                                                               Command="{Binding SaveCommand}"
+                                                               Content="Save"
+                                                               Icon="{ui:SymbolIcon Bookmark24}" />
+                                                    <ui:Button Appearance="Secondary"
+                                                               Command="{Binding RefreshCommand}"
+                                                               Content="Refresh"
+                                                               Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                                               Text="{Binding ArticleSectionName}" />
+                                                    <TextBlock Margin="0,6,0,4"
+                                                               FontSize="22"
+                                                               FontWeight="SemiBold"
+                                                               Text="{Binding ArticleTitle}"
+                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               Text="{Binding ArticleByline}"
+                                                               TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <ScrollViewer Grid.Row="1"
+                                                          Margin="0,16,0,0"
+                                                          VerticalScrollBarVisibility="Auto">
+                                                <StackPanel>
+                                                    <ui:ProgressRing Width="28"
+                                                                     Height="28"
+                                                                     Margin="0,0,0,12"
+                                                                     HorizontalAlignment="Left"
+                                                                     IsIndeterminate="True"
+                                                                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                    <TextBlock FontSize="15"
+                                                               LineHeight="24"
+                                                               Text="{Binding ArticleDescription}"
+                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Margin="0,16,0,0"
+                                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                                               Text="{Binding ArticleUrl}"
+                                                               TextWrapping="Wrap" />
+
+                                                    <TextBlock Margin="0,24,0,8"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               Text="Related" />
+                                                    <ItemsControl ItemsSource="{Binding Related}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Margin="0,0,0,8"
+                                                                        Padding="12"
+                                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="6">
+                                                                    <StackPanel>
+                                                                        <TextBlock FontWeight="SemiBold"
+                                                                                   Text="{Binding Title}"
+                                                                                   TextWrapping="Wrap" />
+                                                                        <TextBlock Margin="0,4,0,0"
+                                                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                                   Text="{Binding Description}"
+                                                                                   TextTrimming="CharacterEllipsis"
+                                                                                   TextWrapping="Wrap"
+                                                                                   MaxHeight="40" />
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </ScrollViewer>
+
+                                            <StackPanel Grid.Row="2"
+                                                        Margin="0,12,0,0"
+                                                        HorizontalAlignment="Right"
+                                                        Orientation="Horizontal">
+                                                <ui:SymbolIcon Margin="0,0,6,0"
+                                                               Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                                                               Symbol="CheckmarkCircle24">
+                                                    <ui:SymbolIcon.Style>
+                                                        <Style TargetType="ui:SymbolIcon">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSaved}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ui:SymbolIcon.Style>
+                                                </ui:SymbolIcon>
+                                                <TextBlock VerticalAlignment="Center"
+                                                           Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                                                           Text="Saved">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSaved}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="Content" Value="{x:Null}">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <ui:SymbolIcon Width="40"
+                                                                   Height="40"
+                                                                   Margin="0,0,0,12"
+                                                                   HorizontalAlignment="Center"
+                                                                   FontSize="40"
+                                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                                   Symbol="News24" />
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               Text="Select a story to read it here." />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+            </Border>
+        </Grid>
     </Grid>
-</Window>
+</ui:FluentWindow>

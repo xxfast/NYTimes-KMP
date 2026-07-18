@@ -43,7 +43,7 @@ import io.github.xxfast.nytimes.resources.icons.NewYorkTimesAttribution
 import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesViewModel
+import io.github.xxfast.nytimes.screens.topStories.TopStoriesRouteViewModel
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
@@ -52,7 +52,7 @@ import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
 fun TopStoriesScreen(
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
 ) {
-  val viewModel: TopStoriesViewModel = rememberOnRoute { TopStoriesViewModel(this) }
+  val viewModel: TopStoriesRouteViewModel = rememberOnRoute { TopStoriesRouteViewModel(this) }
 
   val state: TopStoriesState by viewModel.states.collectAsState()
 

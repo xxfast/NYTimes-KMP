@@ -24,6 +24,10 @@ final class TopStoriesModel: ObservableObject {
     sectionNames = IosApp.shared.sectionNames()
   }
 
+  deinit {
+    viewModel.close()
+  }
+
   func start() async {
     for await next in viewModel.states {
       state = next

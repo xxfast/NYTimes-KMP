@@ -35,6 +35,7 @@ kotlin {
       framework {
         baseName = "App"
         export(project(":app"))
+        export(project(":app:presentation"))
         export(libs.decompose.router)
       }
     }
@@ -53,6 +54,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":app"))
+        api(project(":app:presentation"))
 
         implementation(compose.runtime)
         implementation(compose.foundation)
@@ -63,10 +65,7 @@ kotlin {
         implementation(libs.decompose)
         implementation(libs.decompose.compose)
         api(libs.decompose.router)
-        implementation(libs.molecule.runtime)
-        implementation(libs.kstore)
         implementation(libs.kotlinx.coroutines)
-        implementation(libs.kotlinx.serialization.json)
         implementation(libs.qdsfdhvh.image.loader)
       }
     }

@@ -26,6 +26,10 @@ final class StoryModel: ObservableObject {
     state = viewModel.states.value
   }
 
+  deinit {
+    viewModel.close()
+  }
+
   func start() async {
     for await next in viewModel.states {
       state = next

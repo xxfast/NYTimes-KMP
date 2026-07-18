@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.nytimes.api.NyTimesWebService
-import io.github.xxfast.nytimes.models.Article
+import io.github.xxfast.nytimes.data.store
 import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
@@ -30,29 +30,24 @@ fun TopStoriesDomain(
   var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
 
   val favourites: List<SummaryState>? by store.updates
-    .map{ savedArticles -> savedArticles.orEmpty().map(::SummaryState) }
+    .map { savedArticles -> savedArticles.orEmpty().map(::SummaryState) }
     .collectAsState(Loading)
 
   var refreshes: Int by remember { mutableStateOf(0) }
   val numberOfFavourites: Int? = favourites?.size
 
   LaunchedEffect(refreshes) {
-    // Don't autoload the stories when restored from process death
     if (refreshes == 0 && articles != Loading) return@LaunchedEffect
-
-    // If no section select, skip this
-    val section: TopStorySection = section ?: return@LaunchedEffect
-
+    val selectedSection: TopStorySection = section ?: return@LaunchedEffect
     articles = Loading
 
-    if (section == TopStorySections.favourites){
+    if (selectedSection == TopStorySections.favourites) {
       articles = favourites
       return@LaunchedEffect
     }
 
-    val topStory: TopStoryResponse = webService.topStories(section).getOrNull()
-      ?: return@LaunchedEffect // TODO: Handle errors
-
+    val topStory: TopStoryResponse = webService.topStories(selectedSection).getOrNull()
+      ?: return@LaunchedEffect
     articles = topStory.results.map(::SummaryState)
   }
 
@@ -60,9 +55,7 @@ fun TopStoriesDomain(
     events.collect { event ->
       when (event) {
         TopStoriesEvent.Refresh -> refreshes++
-
         is TopStoriesEvent.SelectSection -> {
-          // reset the section to home if it is already selected
           section = if (event.section == section) home else event.section
           refreshes++
         }
