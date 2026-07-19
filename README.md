@@ -73,3 +73,7 @@ https://github.com/xxfast/NYTimes-KMP/assets/13775137/97da961c-ef9a-40d0-9cee-f3
 ### Web (Js & WasmJs)
 
 https://github.com/xxfast/NYTimes-KMP/assets/13775137/eb37d767-d241-4aa8-9083-25a4b9ad3dfa
+
+### Windows (WinUI3 + WPF)
+
+https://github.com/user-attachments/assets/69d19efd-ab31-496f-bbd8-cd677d82b4a2
