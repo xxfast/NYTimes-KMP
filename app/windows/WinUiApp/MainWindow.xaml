@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="WinUiApp.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="The New York Times">
+
+    <Grid x:Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Custom title bar (drag region only; caption buttons use RightInset padding). -->
+        <Grid x:Name="AppTitleBar"
+              Grid.Row="0"
+              Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="TitleBarLeftPaddingColumn" Width="0" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition x:Name="TitleBarRightPaddingColumn" Width="0" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="10"
+                        VerticalAlignment="Center"
+                        Margin="16,0,12,0">
+                <Border Width="10" Height="10" CornerRadius="5"
+                        Background="#C8102E"
+                        VerticalAlignment="Center" />
+                <TextBlock x:Name="AppTitleText"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           FontWeight="SemiBold"
+                           Text="The New York Times" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Main content -->
+        <Grid Grid.Row="1"
+              Padding="16,8,16,16"
+              ColumnSpacing="12"
+              RowSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="180" />
+                <ColumnDefinition Width="*" MinWidth="280" />
+                <ColumnDefinition Width="1.15*" MinWidth="300" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Sections -->
+            <Border Grid.Column="0" Style="{StaticResource AppCardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource SectionHeaderTextStyle}" Text="SECTIONS" />
+                    <ListView x:Name="SectionsList"
+                              Grid.Row="1"
+                              Margin="4,0,4,8"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              IsItemClickEnabled="True"
+                              SelectionMode="Single"
+                              SelectionChanged="SectionsList_SelectionChanged"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="12,10" />
+                                <Setter Property="Margin" Value="4,2" />
+                                <Setter Property="MinHeight" Value="0" />
+                                <Setter Property="CornerRadius" Value="6" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource BodyTextBlockStyle}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <!-- Top stories -->
+            <Border Grid.Column="1" Style="{StaticResource AppCardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="16,12,12,8" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="Top Stories" />
+                        <ProgressRing x:Name="LoadingRing"
+                                      Grid.Column="1"
+                                      Width="22"
+                                      Height="22"
+                                      VerticalAlignment="Center"
+                                      IsActive="False"
+                                      Visibility="Collapsed" />
+                        <Button x:Name="RefreshButton"
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Click="RefreshButton_Click"
+                                Style="{StaticResource SubtleButtonStyle}"
+                                ToolTipService.ToolTip="Refresh top stories">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                <TextBlock Text="Refresh" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <ListView x:Name="ArticlesList"
+                              Grid.Row="1"
+                              Margin="4,0,4,8"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              SelectionMode="Single"
+                              SelectionChanged="ArticlesList_SelectionChanged"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="12,12" />
+                                <Setter Property="Margin" Value="4,2" />
+                                <Setter Property="MinHeight" Value="0" />
+                                <Setter Property="CornerRadius" Value="8" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="96" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Width="88"
+                                            Height="66"
+                                            CornerRadius="6"
+                                            Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                            Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Image Source="{Binding ImageUrl}"
+                                               Stretch="UniformToFill" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" Spacing="4">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontWeight="SemiBold"
+                                                   TextWrapping="WrapWholeWords"
+                                                   Style="{StaticResource BodyTextBlockStyle}" />
+                                        <TextBlock Text="{Binding Byline}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Description}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                   TextWrapping="WrapWholeWords"
+                                                   MaxLines="2"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <!-- Detail -->
+            <Border Grid.Column="2" Style="{StaticResource AppCardBorderStyle}" Padding="20">
+                <Grid>
+                    <!-- Empty state -->
+                    <StackPanel x:Name="EmptyDetail"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="8">
+                        <FontIcon Glyph="&#xE8A5;"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                  HorizontalAlignment="Center" />
+                        <TextBlock Text="Select a story to read"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </StackPanel>
+
+                    <!-- Loaded detail -->
+                    <Grid x:Name="DetailContent" Visibility="Collapsed" RowSpacing="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="180" />
+                        </Grid.RowDefinitions>
+
+                        <Border x:Name="HeroImageBorder"
+                                MaxHeight="220"
+                                CornerRadius="8"
+                                Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                Visibility="Collapsed">
+                            <Image x:Name="HeroImage"
+                                   Stretch="UniformToFill"
+                                   MaxHeight="220" />
+                        </Border>
+
+                        <StackPanel Grid.Row="1" Spacing="6">
+                            <ProgressRing x:Name="DetailLoadingRing"
+                                          Width="24"
+                                          Height="24"
+                                          IsActive="False"
+                                          Visibility="Collapsed"
+                                          HorizontalAlignment="Left" />
+                            <TextBlock x:Name="ArticleTitle"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       TextWrapping="WrapWholeWords" />
+                            <TextBlock x:Name="ArticleByline"
+                                       Style="{StaticResource BodyTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                    CornerRadius="4"
+                                    Padding="8,2"
+                                    HorizontalAlignment="Left">
+                                <TextBlock x:Name="ArticleSection"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                            </Border>
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="2"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <TextBlock x:Name="ArticleDescription"
+                                       Style="{StaticResource BodyTextBlockStyle}"
+                                       TextWrapping="WrapWholeWords"
+                                       LineHeight="22" />
+                        </ScrollViewer>
+
+                        <StackPanel Grid.Row="3"
+                                    Orientation="Horizontal"
+                                    Spacing="8">
+                            <Button x:Name="SaveButton"
+                                    Click="SaveButton_Click"
+                                    Style="{StaticResource AccentButtonStyle}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon x:Name="SaveIcon" Glyph="&#xE734;" FontSize="14" />
+                                    <TextBlock x:Name="SaveButtonText" Text="Save" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="ReloadButton"
+                                    Click="ReloadButton_Click"
+                                    Style="{StaticResource SubtleButtonStyle}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                    <TextBlock Text="Reload" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="4"
+                                   Style="{StaticResource SectionHeaderTextStyle}"
+                                   Margin="0,8,0,4"
+                                   Text="RELATED" />
+
+                        <ListView x:Name="RelatedList"
+                                  Grid.Row="5"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  SelectionMode="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Padding" Value="0,6" />
+                                    <Setter Property="MinHeight" Value="0" />
+                                    <Setter Property="IsHitTestVisible" Value="False" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="56" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="56"
+                                                Height="42"
+                                                CornerRadius="4"
+                                                Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                                Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Title}"
+                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                   TextWrapping="WrapWholeWords"
+                                                   Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

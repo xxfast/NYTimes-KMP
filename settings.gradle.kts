@@ -1,5 +1,6 @@
 pluginManagement {
   repositories {
+    mavenLocal()
     google()
     gradlePluginPortal()
     mavenCentral()
@@ -8,6 +9,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
   repositories {
+    mavenLocal()
     google()
     mavenCentral()
   }
@@ -16,7 +18,6 @@ dependencyResolutionManagement {
 rootProject.name = "NYTimes-KMP"
 
 include(":app")
-include(":app:presentation")
 include(":app:compose")
 include(":app:android")
 include(":app:desktop")

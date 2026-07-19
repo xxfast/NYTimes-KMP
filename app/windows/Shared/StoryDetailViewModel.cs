@@ -2,16 +2,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows.Threading;
-using NYTimes.Kotlin;
+using Kotlin = NYTimes.Kotlin;
 
-namespace WpfApp;
+namespace NYTimes.Windows;
 
 public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposable
 {
-    private readonly Dispatcher _dispatcher;
+    private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly WindowsStoryViewModel _kotlinViewModel;
+    private readonly Kotlin.StoryViewModel _kotlinViewModel;
     private readonly Task _observation;
     private bool _isLoading = true;
     private bool _isSaved;
@@ -20,12 +19,19 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private string _articleSectionName = string.Empty;
     private string _articleByline = string.Empty;
     private string _articleUrl = string.Empty;
+    private string _articleImageUrl = string.Empty;
     private int _disposed;
 
-    public StoryDetailViewModel(Dispatcher dispatcher, string sectionName, string uri, string title)
+    public StoryDetailViewModel(
+        string sectionName,
+        string uri,
+        string title,
+        SynchronizationContext? uiContext = null)
     {
-        _dispatcher = dispatcher;
-        _kotlinViewModel = new WindowsStoryViewModel(sectionName, uri, title);
+        _ui = uiContext ?? SynchronizationContext.Current
+            ?? throw new InvalidOperationException(
+                "Create on the UI thread or pass a SynchronizationContext.");
+        _kotlinViewModel = new Kotlin.StoryViewModel(sectionName, uri, title);
         Title = title;
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SaveCommand = new RelayCommand(_kotlinViewModel.OnSave);
@@ -79,6 +85,18 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         private set => SetField(ref _articleUrl, value);
     }
 
+    public string ArticleImageUrl
+    {
+        get => _articleImageUrl;
+        private set
+        {
+            if (!SetField(ref _articleImageUrl, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasArticleImage)));
+        }
+    }
+
+    public bool HasArticleImage => !string.IsNullOrWhiteSpace(ArticleImageUrl);
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private async Task ObserveStatesAsync()
@@ -87,42 +105,51 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
             {
-                await _dispatcher.InvokeAsync(() => Apply(state), DispatcherPriority.DataBind);
+                using (state)
+                {
+                    await RunOnUiAsync(() => Apply(state));
+                }
             }
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
-            // Replacing the detail pane or closing the window stops KotlinFlow collection.
+            // Host disposal cancels KotlinFlow collection.
         }
     }
 
-    private void Apply(WindowsStoryState state)
+    private void Apply(Kotlin.StoryState state)
     {
-        IsLoading = !state.HasArticle;
+        IsLoading = state.Article is null;
         IsSaved = state.HasSavedState && state.IsSaved;
 
-        if (!state.HasArticle)
+        if (state.Article is null)
         {
             Related.Clear();
+            ArticleImageUrl = string.Empty;
             return;
         }
 
-        ArticleTitle = _kotlinViewModel.ArticleTitle();
-        ArticleDescription = _kotlinViewModel.ArticleDescription();
-        ArticleSectionName = _kotlinViewModel.ArticleSectionName();
-        ArticleByline = _kotlinViewModel.ArticleByline();
-        ArticleUrl = _kotlinViewModel.ArticleUrl();
+        using var article = state.Article;
+        ArticleTitle = article.Title;
+        ArticleDescription = article.Description;
+        ArticleSectionName = article.SectionName;
+        ArticleByline = article.Byline;
+        ArticleUrl = article.Url;
+        ArticleImageUrl = article.ImageUrl ?? string.Empty;
 
         Related.Clear();
-        for (var index = 0; index < state.RelatedCount; index++)
+        foreach (var related in state.Related)
         {
-            Related.Add(new StorySummaryViewModel(
-                _kotlinViewModel.RelatedUri(index),
-                _kotlinViewModel.RelatedTitle(index),
-                _kotlinViewModel.RelatedDescription(index),
-                _kotlinViewModel.RelatedSectionName(index),
-                _kotlinViewModel.RelatedByline(index),
-                _kotlinViewModel.RelatedImageUrl(index)));
+            using (related)
+            {
+                Related.Add(new StorySummaryViewModel(
+                    related.Uri,
+                    related.Title,
+                    related.Description,
+                    related.SectionName,
+                    related.Byline,
+                    related.ImageUrl ?? string.Empty));
+            }
         }
     }
 
@@ -141,10 +168,35 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         }
     }
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private Task RunOnUiAsync(Action action)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        if (SynchronizationContext.Current == _ui)
+        {
+            action();
+            return Task.CompletedTask;
+        }
+
+        var tcs = new TaskCompletionSource();
+        _ui.Post(_ =>
+        {
+            try
+            {
+                action();
+                tcs.SetResult();
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+        }, null);
+        return tcs.Task;
+    }
+
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        return true;
     }
 }

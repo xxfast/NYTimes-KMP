@@ -2,18 +2,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
-using System.Windows.Threading;
-using NYTimes.Kotlin;
+using Kotlin = NYTimes.Kotlin;
 
-namespace WpfApp;
+namespace NYTimes.Windows;
 
 public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposable
 {
-    private readonly Dispatcher _dispatcher;
+    private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly WindowsTopStoriesViewModel _kotlinViewModel = new();
+    private readonly Kotlin.TopStoriesViewModel _kotlinViewModel = new();
     private readonly Task _observation;
     private bool _isLoading = true;
     private StoryDetailViewModel? _selectedStory;
@@ -21,22 +19,29 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private StorySummaryViewModel? _selectedArticle;
     private int _disposed;
 
-    public TopStoriesViewModel(Dispatcher dispatcher)
+    /// <param name="uiContext">
+    /// UI synchronization context. Defaults to <see cref="SynchronizationContext.Current"/> —
+    /// construct on the UI thread (WPF or WinUI) or pass one explicitly.
+    /// </param>
+    public TopStoriesViewModel(SynchronizationContext? uiContext = null)
     {
-        _dispatcher = dispatcher;
+        _ui = uiContext ?? SynchronizationContext.Current
+            ?? throw new InvalidOperationException(
+                "Create on the UI thread or pass a SynchronizationContext.");
+
         var storage = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "NYTimes-KMP");
         Directory.CreateDirectory(storage);
-        WindowsApp.bootstrap(storage);
+        Kotlin.WindowsApp.Bootstrap(storage);
 
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SelectSectionCommand = new RelayCommand<string>(_kotlinViewModel.OnSelectSection);
         OpenStoryCommand = new RelayCommand<StorySummaryViewModel>(story => _ = OpenStoryAsync(story));
 
-        for (var index = 0; index < WindowsApp.sectionCount(); index++)
+        foreach (var name in Kotlin.WindowsApp.SectionNames())
         {
-            Sections.Add(new SectionViewModel(SectionName(index)));
+            Sections.Add(new SectionViewModel(name));
         }
 
         _observation = ObserveStatesAsync();
@@ -94,7 +99,10 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
             {
-                await _dispatcher.InvokeAsync(() => Apply(state), DispatcherPriority.DataBind);
+                using (state)
+                {
+                    await RunOnUiAsync(() => Apply(state));
+                }
             }
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
@@ -103,14 +111,14 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
     }
 
-    private void Apply(WindowsTopStoriesState state)
+    private void Apply(Kotlin.TopStoriesState state)
     {
         IsLoading = state.IsLoading;
 
         SectionViewModel? selected = null;
         foreach (var section in Sections)
         {
-            section.IsSelected = state.HasSelectedSection && section.Name == state.SectionName;
+            section.IsSelected = state.SectionName is not null && section.Name == state.SectionName;
             if (section.IsSelected) selected = section;
         }
 
@@ -123,18 +131,21 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         var previousUri = _selectedArticle?.Uri;
         Articles.Clear();
         StorySummaryViewModel? restoredArticle = null;
-        for (var index = 0; index < state.ArticleCount; index++)
+        foreach (var article in state.Articles)
         {
-            var article = new StorySummaryViewModel(
-                _kotlinViewModel.ArticleUri(index),
-                _kotlinViewModel.ArticleTitle(index),
-                _kotlinViewModel.ArticleDescription(index),
-                _kotlinViewModel.ArticleSectionName(index),
-                _kotlinViewModel.ArticleByline(index),
-                _kotlinViewModel.ArticleImageUrl(index));
-            Articles.Add(article);
-            if (previousUri is not null && article.Uri == previousUri)
-                restoredArticle = article;
+            using (article)
+            {
+                var summary = new StorySummaryViewModel(
+                    article.Uri,
+                    article.Title,
+                    article.Description,
+                    article.SectionName,
+                    article.Byline,
+                    article.ImageUrl ?? string.Empty);
+                Articles.Add(summary);
+                if (previousUri is not null && summary.Uri == previousUri)
+                    restoredArticle = summary;
+            }
         }
 
         // Restore list highlight after refresh without re-opening the detail pane.
@@ -145,14 +156,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
     }
 
-    private static string SectionName(int index) =>
-        Marshal.PtrToStringUTF8(WindowsApp.sectionName(index))!;
-
     private async Task OpenStoryAsync(StorySummaryViewModel story)
     {
         var previous = SelectedStory;
         var disposal = previous?.DisposeAsync().AsTask();
-        SelectedStory = new StoryDetailViewModel(_dispatcher, story.SectionName, story.Uri, story.Title);
+        SelectedStory = new StoryDetailViewModel(story.SectionName, story.Uri, story.Title, _ui);
         if (disposal is not null) await disposal;
     }
 
@@ -174,62 +182,34 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         if (storyDisposal is not null) await storyDisposal;
     }
 
+    private Task RunOnUiAsync(Action action)
+    {
+        if (SynchronizationContext.Current == _ui)
+        {
+            action();
+            return Task.CompletedTask;
+        }
+
+        var tcs = new TaskCompletionSource();
+        _ui.Post(_ =>
+        {
+            try
+            {
+                action();
+                tcs.SetResult();
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+        }, null);
+        return tcs.Task;
+    }
+
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value)) return;
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
-
-public sealed class StorySummaryViewModel(
-    string uri,
-    string title,
-    string description,
-    string sectionName,
-    string byline,
-    string imageUrl)
-{
-    public string Uri { get; } = uri;
-    public string Title { get; } = title;
-    public string Description { get; } = description;
-    public string SectionName { get; } = sectionName;
-    public string Byline { get; } = byline;
-    public string ImageUrl { get; } = imageUrl;
-}
-
-public sealed class SectionViewModel(string name) : INotifyPropertyChanged
-{
-    private bool _isSelected;
-    public string Name { get; } = name;
-
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set
-        {
-            if (_isSelected == value) return;
-            _isSelected = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
-        }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-}
-
-public sealed class RelayCommand(Action action) : ICommand
-{
-    public event EventHandler? CanExecuteChanged { add { } remove { } }
-    public bool CanExecute(object? parameter) => true;
-    public void Execute(object? parameter) => action();
-}
-
-public sealed class RelayCommand<T>(Action<T> action) : ICommand
-{
-    public event EventHandler? CanExecuteChanged { add { } remove { } }
-    public bool CanExecute(object? parameter) => parameter is T;
-    public void Execute(object? parameter)
-    {
-        if (parameter is T value) action(value);
     }
 }

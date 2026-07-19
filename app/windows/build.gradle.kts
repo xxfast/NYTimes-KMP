@@ -3,12 +3,14 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType.RELEASE
 
 plugins {
   kotlin("multiplatform")
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.native.nuget)
 }
 
-// TODO: Merge this module into :app once the plugin scopes forward exports; direct application scans
-// all public declarations and emits invalid wrappers for some collection constructor/copy paths,
-// inherited value-class methods, and generic suspend extensions.
+// MinGW NuGet export module. .NET hosts live under this folder:
+//   Windows.sln, Shared/ (C# VMs), WpfApp/, WinUiApp/
+// rootPackage scopes generation to this package only.
 kotlin {
   mingwX64 {
     binaries {
@@ -22,7 +24,8 @@ kotlin {
     val mingwX64Main by getting {
       dependencies {
         implementation(project(":app"))
-        implementation(project(":app:presentation"))
+        implementation(libs.molecule.runtime)
+        implementation(libs.kotlinx.coroutines)
       }
     }
   }

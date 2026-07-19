@@ -8,6 +8,8 @@ plugins {
   kotlin("multiplatform")
   id("com.android.library")
 
+  alias(libs.plugins.compose.multiplatform)
+  alias(libs.plugins.compose.compiler)
   kotlin("plugin.serialization")
   id("com.codingfeline.buildkonfig")
 }
@@ -47,6 +49,10 @@ kotlin {
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.kotlinx.datetime)
         implementation(libs.kstore)
+        // Molecule domains (shared presentation logic; host VMs live per UI module)
+        implementation(compose.runtime)
+        implementation(libs.molecule.runtime)
+        implementation(libs.kotlinx.coroutines)
       }
     }
 

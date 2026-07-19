@@ -1,0 +1,42 @@
+# Gradle (Kotlin/Native NuGet module)
+.gradle/
+build/
+*.iml
+
+# .NET build outputs (WpfApp, WinUiApp, Shared)
+**/[Bb]in/
+**/[Oo]bj/
+
+# Local NuGet package cache (RestorePackagesPath under each project)
+**/obj/packages/
+**/packages/
+
+# NuGet / publish artifacts
+*.nupkg
+*.snupkg
+artifacts/
+publish/
+
+# Visual Studio / VS Code / Rider
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.sln.iml
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS (if browsing from another host)
+.DS_Store
+
+# Crash dumps / logs from local runs
+*.dmp
+*.log

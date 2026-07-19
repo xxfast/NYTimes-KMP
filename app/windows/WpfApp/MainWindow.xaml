@@ -126,29 +126,58 @@
                         </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
-                                               Text="{Binding SectionName}" />
-                                    <TextBlock Margin="0,4,0,0"
-                                               FontSize="15"
-                                               FontWeight="SemiBold"
-                                               Text="{Binding Title}"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock Margin="0,4,0,0"
-                                               FontSize="13"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                               Text="{Binding Description}"
-                                               TextTrimming="CharacterEllipsis"
-                                               TextWrapping="Wrap"
-                                               MaxHeight="40" />
-                                    <TextBlock Margin="0,6,0,0"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                               Text="{Binding Byline}"
-                                               TextTrimming="CharacterEllipsis" />
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="96" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0"
+                                            Width="88"
+                                            Height="66"
+                                            Margin="0,0,12,0"
+                                            CornerRadius="6"
+                                            ClipToBounds="True"
+                                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Image Source="{Binding ImageUrl}"
+                                               Stretch="UniformToFill"
+                                               RenderOptions.BitmapScalingMode="HighQuality" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                                                   Text="{Binding SectionName}" />
+                                        <TextBlock Margin="0,4,0,0"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   Text="{Binding Title}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Margin="0,4,0,0"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Text="{Binding Description}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   TextWrapping="Wrap"
+                                                   MaxHeight="40" />
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                   Text="{Binding Byline}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -224,6 +253,28 @@
                                                                      HorizontalAlignment="Left"
                                                                      IsIndeterminate="True"
                                                                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                                    <Border Margin="0,0,0,16"
+                                                            MaxHeight="240"
+                                                            CornerRadius="8"
+                                                            ClipToBounds="True"
+                                                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasArticleImage}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <Image Source="{Binding ArticleImageUrl}"
+                                                               Stretch="UniformToFill"
+                                                               MaxHeight="240"
+                                                               RenderOptions.BitmapScalingMode="HighQuality" />
+                                                    </Border>
+
                                                     <TextBlock FontSize="15"
                                                                LineHeight="24"
                                                                Text="{Binding ArticleDescription}"
@@ -246,17 +297,44 @@
                                                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                                                                         BorderThickness="1"
                                                                         CornerRadius="6">
-                                                                    <StackPanel>
-                                                                        <TextBlock FontWeight="SemiBold"
-                                                                                   Text="{Binding Title}"
-                                                                                   TextWrapping="Wrap" />
-                                                                        <TextBlock Margin="0,4,0,0"
-                                                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                                   Text="{Binding Description}"
-                                                                                   TextTrimming="CharacterEllipsis"
-                                                                                   TextWrapping="Wrap"
-                                                                                   MaxHeight="40" />
-                                                                    </StackPanel>
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Border Grid.Column="0"
+                                                                                Width="72"
+                                                                                Height="54"
+                                                                                Margin="0,0,12,0"
+                                                                                CornerRadius="4"
+                                                                                ClipToBounds="True"
+                                                                                Background="{DynamicResource ControlFillColorDefaultBrush}">
+                                                                            <Border.Style>
+                                                                                <Style TargetType="Border">
+                                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </Border.Style>
+                                                                            <Image Source="{Binding ImageUrl}"
+                                                                                   Stretch="UniformToFill"
+                                                                                   RenderOptions.BitmapScalingMode="HighQuality" />
+                                                                        </Border>
+                                                                        <StackPanel Grid.Column="1">
+                                                                            <TextBlock FontWeight="SemiBold"
+                                                                                       Text="{Binding Title}"
+                                                                                       TextWrapping="Wrap" />
+                                                                            <TextBlock Margin="0,4,0,0"
+                                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                                       Text="{Binding Description}"
+                                                                                       TextTrimming="CharacterEllipsis"
+                                                                                       TextWrapping="Wrap"
+                                                                                       MaxHeight="40" />
+                                                                        </StackPanel>
+                                                                    </Grid>
                                                                 </Border>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>

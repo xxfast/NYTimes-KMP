@@ -1,0 +1,6 @@
+<Project>
+  <!-- Shared NuGet feed for the locally packed NYTimes.Kotlin package. -->
+  <PropertyGroup>
+    <RestoreAdditionalProjectSources>$(MSBuildThisFileDirectory)build\nuget</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+</Project>
