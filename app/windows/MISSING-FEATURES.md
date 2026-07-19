@@ -124,8 +124,3 @@ states (WPF and WinUI).
 ### MF-023: Accessibility
 
 Accessible names, focus, keyboard order, headings, image descriptions, contrast, screen readers.
-
-### MF-024: Windows CI
-
-Compile MinGW, pack NuGet, restore/build Windows.sln (Shared + WpfApp + WinUiApp), bridge tests,
-launch smoke on Windows.

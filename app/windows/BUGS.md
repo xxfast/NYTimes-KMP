@@ -48,9 +48,6 @@ dotnet build app\windows\Windows.sln -p:Platform=x64 --no-restore
 #   dotnet run --project app\windows\WinUiApp\WinUiApp.csproj -p:Platform=x64
 ```
 
-Plugin resolution uses `mavenLocal()` (`settings.gradle.kts`). Generated outputs land under
-`app/windows/build/generated/ksp/...` and `app/windows/build/nuget/`.
-
 ## Open
 
 ### BUG-002: Network failures have no observable error state
