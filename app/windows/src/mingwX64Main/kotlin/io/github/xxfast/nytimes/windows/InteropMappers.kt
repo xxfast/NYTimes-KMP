@@ -1,4 +1,4 @@
-/package io.github.xxfast.nytimes.windows
+package io.github.xxfast.nytimes.windows
 
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.screens.story.StoryState as SharedStoryState
