@@ -8,23 +8,14 @@
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-wearos](http://img.shields.io/badge/platform-wearos-8ECDA0.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
-![badge-desktop](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
+![badge-ios](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
 ![badge-browser-js](https://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat)
 ![badge-browser-wasm](https://img.shields.io/badge/platform-wasm-F8DB5D.svg?style=flat)
+![badge-windows](https://img.shields.io/badge/platform-windows-0078D4.svg?style=flat)
 
-A KMP template of the New York Times App using Compose multiplatform. To build and run this application you will need [an API key from the New York Times](https://developer.nytimes.com/).
+A Kotlin Multiplatform sample of the New York Times app with a shared domain (networking, storage, Molecule view models) driving **Compose Multiplatform** UIs, a dual **Compose + SwiftUI** experience on iOS, and native **Windows** hosts (**WPF** + **WinUI 3**) via [kotlin-native-nuget](https://github.com/xxfast/kotlin-native-nuget). To build and run you will need [an API key from the New York Times](https://developer.nytimes.com/).
 
 <img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
-
-### iOS dual UI
-
-iOS ships **Compose Multiplatform** and a **SwiftUI** UI side by side. Shared domain (Molecule ViewModels, networking, storage) lives in the `App` framework; only the UI is reimplemented in SwiftUI.
-
-- Toggle frameworks from the top app bar (phone icon on Compose, **Compose** button on SwiftUI).
-- Preference is stored in `UserDefaults` (`ios.uiMode`) and survives relaunch.
-- Favourites/storage are shared via KStore; navigation state is not carried across the switch.
-- SwiftUI uses compact `NavigationStack` and regular-width `NavigationSplitView`.
-- [SKIE](https://skie.touchlab.co/) bridges Kotlin `StateFlow` to Swift `AsyncSequence`.
 
 ## Libraries used
 - 🧩 [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform); for shared UI
@@ -36,6 +27,7 @@ iOS ships **Compose Multiplatform** and a **SwiftUI** UI side by side. Shared do
 - 🧪 [Molecule](https://github.com/cashapp/molecule); for modeling state
 - 🏞️ [Compose-imageloader](https://github.com/qdsfdhvh/compose-imageloader); for loading images
 - 🦅 [SKIE](https://skie.touchlab.co/); Swift-friendly Kotlin APIs (Flows, etc.) on iOS
+- 🪟 [kotlin-native-nuget](https://github.com/xxfast/kotlin-native-nuget); packages Kotlin/Native (MinGW) as NuGet for WPF + WinUI 3
 
 ## Run instructions
 
