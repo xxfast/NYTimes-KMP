@@ -8,12 +8,19 @@ plugins {
   alias(libs.plugins.kotlin.native.nuget)
 }
 
-// MinGW NuGet export module. .NET hosts live under this folder:
-//   Windows.sln, Shared/ (C# VMs), WpfApp/, WinUiApp/
+// MinGW/macOS NuGet export module. .NET hosts live under this folder:
+//   Windows.sln, Shared/ (C# VMs), WpfApp/, WinUiApp/, MauiApp/
 // rootPackage scopes generation to this package only.
 kotlin {
-  mingwX64 {
-    binaries {
+  applyDefaultHierarchyTemplate()
+
+  val hosts = listOf(
+    mingwX64(),
+    macosArm64(),
+  )
+
+  hosts.forEach { target ->
+    target.binaries {
       sharedLib(listOf(DEBUG, RELEASE)) {
         baseName = "nytimes"
       }
@@ -21,7 +28,7 @@ kotlin {
   }
 
   sourceSets {
-    val mingwX64Main by getting {
+    val nativeMain by getting {
       dependencies {
         implementation(project(":app"))
         implementation(libs.molecule.runtime)

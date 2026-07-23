@@ -1,7 +1,8 @@
 # Missing Features
 
-Capabilities still missing or incomplete for the Windows hosts (WPF + WinUI 3) and
-`kotlin-native-nuget` integration. Broken behavior is tracked in [`BUGS.md`](BUGS.md).
+Capabilities still missing or incomplete for the desktop .NET hosts (WPF + WinUI 3 + .NET MAUI
+on Windows/macOS) and `kotlin-native-nuget` integration. Broken behavior is tracked in
+[`BUGS.md`](BUGS.md).
 
 Toolchain, module chain, and build commands:
 [`BUGS.md` context](BUGS.md#context).
@@ -16,7 +17,7 @@ Toolchain, module chain, and build commands:
 
 ### MF-002: Direct `StateFlow<T>` export
 
-Windows host VMs expose `Flow<T>` for NuGet. Prefer `StateFlow<T>` (current value + collect)
+Native .NET host VMs expose `Flow<T>` for NuGet. Prefer `StateFlow<T>` (current value + collect)
 once the plugin supports it. Alpha02 still only lists `kotlinx.coroutines.flow.Flow`.
 
 ### MF-003: Transitive model export
@@ -38,23 +39,24 @@ correct incremental inputs.
 
 Package stays at `0.1.0`. A dev or generated version should avoid stale-cache ambiguity without
 deleting `obj/packages/nytimes.kotlin` before restore. Host apps must also pick up a matching
-`nytimes.dll` (package native assets on each host project).
+`nytimes.dll` / `libnytimes.dylib` (package native assets on each host project).
 
-### MF-007: Additional Windows architectures
+### MF-007: Additional native architectures
 
-Only `win-x64` is packaged and tested.
+`win-x64` and `osx-arm64` are packaged; the MAUI bridge is runtime-tested on
+`maccatalyst-arm64`. Additional Windows architectures are not yet packaged.
 
-## Host runtime (WPF + WinUI)
+## Host runtime (WPF + WinUI + MAUI)
 
 ### MF-008: Explicit loading, error, empty, and retry states
 
-State models need failure info; both hosts need error/empty UI and retry (closes the gap left by
+State models need failure info; all hosts need error/empty UI and retry (closes the gap left by
 BUG-002).
 
 ### MF-009: Verified end-to-end data loading
 
 Build/smoke pass, but section changes, selection, save/unsave, and related stories are not yet
-verified together in both running apps.
+verified together in every running app.
 
 ### MF-010: Navigation and state restoration
 
@@ -66,7 +68,7 @@ No structured logs or visible diagnostic state for flow, network, or bridge fail
 
 ## Compose design parity
 
-Applies to both WPF and WinUI unless noted.
+Applies to WPF and WinUI unless noted. MAUI currently has a bridge-verified scaffold only.
 
 ### MF-012: Article images
 

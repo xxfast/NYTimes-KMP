@@ -28,6 +28,7 @@ kotlin {
 
   iosArm64()
   iosSimulatorArm64()
+  macosArm64()
   mingwX64()
 
   js(IR) {
@@ -77,6 +78,13 @@ kotlin {
     }
 
     val iosMain by getting {
+      dependencies {
+        implementation(libs.ktor.client.darwin)
+        implementation(libs.kstore.file)
+      }
+    }
+
+    val macosMain by getting {
       dependencies {
         implementation(libs.ktor.client.darwin)
         implementation(libs.kstore.file)

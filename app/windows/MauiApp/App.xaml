@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Application
+    x:Class="NYTimes.MauiApp.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="BrandColor">#C8102E</Color>
+            <Color x:Key="PageBackgroundLight">#F7F7F7</Color>
+            <Color x:Key="PageBackgroundDark">#111111</Color>
+            <Color x:Key="CardBackgroundLight">#FFFFFF</Color>
+            <Color x:Key="CardBackgroundDark">#202020</Color>
+            <Color x:Key="TextPrimaryLight">#111111</Color>
+            <Color x:Key="TextPrimaryDark">#F5F5F5</Color>
+            <Color x:Key="TextSecondaryLight">#5F6368</Color>
+            <Color x:Key="TextSecondaryDark">#B8B8B8</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,7 +1,8 @@
 # Integration Bugs
 
 Active defects from integrating the shared Kotlin domains with `kotlin-native-nuget` and the
-Windows .NET hosts (WPF + WinUI 3). Missing (but not broken) functionality is in
+desktop .NET hosts (WPF + WinUI 3 + .NET MAUI on Windows/macOS). Missing (but not broken)
+functionality is in
 [`MISSING-FEATURES.md`](MISSING-FEATURES.md).
 
 ## Context
@@ -11,8 +12,8 @@ Windows .NET hosts (WPF + WinUI 3). Missing (but not broken) functionality is in
 | Kotlin | `2.4.0` |
 | Gradle | `9.4.1` |
 | `kotlin-native-nuget` | `0.1.0-alpha02` |
-| Kotlin target | `mingwX64` |
-| .NET target | `net10.0-windows` / `win-x64` |
+| Kotlin targets | `mingwX64` / `macosArm64` |
+| .NET targets | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
 | Generated package | `NYTimes.Kotlin` `0.1.0` |
 
 ```text
@@ -21,7 +22,8 @@ Windows .NET hosts (WPF + WinUI 3). Missing (but not broken) functionality is in
        ├── Windows.sln
        ├── Shared/          (C# VMs shared by all .NET hosts)
        ├── WpfApp/
-       └── WinUiApp/
+       ├── WinUiApp/
+       └── MauiApp/
 :app → :app:compose (Compose / iOS host VMs + UI)
 ```
 
@@ -29,11 +31,11 @@ Interop path today:
 
 ```text
 Shared domain (Molecule) in :app
-  → Windows host ViewModel (moleculeFlow)
+  → Native .NET host ViewModel (moleculeFlow)
   → NuGet DTO projection
   → KotlinFlow<T> / IAsyncEnumerable<T>
   → Shared C# VMs (NYTimes.Windows)
-  → WPF / WinUI host UI
+  → WPF / WinUI / MAUI host UI
 ```
 
 Build (Windows, from repo root):
@@ -46,7 +48,21 @@ dotnet build app\windows\Windows.sln -p:Platform=x64 --no-restore
 # Hosts:
 #   dotnet run --project app\windows\WpfApp\WpfApp.csproj
 #   dotnet run --project app\windows\WinUiApp\WinUiApp.csproj -p:Platform=x64
+#   dotnet run --project app\windows\MauiApp\MauiApp.csproj -f net10.0-windows10.0.19041.0 -p:Platform=x64
 ```
+
+Build and run on Apple Silicon macOS:
+
+```bash
+./gradlew :app:windows:packNuget
+rm -rf ~/.nuget/packages/nytimes.kotlin/0.1.0
+dotnet restore app/windows/MauiApp/MauiApp.csproj --force --no-cache
+dotnet build app/windows/MauiApp/MauiApp.csproj -t:Run -f net10.0-maccatalyst
+```
+
+The NuGet plugin publishes `macosArm64` under `runtimes/osx-arm64`. `MauiApp` includes that
+dylib as an explicit `NativeReference` because .NET's `maccatalyst-arm64` RID does not fall back
+to `osx-arm64`.
 
 ## Open
 
@@ -54,7 +70,7 @@ dotnet build app\windows\Windows.sln -p:Platform=x64 --no-restore
 
 - **Area:** Shared domain / runtime
 - **Impact:** Top-stories and story-detail can stay in loading forever. Neither state model
-  carries an error, so WPF and WinUI cannot show a failure message or retry reason.
+  carries an error, so the .NET hosts cannot show a failure message or retry reason.
 
 ## Worked around (plugin)
 
@@ -64,7 +80,7 @@ dotnet build app\windows\Windows.sln -p:Platform=x64 --no-restore
 - **Observed:** Domain state types live in `:app` and are outside the export set
   (`rootPackage = io.github.xxfast.nytimes.windows`). Only local DTOs are bridged.
 - **Workaround:** Project shared state to NuGet DTOs in
-  [`src/mingwX64Main/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt`](src/mingwX64Main/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt).
+  [`src/nativeMain/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt`](src/nativeMain/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt).
 
 ### BUG-005: Nullable `List<T>?` property getters fail generation
 

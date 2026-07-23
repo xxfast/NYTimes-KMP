@@ -1,0 +1,2 @@
+Assets in this directory are deployed with the app package and can be opened with
+FileSystem.OpenAppPackageFileAsync.

@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Build only the host supported by the current development OS. -->
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">net10.0-windows10.0.19041.0</TargetFrameworks>
+    <RootNamespace>NYTimes.MauiApp</RootNamespace>
+    <AssemblyName>NYTimes.MauiApp</AssemblyName>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+    <WindowsPackageType>None</WindowsPackageType>
+    <ApplicationTitle>The New York Times</ApplicationTitle>
+    <ApplicationId>io.github.xxfast.nytimes.maui</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestorePackagesPath Condition="$([MSBuild]::IsOSPlatform('windows'))">$(MSBuildThisFileDirectory)obj\packages</RestorePackagesPath>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+    <RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-arm64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">win-x64</RuntimeIdentifier>
+    <Platforms Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">x64</Platforms>
+    <PlatformTarget Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg"
+              ForegroundFile="Resources\AppIcon\appiconfg.svg"
+              Color="#C8102E" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg"
+                      Color="#C8102E"
+                      BaseSize="128,128" />
+    <MauiAsset Include="Resources\Raw\**"
+               LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <!-- Native DLL only — Interop.cs is compiled into Shared to avoid type duplicates. -->
+    <PackageReference Include="NYTimes.Kotlin" Version="0.1.0"
+                      GeneratePathProperty="true">
+      <IncludeAssets>runtime;native;build;buildTransitive</IncludeAssets>
+      <PrivateAssets>contentFiles;analyzers;build</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- The plugin publishes macosArm64 as osx-arm64; include it explicitly for Catalyst. -->
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <NativeReference Include="$(PkgNYTimes_Kotlin)\runtimes\osx-arm64\native\libnytimes.dylib"
+                     Kind="Dynamic"
+                     SmartLink="False" />
+    <!-- Interop.cs constructs exported wrapper types with reflection. -->
+    <TrimmerRootAssembly Include="NYTimes.Windows.Shared" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

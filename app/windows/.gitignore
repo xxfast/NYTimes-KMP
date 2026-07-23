@@ -3,7 +3,7 @@
 build/
 *.iml
 
-# .NET build outputs (WpfApp, WinUiApp, Shared)
+# .NET build outputs (WpfApp, WinUiApp, MauiApp, Shared)
 **/[Bb]in/
 **/[Oo]bj/
 
