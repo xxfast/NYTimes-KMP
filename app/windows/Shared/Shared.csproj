@@ -11,7 +11,7 @@
     <RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-arm64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">win-x64</RuntimeIdentifier>
     <PlatformTarget Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">x64</PlatformTarget>
-    <RestorePackagesPath Condition="$([MSBuild]::IsOSPlatform('windows'))">$(MSBuildThisFileDirectory)obj\packages</RestorePackagesPath>
+    <RestorePackagesPath>$(MSBuildThisFileDirectory)obj\packages</RestorePackagesPath>
     <!-- Generated Interop.cs uses reflection; MauiApp roots this assembly for Catalyst trimming. -->
     <NoWarn Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">$(NoWarn);IL2087;IL2090</NoWarn>
   </PropertyGroup>

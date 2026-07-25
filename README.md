@@ -53,13 +53,6 @@ Run configurations available on `.idea/runConfigurations` for each platform.
 | windows (WinUI) | `dotnet run --project app\windows\WinUiApp\WinUiApp.csproj`                                             |
 | windows (MAUI)  | `dotnet run --project app\windows\MauiApp\MauiApp.csproj`                                               |
 
-Before running a Windows app, package the shared Kotlin code as a local NuGet package and restore the .NET solution from the repository root:
-
-```powershell
-.\gradlew.bat :app:windows:packNuget
-dotnet restore app\windows\Windows.sln --force --no-cache
-```
-
 ## Showcase
 
 ### Android

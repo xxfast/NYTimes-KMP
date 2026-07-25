@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <NYTimesGradleExecutable Condition="$([MSBuild]::IsOSPlatform('windows'))">.\gradlew.bat</NYTimesGradleExecutable>
+    <NYTimesGradleExecutable Condition="!$([MSBuild]::IsOSPlatform('windows'))">./gradlew</NYTimesGradleExecutable>
+  </PropertyGroup>
+
+  <!-- Solution restores do not invoke the Restore target in Directory.Build.targets. -->
+  <Target
+    Name="PackNYTimesKotlinNuGet"
+    BeforeTargets="Restore"
+    Condition="'$(SkipNYTimesKotlinNuGetPack)' != 'true'">
+    <Message Importance="high" Text="Packing the shared Kotlin code as NYTimes.Kotlin..." />
+    <Exec
+      Command="&quot;$(NYTimesGradleExecutable)&quot; :app:windows:packNuget"
+      WorkingDirectory="$(MSBuildThisFileDirectory)..\.." />
+  </Target>
+</Project>

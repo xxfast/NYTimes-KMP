@@ -7,14 +7,14 @@ functionality is in
 
 ## Context
 
-| Component | Version |
-|---|---:|
-| Kotlin | `2.4.0` |
-| Gradle | `9.4.1` |
-| `kotlin-native-nuget` | `0.1.0-alpha02` |
-| Kotlin targets | `mingwX64` / `macosArm64` |
-| .NET targets | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
-| Generated package | `NYTimes.Kotlin` `0.1.0` |
+| Component             |                                                                    Version |
+|-----------------------|---------------------------------------------------------------------------:|
+| Kotlin                |                                                                    `2.4.0` |
+| Gradle                |                                                                    `9.4.1` |
+| `kotlin-native-nuget` |                                                            `0.1.0-alpha02` |
+| Kotlin targets        |                                                  `mingwX64` / `macosArm64` |
+| .NET targets          | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
+| Generated package     |                                                   `NYTimes.Kotlin` `0.1.0` |
 
 ```text
 :app (domains + state)
@@ -41,24 +41,23 @@ Shared domain (Molecule) in :app
 Build (Windows, from repo root):
 
 ```powershell
-.\gradlew.bat :app:windows:packNuget
-Remove-Item -Recurse -Force app\windows\*\obj\packages\nytimes.kotlin -ErrorAction SilentlyContinue
-dotnet restore app\windows\Windows.sln --force --no-cache
-dotnet build app\windows\Windows.sln -p:Platform=x64 --no-restore
+dotnet build app\windows\Windows.sln -p:Platform=x64
 # Hosts:
 #   dotnet run --project app\windows\WpfApp\WpfApp.csproj
-#   dotnet run --project app\windows\WinUiApp\WinUiApp.csproj -p:Platform=x64
-#   dotnet run --project app\windows\MauiApp\MauiApp.csproj -f net10.0-windows10.0.19041.0 -p:Platform=x64
+#   dotnet run --project app\windows\WinUiApp\WinUiApp.csproj
+#   dotnet run --project app\windows\MauiApp\MauiApp.csproj
 ```
 
 Build and run on Apple Silicon macOS:
 
 ```bash
-./gradlew :app:windows:packNuget
-rm -rf ~/.nuget/packages/nytimes.kotlin/0.1.0
-dotnet restore app/windows/MauiApp/MauiApp.csproj --force --no-cache
 dotnet build app/windows/MauiApp/MauiApp.csproj -t:Run -f net10.0-maccatalyst
 ```
+
+The shared MSBuild targets run `:app:windows:packNuget` before NuGet restore and refresh the
+repo-local extracted package automatically for project and solution builds. Pass
+`-p:SkipNYTimesKotlinNuGetPack=true` only when the existing local package should be reused
+without running Gradle.
 
 The NuGet plugin publishes `macosArm64` under `runtimes/osx-arm64`. `MauiApp` includes that
 dylib as an explicit `NativeReference` because .NET's `maccatalyst-arm64` RID does not fall back

@@ -1,0 +1,37 @@
+<Project>
+  <PropertyGroup>
+    <NYTimesGradleExecutable Condition="$([MSBuild]::IsOSPlatform('windows'))">.\gradlew.bat</NYTimesGradleExecutable>
+    <NYTimesGradleExecutable Condition="!$([MSBuild]::IsOSPlatform('windows'))">./gradlew</NYTimesGradleExecutable>
+    <NYTimesKotlinPackageCache>$([System.IO.Path]::Combine('$(RestorePackagesPath)', 'nytimes.kotlin', '0.1.0'))</NYTimesKotlinPackageCache>
+    <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' != ''">$(ProjectAssetsFile)</NYTimesProjectAssetsFile>
+    <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' == ''">$(MSBuildProjectExtensionsPath)project.assets.json</NYTimesProjectAssetsFile>
+  </PropertyGroup>
+
+  <!--
+    NuGet generates a restore graph for every referenced project before running Restore.
+    Invalidate each project's extracted fixed-version package while that graph is collected
+    so NuGet cannot reuse stale Kotlin binaries after the package is rebuilt.
+  -->
+  <Target
+    Name="InvalidateNYTimesKotlinNuGet"
+    BeforeTargets="CollectPackageReferences"
+    Condition="'$(MSBuildIsRestoring)' == 'true' and '$(SkipNYTimesKotlinNuGetPack)' != 'true'">
+    <RemoveDir
+      Directories="$(NYTimesKotlinPackageCache)"
+      Condition="Exists('$(NYTimesKotlinPackageCache)')" />
+    <Delete
+      Files="$(NYTimesProjectAssetsFile)"
+      Condition="Exists('$(NYTimesProjectAssetsFile)')" />
+  </Target>
+
+  <!-- The package must exist before NuGet resolves PackageReference. -->
+  <Target
+    Name="PackNYTimesKotlinNuGet"
+    BeforeTargets="Restore"
+    Condition="'$(SkipNYTimesKotlinNuGetPack)' != 'true'">
+    <Message Importance="high" Text="Packing the shared Kotlin code as NYTimes.Kotlin..." />
+    <Exec
+      Command="&quot;$(NYTimesGradleExecutable)&quot; :app:windows:packNuget"
+      WorkingDirectory="$(MSBuildThisFileDirectory)..\.." />
+  </Target>
+</Project>

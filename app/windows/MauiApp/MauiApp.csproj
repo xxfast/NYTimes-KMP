@@ -17,7 +17,7 @@
     <ApplicationVersion>1</ApplicationVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RestorePackagesPath Condition="$([MSBuild]::IsOSPlatform('windows'))">$(MSBuildThisFileDirectory)obj\packages</RestorePackagesPath>
+    <RestorePackagesPath>$(MSBuildThisFileDirectory)obj\packages</RestorePackagesPath>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>

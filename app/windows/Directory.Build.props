@@ -1,7 +1,7 @@
 <Project>
   <!-- Shared NuGet feed for the locally packed NYTimes.Kotlin package. -->
   <PropertyGroup>
-    <RestoreAdditionalProjectSources Condition="Exists('$(MSBuildThisFileDirectory)build\nuget')">$(MSBuildThisFileDirectory)build\nuget</RestoreAdditionalProjectSources>
+    <RestoreAdditionalProjectSources>$(MSBuildThisFileDirectory)build\nuget</RestoreAdditionalProjectSources>
     <!-- Allow Rider and dotnet to restore/compile Windows projects from macOS. -->
     <EnableWindowsTargeting Condition="!$([MSBuild]::IsOSPlatform('windows'))">true</EnableWindowsTargeting>
   </PropertyGroup>

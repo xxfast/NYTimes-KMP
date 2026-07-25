@@ -7,11 +7,11 @@ on Windows/macOS) and `kotlin-native-nuget` integration. Broken behavior is trac
 Toolchain, module chain, and build commands:
 [`BUGS.md` context](BUGS.md#context).
 
-| Items | Owner |
-|---|---|
-| MF-002, MF-003 | `kotlin-native-nuget` |
-| MF-004 | Decompose Router |
-| MF-005+ | NYTimes-KMP sample / build / UI |
+| Items          | Owner                           |
+|----------------|---------------------------------|
+| MF-002, MF-003 | `kotlin-native-nuget`           |
+| MF-004         | Decompose Router                |
+| MF-006+        | NYTimes-KMP sample / build / UI |
 
 ## Kotlin and NuGet
 
@@ -30,16 +30,12 @@ native exports. Local NuGet DTOs in `:app:windows` are still required (see BUG-0
 No MinGW artifact, so Windows host VMs cannot use `RouterContext`. Hosts own lifecycle
 directly; Compose/iOS restore route state via adapters.
 
-### MF-005: Automated NuGet production and restore
-
-.NET builds do not run `:app:windows:packNuget` automatically. Needs a reliable task/script with
-correct incremental inputs.
-
 ### MF-006: Local development package versioning
 
 Package stays at `0.1.0`. A dev or generated version should avoid stale-cache ambiguity without
-deleting `obj/packages/nytimes.kotlin` before restore. Host apps must also pick up a matching
-`nytimes.dll` / `libnytimes.dylib` (package native assets on each host project).
+deleting `obj/packages/nytimes.kotlin` before restore. The automated restore hook currently
+evicts that repo-local cache to guarantee matching `nytimes.dll` / `libnytimes.dylib` native
+assets on each host project.
 
 ### MF-007: Additional native architectures
 
