@@ -13,7 +13,13 @@
 ![badge-browser-wasm](https://img.shields.io/badge/platform-wasm-F8DB5D.svg?style=flat)
 ![badge-windows](https://img.shields.io/badge/platform-windows-0078D4.svg?style=flat)
 
-A Kotlin Multiplatform sample of the New York Times app with a shared domain (networking, storage, Molecule view models) driving **Compose Multiplatform** UIs, a dual **Compose + SwiftUI** experience on iOS, and native **Windows** hosts (**WPF** + **WinUI 3**) via [kotlin-native-nuget](https://github.com/xxfast/kotlin-native-nuget). To build and run you will need [an API key from the New York Times](https://developer.nytimes.com/).
+A Kotlin Multiplatform sample of the New York Times app with a shared domain (networking, storage, Molecule view models) driving
+1. **Compose Multiplatform** UIs for **Android**, **Desktop** (Linux, macOS, Windows), and **Web** (JS + WasmJs)
+2. **Jetpack Compose for Wear OS**, consuming the shared domain and view models
+3. Dual **Compose + SwiftUI** experience on iOS
+4. **WPF** + **WinUI 3** + **MAUI** on native **Windows** via [kotlin-native-nuget](https://github.com/xxfast/kotlin-native-nuget).
+
+To build and run you will need [an API key from the New York Times](https://developer.nytimes.com/).
 
 <img src="https://user-images.githubusercontent.com/13775137/235060514-3b7f8779-7f2b-4f48-8e09-ef89d0a06344.png" width="720">
 
@@ -35,14 +41,24 @@ Run configurations available on `.idea/runConfigurations` for each platform.
 
 <img alt="run-config.png" src="artwork/run-config.png" />
 
-| platform | gradle command                                                                   |
-|----------|----------------------------------------------------------------------------------|
-| android  | `./gradlew :app:android:assembleDebug`                                           |
-| wear     | `./gradlew :app:wear:assembleDebug`                                              |
-| ios      | `xcodebuild -project app/ios/ios.xcodeproj -scheme NYTimes -configuration Debug` |
-| desktop  | `./gradlew :app:desktop:run`                                                     |
-| js       | `./gradlew :app:web:jsBrowserDevelopmentRun`                                     |
-| wasm     | `./gradlew :app:web:wasmJsBrowserDevelopmentRun`                                 |
+| platform        | command                                                                                                 |
+|-----------------|---------------------------------------------------------------------------------------------------------|
+| android         | `./gradlew :app:android:assembleDebug`                                                                  |
+| wear            | `./gradlew :app:wear:assembleDebug`                                                                     |
+| ios             | `xcodebuild -project app/ios/ios.xcodeproj -scheme NYTimes -configuration Debug`                        |
+| desktop         | `./gradlew :app:desktop:run`                                                                            |
+| js              | `./gradlew :app:web:jsBrowserDevelopmentRun`                                                            |
+| wasm            | `./gradlew :app:web:wasmJsBrowserDevelopmentRun`                                                        |
+| windows (WPF)   | `dotnet run --project app\windows\WpfApp\WpfApp.csproj`                                                 |
+| windows (WinUI) | `dotnet run --project app\windows\WinUiApp\WinUiApp.csproj`                                             |
+| windows (MAUI)  | `dotnet run --project app\windows\MauiApp\MauiApp.csproj`                                               |
+
+Before running a Windows app, package the shared Kotlin code as a local NuGet package and restore the .NET solution from the repository root:
+
+```powershell
+.\gradlew.bat :app:windows:packNuget
+dotnet restore app\windows\Windows.sln --force --no-cache
+```
 
 ## Showcase
 
@@ -66,6 +82,6 @@ https://github.com/xxfast/NYTimes-KMP/assets/13775137/97da961c-ef9a-40d0-9cee-f3
 
 https://github.com/xxfast/NYTimes-KMP/assets/13775137/eb37d767-d241-4aa8-9083-25a4b9ad3dfa
 
-### Windows (WinUI3 + WPF)
+### Windows (WinUI3 + WPF + MAUI)
 
 https://github.com/user-attachments/assets/69d19efd-ab31-496f-bbd8-cd677d82b4a2

@@ -8,5 +8,12 @@ public partial class App : Application
     }
 
     protected override Window CreateWindow(IActivationState? activationState) =>
-        new(new AppShell());
+        new(new AppShell())
+        {
+            Title = "The New York Times",
+            Width = 1280,
+            Height = 800,
+            MinimumWidth = 900,
+            MinimumHeight = 600
+        };
 }

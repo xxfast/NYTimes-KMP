@@ -1,41 +1,340 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="NYTimes.MauiApp.MainPage"
+    x:Name="RootPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:NYTimes.MauiApp"
+    xmlns:shared="clr-namespace:NYTimes.Windows;assembly=NYTimes.Windows.Shared"
+    x:DataType="shared:TopStoriesViewModel"
     BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}">
-    <Grid Padding="48">
-        <Border
-            MaximumWidthRequest="720"
-            Padding="48"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            BackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}"
-            Stroke="{StaticResource BrandColor}"
-            StrokeShape="RoundRectangle 16"
-            StrokeThickness="1">
-            <VerticalStackLayout Spacing="16">
-                <BoxView
-                    WidthRequest="48"
-                    HeightRequest="4"
-                    HorizontalOptions="Start"
-                    Color="{StaticResource BrandColor}" />
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="36"
-                    Text="The New York Times"
-                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
-                <Label
-                    FontSize="20"
-                    Text="MAUI desktop host"
-                    TextColor="{StaticResource BrandColor}" />
-                <Label
-                    x:Name="BridgeStatusLabel"
-                    FontSize="15"
-                    LineBreakMode="WordWrap"
-                    Text="Checking the Kotlin bridge…"
-                    TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
-            </VerticalStackLayout>
-        </Border>
+
+    <ContentPage.Resources>
+        <local:ValuePresenceConverter x:Key="ValuePresenceConverter" />
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}" />
+            <Setter Property="Stroke"
+                    Value="{AppThemeBinding Light={StaticResource CardStrokeLight}, Dark={StaticResource CardStrokeDark}}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        </Style>
+
+        <Style x:Key="SecondaryLabelStyle" TargetType="Label">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="64,*">
+        <!-- App header -->
+        <Grid
+            Padding="22,0"
+            ColumnDefinitions="Auto,*,Auto"
+            BackgroundColor="{AppThemeBinding Light={StaticResource CardBackgroundLight}, Dark={StaticResource CardBackgroundDark}}">
+            <BoxView
+                WidthRequest="10"
+                HeightRequest="10"
+                VerticalOptions="Center"
+                Color="{StaticResource BrandColor}"
+                CornerRadius="5" />
+            <Label
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                VerticalOptions="Center"
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="The New York Times"
+                TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+            <Button
+                Grid.Column="2"
+                Padding="16,8"
+                Command="{Binding RefreshCommand}"
+                Text="Refresh" />
+        </Grid>
+
+        <!-- Desktop three-pane layout -->
+        <Grid
+            Grid.Row="1"
+            Padding="16,12,16,16"
+            ColumnDefinitions="220,*,1.15*"
+            ColumnSpacing="12">
+
+            <!-- Sections -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <Grid Padding="8" RowDefinitions="44,*">
+                    <Label
+                        Margin="8,0"
+                        VerticalOptions="Center"
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="SECTIONS"
+                        Style="{StaticResource SecondaryLabelStyle}" />
+
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Sections}"
+                        SelectedItem="{Binding SelectedSection, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        VerticalScrollBarVisibility="Default">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="shared:SectionViewModel">
+                                <Border
+                                    Margin="0,2"
+                                    Padding="12,10"
+                                    BackgroundColor="Transparent"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 7">
+                                    <Border.Triggers>
+                                        <DataTrigger
+                                            TargetType="Border"
+                                            Binding="{Binding IsSelected}"
+                                            Value="True">
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Light={StaticResource SelectionLight}, Dark={StaticResource SelectionDark}}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label
+                                        LineBreakMode="TailTruncation"
+                                        Text="{Binding Name}"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <!-- Top stories -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <Grid Padding="8" RowDefinitions="52,*">
+                    <Grid Padding="8,0" ColumnDefinitions="*,Auto">
+                        <Label
+                            VerticalOptions="Center"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Top Stories"
+                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                        <ActivityIndicator
+                            Grid.Column="1"
+                            WidthRequest="24"
+                            HeightRequest="24"
+                            IsRunning="{Binding IsLoading}"
+                            IsVisible="{Binding IsLoading}"
+                            Color="{StaticResource BrandColor}" />
+                    </Grid>
+
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Articles}"
+                        SelectedItem="{Binding SelectedArticle, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        VerticalScrollBarVisibility="Default">
+                        <CollectionView.EmptyView>
+                            <Grid Padding="24">
+                                <Label
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    Text="Loading top stories…"
+                                    Style="{StaticResource SecondaryLabelStyle}" />
+                            </Grid>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="shared:StorySummaryViewModel">
+                                <Grid
+                                    Padding="10"
+                                    ColumnDefinitions="92,*"
+                                    ColumnSpacing="12">
+                                    <Border
+                                        WidthRequest="88"
+                                        HeightRequest="68"
+                                        IsVisible="{Binding HasImage}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 7">
+                                        <Image
+                                            Aspect="AspectFill"
+                                            Source="{Binding ImageUrl}" />
+                                    </Border>
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="4"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="15"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2"
+                                            Text="{Binding Title}"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                        <Label
+                                            FontSize="12"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="1"
+                                            Text="{Binding Byline}"
+                                            Style="{StaticResource SecondaryLabelStyle}" />
+                                        <Label
+                                            FontSize="13"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2"
+                                            Text="{Binding Description}"
+                                            Style="{StaticResource SecondaryLabelStyle}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <!-- Story detail -->
+            <Border Grid.Column="2" Padding="20" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        IsVisible="{Binding SelectedStory, Converter={StaticResource ValuePresenceConverter}, ConverterParameter=Invert}"
+                        Spacing="8">
+                        <Label
+                            HorizontalOptions="Center"
+                            FontSize="32"
+                            Text="☰"
+                            TextColor="{AppThemeBinding Light={StaticResource TextSecondaryLight}, Dark={StaticResource TextSecondaryDark}}" />
+                        <Label
+                            Text="Select a story to read"
+                            Style="{StaticResource SecondaryLabelStyle}" />
+                    </VerticalStackLayout>
+
+                    <Grid
+                        BindingContext="{Binding Source={x:Reference RootPage}, Path=BindingContext.SelectedStory}"
+                        IsVisible="{Binding Source={x:Reference RootPage}, Path=BindingContext.SelectedStory, Converter={StaticResource ValuePresenceConverter}}"
+                        RowDefinitions="Auto,*,Auto"
+                        RowSpacing="14"
+                        x:DataType="shared:StoryDetailViewModel">
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="{Binding ArticleSectionName}"
+                                    TextColor="{StaticResource BrandColor}" />
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="23"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding ArticleTitle}"
+                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                <Label
+                                    FontSize="13"
+                                    Text="{Binding ArticleByline}"
+                                    Style="{StaticResource SecondaryLabelStyle}" />
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                <Button
+                                    Padding="14,8"
+                                    Command="{Binding SaveCommand}"
+                                    Text="Save" />
+                                <Button
+                                    Padding="14,8"
+                                    Command="{Binding RefreshCommand}"
+                                    Text="Reload" />
+                            </HorizontalStackLayout>
+                        </Grid>
+
+                        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Default">
+                            <VerticalStackLayout Spacing="14">
+                                <ActivityIndicator
+                                    HorizontalOptions="Start"
+                                    WidthRequest="26"
+                                    HeightRequest="26"
+                                    IsRunning="{Binding IsLoading}"
+                                    IsVisible="{Binding IsLoading}"
+                                    Color="{StaticResource BrandColor}" />
+
+                                <Border
+                                    HeightRequest="230"
+                                    IsVisible="{Binding HasArticleImage}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 9">
+                                    <Image
+                                        Aspect="AspectFill"
+                                        Source="{Binding ArticleImageUrl}" />
+                                </Border>
+
+                                <Label
+                                    FontSize="15"
+                                    LineHeight="1.45"
+                                    Text="{Binding ArticleDescription}"
+                                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+
+                                <Label
+                                    FontSize="12"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding ArticleUrl}"
+                                    TextColor="{StaticResource BrandColor}" />
+
+                                <Label
+                                    Margin="0,10,0,0"
+                                    FontAttributes="Bold"
+                                    FontSize="13"
+                                    Text="RELATED"
+                                    Style="{StaticResource SecondaryLabelStyle}" />
+
+                                <VerticalStackLayout
+                                    BindableLayout.ItemsSource="{Binding Related}"
+                                    Spacing="8">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="shared:StorySummaryViewModel">
+                                            <Border
+                                                Padding="12"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundLight}, Dark={StaticResource PageBackgroundDark}}"
+                                                Stroke="{AppThemeBinding Light={StaticResource CardStrokeLight}, Dark={StaticResource CardStrokeDark}}"
+                                                StrokeShape="RoundRectangle 7"
+                                                StrokeThickness="1">
+                                                <Grid ColumnDefinitions="72,*" ColumnSpacing="12">
+                                                    <Border
+                                                        WidthRequest="72"
+                                                        HeightRequest="54"
+                                                        IsVisible="{Binding HasImage}"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 5">
+                                                        <Image
+                                                            Aspect="AspectFill"
+                                                            Source="{Binding ImageUrl}" />
+                                                    </Border>
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                                        <Label
+                                                            FontAttributes="Bold"
+                                                            FontSize="13"
+                                                            LineBreakMode="TailTruncation"
+                                                            MaxLines="2"
+                                                            Text="{Binding Title}"
+                                                            TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                                        <Label
+                                                            FontSize="11"
+                                                            LineBreakMode="TailTruncation"
+                                                            Text="{Binding Byline}"
+                                                            Style="{StaticResource SecondaryLabelStyle}" />
+                                                    </VerticalStackLayout>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                        <Label
+                            Grid.Row="2"
+                            HorizontalOptions="End"
+                            FontSize="12"
+                            IsVisible="{Binding IsSaved}"
+                            Text="Saved"
+                            TextColor="{StaticResource BrandColor}" />
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

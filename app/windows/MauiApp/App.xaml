@@ -10,6 +10,10 @@
             <Color x:Key="PageBackgroundDark">#111111</Color>
             <Color x:Key="CardBackgroundLight">#FFFFFF</Color>
             <Color x:Key="CardBackgroundDark">#202020</Color>
+            <Color x:Key="CardStrokeLight">#DFDFDF</Color>
+            <Color x:Key="CardStrokeDark">#383838</Color>
+            <Color x:Key="SelectionLight">#F4DDE2</Color>
+            <Color x:Key="SelectionDark">#4A2029</Color>
             <Color x:Key="TextPrimaryLight">#111111</Color>
             <Color x:Key="TextPrimaryDark">#F5F5F5</Color>
             <Color x:Key="TextSecondaryLight">#5F6368</Color>
