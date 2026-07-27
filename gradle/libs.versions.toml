@@ -1,5 +1,5 @@
 [versions]
-agp = "9.2.1"
+agp = "9.3.1"
 androidx-activity-compose = "1.13.0"
 androidx-compose-material3 = "1.4.0"
 buildkonfig = "0.22.0"
