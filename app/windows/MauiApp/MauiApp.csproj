@@ -41,7 +41,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <!-- Native DLL only — Interop.cs is compiled into Shared to avoid type duplicates. -->
-    <PackageReference Include="NYTimes.Kotlin" Version="0.1.0"
+    <PackageReference Include="NYTimes.Kotlin" Version="0.2.0"
                       GeneratePathProperty="true">
       <IncludeAssets>runtime;native;build;buildTransitive</IncludeAssets>
       <PrivateAssets>contentFiles;analyzers;build</PrivateAssets>

@@ -9,12 +9,12 @@ functionality is in
 
 | Component             |                                                                    Version |
 |-----------------------|---------------------------------------------------------------------------:|
-| Kotlin                |                                                                    `2.4.0` |
+| Kotlin                |                                                                   `2.4.10` |
 | Gradle                |                                                                    `9.4.1` |
-| `kotlin-native-nuget` |                                                            `0.1.0-alpha02` |
+| `kotlin-native-nuget` |                                                                    `0.2.0` |
 | Kotlin targets        |                                                  `mingwX64` / `macosArm64` |
 | .NET targets          | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
-| Generated package     |                                                   `NYTimes.Kotlin` `0.1.0` |
+| Generated package     |                                                   `NYTimes.Kotlin` `0.2.0` |
 
 ```text
 :app (domains + state)
@@ -31,9 +31,9 @@ Interop path today:
 
 ```text
 Shared domain (Molecule) in :app
-  → Native .NET host ViewModel (moleculeFlow)
+  → Native .NET host ViewModel (moleculeFlow → StateFlow)
   → NuGet DTO projection
-  → KotlinFlow<T> / IAsyncEnumerable<T>
+  → KotlinStateFlow<T> / IAsyncEnumerable<T> + .Value
   → Shared C# VMs (NYTimes.Windows)
   → WPF / WinUI / MAUI host UI
 ```
@@ -71,26 +71,28 @@ to `osx-arm64`.
 - **Impact:** Top-stories and story-detail can stay in loading forever. Neither state model
   carries an error, so the .NET hosts cannot show a failure message or retry reason.
 
-## Worked around (plugin)
+### BUG-005: Nullable `List<T>?` of object elements still hard-fails property generation
+
+- **Area:** `kotlin-native-nuget` 0.2.0
+- **Observed:** `List<SummaryState>?` on a data-class property aborts KSP with
+  `Forward property direct nullable getter is invalid … Collection(kind=LIST, element=ObjectHandle)`.
+- **Workaround:** Non-null `List<T>` (`orEmpty()`) plus an explicit `isLoading` flag on top-stories
+  state. Related lists on story state also use `orEmpty()`.
+- **Note:** Non-null `List<T>` and nullable scalar/object properties work. Bug is specific to
+  nullable collection *properties* of object element type (at least).
+
+## Fixed / retired workarounds (plugin 0.2.0)
 
 ### BUG-004: Flow element models from dependencies are not emitted to C#
 
-- **Area:** `kotlin-native-nuget`
-- **Observed:** Domain state types live in `:app` and are outside the export set
-  (`rootPackage = io.github.xxfast.nytimes.windows`). Only local DTOs are bridged.
-- **Workaround:** Project shared state to NuGet DTOs in
-  [`src/nativeMain/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt`](src/nativeMain/kotlin/io/github/xxfast/nytimes/windows/WindowsApp.kt).
-
-### BUG-005: Nullable `List<T>?` property getters fail generation
-
-- **Area:** `kotlin-native-nuget`
-- **Fixed already:** Non-null `List<T>` → `IReadOnlyList<T>` with element types preserved.
-- **Still broken:** Nullable `List<T>?` getters throw during KSP.
-- **Workaround:** Non-null lists (`orEmpty()`) plus an explicit loading flag.
+- **Plugin:** ADR-066 reachability closure can admit dependency-module types via `include(...)` /
+  `rootPackage` scope.
+- **Sample still projects DTOs:** Shared models pull value classes (`ArticleUri` with
+  `CharSequence by value`), `Instant`, etc. Local DTOs stay intentional until those shapes are a
+  clean export surface (see MF-003).
 
 ### BUG-008: Nullable `Boolean?` is unsupported
 
-- **Area:** `kotlin-native-nuget`
-- **Fixed already:** `String?` and nullable nested local DTOs.
-- **Still broken:** `Boolean?` on data-class constructors is skipped.
-- **Workaround:** `hasSavedState` / `isSaved` (and similar) presence pairs.
+- **Fixed (ADR-069):** `Boolean?` → `bool?` on constructors, properties, and returns.
+- **Sample:** `StoryState.isSaved: Boolean?` (null = unknown / `DontKnowYet`). Presence-pair
+  `hasSavedState` / `isSaved` removed. Same for `numberOfFavourites: Int?`.

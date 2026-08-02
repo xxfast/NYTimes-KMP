@@ -1,8 +1,9 @@
 package io.github.xxfast.nytimes.windows
 
 /**
- * NuGet-friendly projection of shared summary rows.
- * Local because transitive models from `:app` are not auto-exported (BUG-004).
+ * NuGet projection of shared summary rows.
+ * Local because shared models still pull value classes (`ArticleUri`) and nested domain types
+ * that we keep behind a flat string surface for hosts.
  */
 data class SummaryState(
   val uri: String,

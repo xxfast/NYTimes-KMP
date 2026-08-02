@@ -41,7 +41,7 @@ kotlin {
 nuget {
   publish {
     packageId = "NYTimes.Kotlin"
-    version = "0.1.0"
+    version = "0.2.0"
     authors = "xxfast"
     description = "NYTimes Kotlin Multiplatform sample"
     rootPackage = "io.github.xxfast.nytimes.windows"

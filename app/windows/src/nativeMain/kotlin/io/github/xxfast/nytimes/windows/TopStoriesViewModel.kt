@@ -15,9 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,6 +29,7 @@ class TopStoriesViewModel {
   private val eventsFlow: MutableSharedFlow<TopStoriesEvent> = MutableSharedFlow(5)
   private val webService = NyTimesWebService(HttpClient)
   private val initialState = SharedTopStoriesState()
+  private val initialInterop = toInterop(initialState)
 
   private val domainStates by lazy {
     moleculeFlow(Immediate) {
@@ -36,8 +37,12 @@ class TopStoriesViewModel {
     }.stateIn(scope, SharingStarted.Lazily, initialState)
   }
 
-  val stateFlow: Flow<TopStoriesState>
-    get() = domainStates.map(::toInterop)
+  /** Hot state for .NET hosts (`KotlinStateFlow` with synchronous `.Value`). */
+  val stateFlow: StateFlow<TopStoriesState> by lazy {
+    domainStates
+      .map(::toInterop)
+      .stateIn(scope, SharingStarted.Lazily, initialInterop)
+  }
 
   fun onRefresh() { scope.launch { eventsFlow.emit(Refresh) } }
 

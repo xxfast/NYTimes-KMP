@@ -120,7 +120,8 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private void Apply(Kotlin.StoryState state)
     {
         IsLoading = state.Article is null;
-        IsSaved = state.HasSavedState && state.IsSaved;
+        // null = shared DontKnowYet; only true after save state resolves.
+        IsSaved = state.IsSaved == true;
 
         if (state.Article is null)
         {

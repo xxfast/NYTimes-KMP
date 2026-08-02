@@ -9,16 +9,14 @@ internal fun toInterop(state: SharedTopStoriesState): TopStoriesState = TopStori
   sectionName = state.section?.name,
   isLoading = state.articles == null,
   articles = state.articles.orEmpty().map(::toInterop),
-  hasNumberOfFavourites = state.numberOfFavourites != null,
-  numberOfFavourites = state.numberOfFavourites ?: 0,
+  numberOfFavourites = state.numberOfFavourites,
 )
 
 internal fun toInterop(state: SharedStoryState): StoryState = StoryState(
   title = state.title,
   article = state.article?.let(::toInterop),
   related = state.related.orEmpty().map(::toInterop),
-  hasSavedState = state.isSaved != null,
-  isSaved = state.isSaved ?: false,
+  isSaved = state.isSaved,
 )
 
 internal fun toInterop(summary: SharedSummaryState): SummaryState = SummaryState(

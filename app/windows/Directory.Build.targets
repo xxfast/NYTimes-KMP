@@ -2,7 +2,7 @@
   <PropertyGroup>
     <NYTimesGradleExecutable Condition="$([MSBuild]::IsOSPlatform('windows'))">.\gradlew.bat</NYTimesGradleExecutable>
     <NYTimesGradleExecutable Condition="!$([MSBuild]::IsOSPlatform('windows'))">./gradlew</NYTimesGradleExecutable>
-    <NYTimesKotlinPackageCache>$([System.IO.Path]::Combine('$(RestorePackagesPath)', 'nytimes.kotlin', '0.1.0'))</NYTimesKotlinPackageCache>
+    <NYTimesKotlinPackageCache>$([System.IO.Path]::Combine('$(RestorePackagesPath)', 'nytimes.kotlin', '0.2.0'))</NYTimesKotlinPackageCache>
     <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' != ''">$(ProjectAssetsFile)</NYTimesProjectAssetsFile>
     <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' == ''">$(MSBuildProjectExtensionsPath)project.assets.json</NYTimesProjectAssetsFile>
   </PropertyGroup>

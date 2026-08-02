@@ -7,23 +7,25 @@ on Windows/macOS) and `kotlin-native-nuget` integration. Broken behavior is trac
 Toolchain, module chain, and build commands:
 [`BUGS.md` context](BUGS.md#context).
 
-| Items          | Owner                           |
-|----------------|---------------------------------|
-| MF-002, MF-003 | `kotlin-native-nuget`           |
-| MF-004         | Decompose Router                |
-| MF-006+        | NYTimes-KMP sample / build / UI |
+| Items            | Owner                            |
+|------------------|----------------------------------|
+| BUG-005 remainder / MF-003 | `kotlin-native-nuget` / sample |
+| MF-004           | Decompose Router                 |
+| MF-006+          | NYTimes-KMP sample / build / UI  |
 
 ## Kotlin and NuGet
 
-### MF-002: Direct `StateFlow<T>` export
+### MF-002: Direct `StateFlow<T>` export — done (0.2.0)
 
-Native .NET host VMs expose `Flow<T>` for NuGet. Prefer `StateFlow<T>` (current value + collect)
-once the plugin supports it. Alpha02 still only lists `kotlinx.coroutines.flow.Flow`.
+Host VMs expose `StateFlow<T>` → `KotlinStateFlow<T>` (`IAsyncEnumerable<T>` + synchronous
+`.Value`). Collect path unchanged; `.Value` available when hosts need a snapshot without await.
 
-### MF-003: Transitive model export
+### MF-003: Transitive model export — partial (0.2.0)
 
-Exposing a dependency-module type from a flow or method should auto-generate the C# wrapper and
-native exports. Local NuGet DTOs in `:app:windows` are still required (see BUG-004).
+Plugin reachability (ADR-066) can export dependency types in scope via `include(...)`. Sample still
+uses local NuGet DTOs so value classes, `Instant`, and CharSequence-delegating types stay off the
+wire. Next step: `include` shared packages and drop DTO projection once those shapes (and BUG-005
+nullable object lists) are clean.
 
 ### MF-004: MinGW support in Decompose Router
 
@@ -32,10 +34,9 @@ directly; Compose/iOS restore route state via adapters.
 
 ### MF-006: Local development package versioning
 
-Package stays at `0.1.0`. A dev or generated version should avoid stale-cache ambiguity without
-deleting `obj/packages/nytimes.kotlin` before restore. The automated restore hook currently
-evicts that repo-local cache to guarantee matching `nytimes.dll` / `libnytimes.dylib` native
-assets on each host project.
+Package is `0.2.0` (bumped with the plugin). A generated/dev version would still help avoid
+stale-cache ambiguity without deleting `obj/packages/nytimes.kotlin` before restore. The automated
+restore hook still evicts that repo-local cache so native assets match each host project.
 
 ### MF-007: Additional native architectures
 
@@ -47,7 +48,8 @@ assets on each host project.
 ### MF-008: Explicit loading, error, empty, and retry states
 
 State models need failure info; all hosts need error/empty UI and retry (closes the gap left by
-BUG-002).
+BUG-002). Loading still uses `isLoading` / null article because nullable object-element lists are
+blocked by BUG-005.
 
 ### MF-009: Verified end-to-end data loading
 
@@ -102,6 +104,7 @@ Related items should open/replace detail when selected.
 ### MF-019: Favourite-section parity
 
 Count label, loading, saved presentation, and full favourite-list validation.
+(`numberOfFavourites: Int?` is now on the DTO; hosts still need UI.)
 
 ## Quality and verification
 
