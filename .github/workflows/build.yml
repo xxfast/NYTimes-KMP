@@ -244,16 +244,12 @@ jobs:
         shell: bash
         run: ./gradlew :app:windows:packNuget
 
-      # WpfApp / WinUiApp only have Build.0 for the x64 solution configs (Any CPU is
-      # intentionally host-skipped so macOS IDEs can load Windows.sln). Restore must use
-      # Platform=x64 or those projects never get project.assets.json. Skip the MSBuild
-      # pack hook; the previous step already produced the local nupkg.
       - name: Restore and build Windows.sln
         shell: bash
         run: |
           dotnet restore app/windows/Windows.sln \
             --force --no-cache \
-            -c Release \
+            -p:Configuration=Release \
             -p:Platform=x64 \
             -p:SkipNYTimesKotlinNuGetPack=true
           dotnet build app/windows/Windows.sln \
