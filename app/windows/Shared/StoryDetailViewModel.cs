@@ -2,7 +2,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Kotlin = NYTimes.Kotlin;
+using NYTimes.Kotlin.Screens.Story;
+using KotlinApp = NYTimes.Kotlin.Windows;
 
 namespace NYTimes.Windows;
 
@@ -10,7 +11,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
 {
     private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly Kotlin.StoryViewModel _kotlinViewModel;
+    private readonly KotlinApp.StoryViewModel _kotlinViewModel;
     private readonly Task _observation;
     private bool _isLoading = true;
     private bool _isSaved;
@@ -31,7 +32,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         _ui = uiContext ?? SynchronizationContext.Current
             ?? throw new InvalidOperationException(
                 "Create on the UI thread or pass a SynchronizationContext.");
-        _kotlinViewModel = new Kotlin.StoryViewModel(sectionName, uri, title);
+        _kotlinViewModel = new KotlinApp.StoryViewModel(sectionName, uri, title);
         Title = title;
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SaveCommand = new RelayCommand(_kotlinViewModel.OnSave);
@@ -117,7 +118,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         }
     }
 
-    private void Apply(Kotlin.StoryState state)
+    private void Apply(StoryState state)
     {
         IsLoading = state.Article is null;
         // null = shared DontKnowYet; only true after save state resolves.
@@ -133,21 +134,32 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         using var article = state.Article;
         ArticleTitle = article.Title;
         ArticleDescription = article.Description;
-        ArticleSectionName = article.SectionName;
+        ArticleSectionName = article.Section.Name;
         ArticleByline = article.Byline;
         ArticleUrl = article.Url;
-        ArticleImageUrl = article.ImageUrl ?? string.Empty;
+
+        // First multimedia entry drives the detail image, matching the Compose hosts.
+        var imageUrl = string.Empty;
+        foreach (var media in article.Multimedia ?? [])
+        {
+            using (media)
+            {
+                if (imageUrl.Length == 0) imageUrl = media.Url;
+            }
+        }
+        ArticleImageUrl = imageUrl;
 
         Related.Clear();
-        foreach (var related in state.Related)
+        // null related = shared Loading.
+        foreach (var related in state.Related ?? [])
         {
             using (related)
             {
                 Related.Add(new StorySummaryViewModel(
-                    related.Uri,
+                    related.Uri.Value,
                     related.Title,
                     related.Description,
-                    related.SectionName,
+                    related.Section.Name,
                     related.Byline,
                     related.ImageUrl ?? string.Empty));
             }

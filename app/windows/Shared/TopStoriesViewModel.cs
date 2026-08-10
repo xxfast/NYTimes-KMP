@@ -3,7 +3,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Kotlin = NYTimes.Kotlin;
+using NYTimes.Kotlin.Screens.TopStories;
+using KotlinApp = NYTimes.Kotlin.Windows;
 
 namespace NYTimes.Windows;
 
@@ -11,7 +12,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 {
     private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly Kotlin.TopStoriesViewModel _kotlinViewModel = new();
+    private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
     private readonly Task _observation;
     private bool _isLoading = true;
     private StoryDetailViewModel? _selectedStory;
@@ -33,13 +34,13 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "NYTimes-KMP");
         Directory.CreateDirectory(storage);
-        Kotlin.WindowsApp.Bootstrap(storage);
+        KotlinApp.WindowsApp.Bootstrap(storage);
 
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SelectSectionCommand = new RelayCommand<string>(_kotlinViewModel.OnSelectSection);
         OpenStoryCommand = new RelayCommand<StorySummaryViewModel>(story => _ = OpenStoryAsync(story));
 
-        foreach (var name in Kotlin.WindowsApp.SectionNames())
+        foreach (var name in KotlinApp.WindowsApp.SectionNames())
         {
             Sections.Add(new SectionViewModel(name));
         }
@@ -111,14 +112,16 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
     }
 
-    private void Apply(Kotlin.TopStoriesState state)
+    private void Apply(TopStoriesState state)
     {
-        IsLoading = state.IsLoading;
+        // null articles = shared Loading.
+        IsLoading = state.Articles is null;
 
+        var sectionName = state.Section?.Name;
         SectionViewModel? selected = null;
         foreach (var section in Sections)
         {
-            section.IsSelected = state.SectionName is not null && section.Name == state.SectionName;
+            section.IsSelected = sectionName is not null && section.Name == sectionName;
             if (section.IsSelected) selected = section;
         }
 
@@ -131,15 +134,15 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         var previousUri = _selectedArticle?.Uri;
         Articles.Clear();
         StorySummaryViewModel? restoredArticle = null;
-        foreach (var article in state.Articles)
+        foreach (var article in state.Articles ?? [])
         {
             using (article)
             {
                 var summary = new StorySummaryViewModel(
-                    article.Uri,
+                    article.Uri.Value,
                     article.Title,
                     article.Description,
-                    article.SectionName,
+                    article.Section.Name,
                     article.Byline,
                     article.ImageUrl ?? string.Empty);
                 Articles.Add(summary);

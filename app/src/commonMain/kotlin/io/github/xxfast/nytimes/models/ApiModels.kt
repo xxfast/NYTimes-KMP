@@ -26,6 +26,7 @@ import io.github.xxfast.nytimes.models.TopStorySections.travel
 import io.github.xxfast.nytimes.models.TopStorySections.upshot
 import io.github.xxfast.nytimes.models.TopStorySections.us
 import io.github.xxfast.nytimes.models.TopStorySections.world
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.time.Instant
@@ -85,10 +86,12 @@ data class Article(
   val section: TopStorySection,
   val subsection: String,
   val title: String,
-  val abstract: String,
+  // `abstract` is a reserved keyword in C#: kotlin-native-nuget 0.3.0 emits it unescaped
+  // as a constructor parameter, so the NuGet export needs a C#-safe name here.
+  @SerialName("abstract") val description: String,
   val url: String,
   val byline: String,
-  val published_date: Instant,
+  @SerialName("published_date") val publishedDate: Instant,
   val multimedia: List<Multimedia>? = emptyList(),
 )
 

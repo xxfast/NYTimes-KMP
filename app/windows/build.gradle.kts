@@ -10,7 +10,6 @@ plugins {
 
 // MinGW/macOS NuGet export module. .NET hosts live under this folder:
 //   Windows.sln, Shared/ (C# VMs), WpfApp/, WinUiApp/, MauiApp/
-// rootPackage scopes generation to this package only.
 kotlin {
   applyDefaultHierarchyTemplate()
 
@@ -44,6 +43,8 @@ nuget {
     version = "0.2.0"
     authors = "xxfast"
     description = "NYTimes Kotlin Multiplatform sample"
-    rootPackage = "io.github.xxfast.nytimes.windows"
+    // Shared screens/models packages sit under this root, so the reachability closure
+    // (ADR-066) admits them without local DTO projections.
+    rootPackage = "io.github.xxfast.nytimes"
   }
 }

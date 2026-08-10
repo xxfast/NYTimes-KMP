@@ -130,7 +130,7 @@ fun StoryView(
             Text(text = article.byline, style = MaterialTheme.typography.caption1)
           },
         ) {
-          Text(text = article.abstract, style = MaterialTheme.typography.body1)
+          Text(text = article.description, style = MaterialTheme.typography.body1)
         }
       }
     }
@@ -156,10 +156,10 @@ fun StoryPreviewLoaded() {
       section = TopStorySection("Sports"),
       subsection = "Soccer",
       title = "Harry Kane and the End of the Line",
-      abstract = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
+      description = "The Tottenham star has given everything for the club he has supported since childhood. As he nears the end of his contract, he owes it nothing.",
       url = "https://www.nytimes.com/2023/04/28/sports/soccer/harry-kane-tottenham-liverpool.html",
       byline = "By Rory Smith",
-      published_date = Clock.System.now()
+      publishedDate = Clock.System.now()
     )
   )
   StorePreview(state)

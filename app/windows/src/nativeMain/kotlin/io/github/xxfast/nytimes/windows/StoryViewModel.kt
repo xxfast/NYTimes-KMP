@@ -12,7 +12,7 @@ import io.github.xxfast.nytimes.screens.story.StoryEvent
 import io.github.xxfast.nytimes.screens.story.StoryEvent.Refresh
 import io.github.xxfast.nytimes.screens.story.StoryEvent.Save
 import io.github.xxfast.nytimes.screens.story.Loading as StoryLoading
-import io.github.xxfast.nytimes.screens.story.StoryState as SharedStoryState
+import io.github.xxfast.nytimes.screens.story.StoryState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,7 +20,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -35,20 +34,13 @@ class StoryViewModel(
   private val articleUri = ArticleUri(uri)
   private val eventsFlow: MutableSharedFlow<StoryEvent> = MutableSharedFlow(5)
   private val webService = NyTimesWebService(HttpClient)
-  private val initialState = SharedStoryState(title, StoryLoading)
-  private val initialInterop = toInterop(initialState)
-
-  private val domainStates by lazy {
-    moleculeFlow(Immediate) {
-      StoryDomain(section, articleUri, title, initialState, eventsFlow, webService, store)
-    }.stateIn(scope, SharingStarted.Lazily, initialState)
-  }
+  private val initialState = StoryState(title, StoryLoading)
 
   /** Hot state for .NET hosts (`KotlinStateFlow` with synchronous `.Value`). */
   val stateFlow: StateFlow<StoryState> by lazy {
-    domainStates
-      .map(::toInterop)
-      .stateIn(scope, SharingStarted.Lazily, initialInterop)
+    moleculeFlow(Immediate) {
+      StoryDomain(section, articleUri, title, initialState, eventsFlow, webService, store)
+    }.stateIn(scope, SharingStarted.Lazily, initialState)
   }
 
   fun onRefresh() { scope.launch { eventsFlow.emit(Refresh) } }

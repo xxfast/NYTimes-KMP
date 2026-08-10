@@ -10,7 +10,7 @@ import io.github.xxfast.nytimes.screens.topStories.TopStoriesDomain
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.Refresh
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesEvent.SelectSection
-import io.github.xxfast.nytimes.screens.topStories.TopStoriesState as SharedTopStoriesState
+import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,7 +18,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -28,20 +27,13 @@ class TopStoriesViewModel {
   private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
   private val eventsFlow: MutableSharedFlow<TopStoriesEvent> = MutableSharedFlow(5)
   private val webService = NyTimesWebService(HttpClient)
-  private val initialState = SharedTopStoriesState()
-  private val initialInterop = toInterop(initialState)
-
-  private val domainStates by lazy {
-    moleculeFlow(Immediate) {
-      TopStoriesDomain(initialState, eventsFlow, webService, store)
-    }.stateIn(scope, SharingStarted.Lazily, initialState)
-  }
+  private val initialState = TopStoriesState()
 
   /** Hot state for .NET hosts (`KotlinStateFlow` with synchronous `.Value`). */
   val stateFlow: StateFlow<TopStoriesState> by lazy {
-    domainStates
-      .map(::toInterop)
-      .stateIn(scope, SharingStarted.Lazily, initialInterop)
+    moleculeFlow(Immediate) {
+      TopStoriesDomain(initialState, eventsFlow, webService, store)
+    }.stateIn(scope, SharingStarted.Lazily, initialState)
   }
 
   fun onRefresh() { scope.launch { eventsFlow.emit(Refresh) } }
