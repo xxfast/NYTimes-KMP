@@ -53,6 +53,10 @@ dotnet build app/windows/MauiApp/MauiApp.csproj -t:Run -f net10.0-maccatalyst
 NuGet restore for both project and solution builds. The output lands in `build/nuget`, which
 `Directory.Build.props` registers as an additional restore source.
 
+The package version lives once in `nuget.version`; Gradle reads it for `packNuget` and
+MSBuild reads it into `$(NYTimesKotlinVersion)` for every `PackageReference` and the cache path
+below, so bumping it is a one-line change.
+
 Because the package version is fixed, the restore hook also evicts the repo-local extracted copy
 (`obj/packages/nytimes.kotlin/<version>`) and the project assets file so a rebuilt Kotlin binary
 is never shadowed by a stale cache.

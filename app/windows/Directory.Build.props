@@ -2,6 +2,8 @@
   <!-- Shared NuGet feed for the locally packed NYTimes.Kotlin package. -->
   <PropertyGroup>
     <RestoreAdditionalProjectSources>$(MSBuildThisFileDirectory)build\nuget</RestoreAdditionalProjectSources>
+    <!-- Single source of truth for the package version; :app:windows/build.gradle.kts reads the same file. -->
+    <NYTimesKotlinVersion>$([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)nuget.version').Trim())</NYTimesKotlinVersion>
     <!-- Allow Rider and dotnet to restore/compile Windows projects from macOS. -->
     <EnableWindowsTargeting Condition="!$([MSBuild]::IsOSPlatform('windows'))">true</EnableWindowsTargeting>
   </PropertyGroup>

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <NYTimesGradleExecutable Condition="$([MSBuild]::IsOSPlatform('windows'))">.\gradlew.bat</NYTimesGradleExecutable>
     <NYTimesGradleExecutable Condition="!$([MSBuild]::IsOSPlatform('windows'))">./gradlew</NYTimesGradleExecutable>
-    <NYTimesKotlinPackageCache>$([System.IO.Path]::Combine('$(RestorePackagesPath)', 'nytimes.kotlin', '0.2.0'))</NYTimesKotlinPackageCache>
+    <NYTimesKotlinPackageCache>$([System.IO.Path]::Combine('$(RestorePackagesPath)', 'nytimes.kotlin', '$(NYTimesKotlinVersion)'))</NYTimesKotlinPackageCache>
     <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' != ''">$(ProjectAssetsFile)</NYTimesProjectAssetsFile>
     <NYTimesProjectAssetsFile Condition="'$(ProjectAssetsFile)' == ''">$(MSBuildProjectExtensionsPath)project.assets.json</NYTimesProjectAssetsFile>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     Name="PackNYTimesKotlinNuGet"
     BeforeTargets="Restore"
     Condition="'$(SkipNYTimesKotlinNuGetPack)' != 'true'">
-    <Message Importance="high" Text="Packing the shared Kotlin code as NYTimes.Kotlin..." />
+    <Message Importance="high" Text="Packing the shared Kotlin code as NYTimes.Kotlin $(NYTimesKotlinVersion)..." />
     <Exec
       Command="&quot;$(NYTimesGradleExecutable)&quot; :app:windows:packNuget"
       WorkingDirectory="$(MSBuildThisFileDirectory)..\.." />
