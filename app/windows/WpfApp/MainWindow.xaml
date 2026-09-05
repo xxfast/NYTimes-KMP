@@ -50,7 +50,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <local:ArticleImage Source="{Binding ImageUrl}" />
+                        <local:ArticleImage Source="{Binding ImageUrl}" AutomationProperties.Name="{Binding Title}" />
                     </Border>
                     <StackPanel Grid.Column="1">
                         <TextBlock FontWeight="SemiBold"
@@ -94,7 +94,8 @@
                            Appearance="Secondary"
                            Command="{Binding RefreshCommand}"
                            Icon="{ui:SymbolIcon ArrowClockwise24}"
-                           ToolTip="Refresh top stories" />
+                           ToolTip="Refresh top stories"
+                           AutomationProperties.Name="Refresh top stories" />
             </ui:TitleBar.TrailingContent>
         </ui:TitleBar>
 
@@ -117,8 +118,10 @@
                                Margin="16,14,16,8"
                                Style="{StaticResource LabelMediumTextStyle}"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                               Text="SECTIONS" />
+                               Text="SECTIONS"
+                               AutomationProperties.HeadingLevel="Level2" />
                     <ListBox x:Name="SectionsList"
+                             AutomationProperties.Name="Sections"
                              Margin="4,0,4,4"
                              Background="Transparent"
                              BorderThickness="0"
@@ -159,7 +162,8 @@
                     <DockPanel Grid.Row="0" Margin="16,14,16,8">
                         <TextBlock VerticalAlignment="Center"
                                    Style="{StaticResource TitleLargeTextStyle}"
-                                   Text="Top Stories" />
+                                   Text="Top Stories"
+                                   AutomationProperties.HeadingLevel="Level1" />
                         <ui:ProgressRing Width="22"
                                          Height="22"
                                          Margin="12,0,0,0"
@@ -169,6 +173,7 @@
 
                     <ListBox Grid.Row="1"
                              x:Name="ArticlesList"
+                             AutomationProperties.Name="Top stories"
                              Margin="4,0,4,8"
                              Background="Transparent"
                              BorderThickness="0"
@@ -221,7 +226,7 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <local:ArticleImage Source="{Binding ImageUrl}" />
+                                            <local:ArticleImage Source="{Binding ImageUrl}" AutomationProperties.Name="{Binding Title}" />
                                         </Border>
 
                                         <TextBlock Style="{StaticResource HeadlineSmallTextStyle}"
@@ -344,7 +349,8 @@
                                                                Command="{Binding DataContext.GoBackCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                IsEnabled="{Binding DataContext.CanGoBack, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                Icon="{ui:SymbolIcon ArrowLeft24}"
-                                                               ToolTip="Back to the previous story" />
+                                                               ToolTip="Back to the previous story"
+                                                               AutomationProperties.Name="Back to the previous story" />
                                                     <!-- Favourite toggle: outline heart until saved, filled heart after (as in StoryView). -->
                                                     <ui:Button Margin="0,0,8,0"
                                                                Appearance="Primary"
@@ -449,7 +455,8 @@
                                                             </Style>
                                                         </Border.Style>
                                                         <local:ArticleImage Source="{Binding ArticleImageUrl}"
-                                                                            Height="240" />
+                                                                            Height="240"
+                                                                            AutomationProperties.Name="{Binding ArticleImageCaption}" />
                                                     </Border>
                                                     <TextBlock Margin="0,-8,0,16"
                                                                Style="{StaticResource LabelSmallTextStyle}"
@@ -509,7 +516,8 @@
                                                         </StackPanel.Style>
                                                     <TextBlock Margin="0,24,0,8"
                                                                Style="{StaticResource TitleSmallTextStyle}"
-                                                               Text="Related" />
+                                                               Text="Related"
+                                                               AutomationProperties.HeadingLevel="Level2" />
                                                     <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />
                                                     </StackPanel>
                                                 </StackPanel>
@@ -533,7 +541,8 @@
                                                     </Grid.RowDefinitions>
                                                     <TextBlock Margin="0,0,0,8"
                                                                Style="{StaticResource TitleSmallTextStyle}"
-                                                               Text="Related" />
+                                                               Text="Related"
+                                                               AutomationProperties.HeadingLevel="Level2" />
                                                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                                         <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />
                                                     </ScrollViewer>

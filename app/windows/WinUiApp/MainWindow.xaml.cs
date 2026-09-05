@@ -4,6 +4,7 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using NYTimes.Windows;
@@ -249,6 +250,7 @@ public sealed partial class MainWindow : Window
         ArticleSubsection.Text = _detail.ArticleSubsection.ToUpperInvariant();
         SubsectionChip.Visibility = _detail.HasArticleSubsection ? Visibility.Visible : Visibility.Collapsed;
         HeroCaption.Text = _detail.ArticleImageCaption;
+        AutomationProperties.SetName(HeroImage, _detail.ArticleImageCaption);
         HeroCaption.Visibility = _detail.HasArticleImageCaption ? Visibility.Visible : Visibility.Collapsed;
         ArticleDescription.Text = _detail.ArticleDescription;
         ReadStoryText.Text = _detail.ArticleUrl;
