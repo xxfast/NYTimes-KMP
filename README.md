@@ -53,6 +53,8 @@ Run configurations available on `.idea/runConfigurations` for each platform.
 | windows (WinUI) | `dotnet run --project app\windows\WinUiApp\WinUiApp.csproj`                                             |
 | windows (MAUI)  | `dotnet run --project app\windows\MauiApp\MauiApp.csproj`                                               |
 
+Build details for the WPF, WinUI and MAUI hosts are in [`app/windows/README.md`](app/windows/README.md).
+
 ## Showcase
 
 ### Android
