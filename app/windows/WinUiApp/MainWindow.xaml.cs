@@ -291,6 +291,17 @@ public sealed partial class MainWindow : Window
             _viewModel.SelectedSection = section;
     }
 
+    /// <summary>Compose GridCells.Adaptive(248.dp): as many 248-wide columns as fit, stretched to fill.</summary>
+    private void ArticlesList_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (ArticlesList.ItemsPanelRoot is not ItemsWrapGrid grid) return;
+        const double minItemWidth = 248 + 16; // card plus the 8px margin on each side
+        var width = e.NewSize.Width - 8; // ListView margin inside the pane
+        if (width < 1) return;
+        var columns = Math.Max(1, (int)Math.Floor(width / minItemWidth));
+        grid.ItemWidth = Math.Floor(width / columns);
+    }
+
     private void ArticlesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (ArticlesList.SelectedItem is StorySummaryViewModel article)

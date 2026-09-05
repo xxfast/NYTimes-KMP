@@ -176,63 +176,81 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              SelectedItem="{Binding SelectedArticle}"
                              SelectionMode="Single">
+                        <!-- Cards reflow into 248-wide columns like Compose's GridCells.Adaptive(248.dp). -->
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <local:AdaptiveGridPanel MinItemWidth="248" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="12,10" />
-                                <Setter Property="Margin" Value="4,2" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="8" />
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="VerticalContentAlignment" Value="Stretch" />
                                 <Setter Property="Cursor" Value="Hand" />
                             </Style>
                         </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="96" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                <!-- Mirrors StorySummaryView: image, headline, two-line abstract, section chip + byline. -->
+                                <Border Padding="8" CornerRadius="16">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Background" Value="{DynamicResource AccentFillColorSecondaryBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel>
+                                        <Border Height="180"
+                                                Margin="0,0,0,8"
+                                                CornerRadius="12"
+                                                ClipToBounds="True"
+                                                Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <local:ArticleImage Source="{Binding ImageUrl}" />
+                                        </Border>
 
-                                    <Border Grid.Column="0"
-                                            Width="88"
-                                            Height="66"
-                                            Margin="0,0,12,0"
-                                            CornerRadius="6"
-                                            ClipToBounds="True"
-                                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <local:ArticleImage Source="{Binding ImageUrl}" />
-                                    </Border>
-
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Style="{StaticResource LabelMediumTextStyle}"
-                                                   Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
-                                                   Text="{Binding SectionName}" />
-                                        <TextBlock Margin="0,4,0,0"
-                                                   Style="{StaticResource TitleMediumTextStyle}"
+                                        <TextBlock Style="{StaticResource HeadlineSmallTextStyle}"
                                                    Text="{Binding Title}" />
                                         <TextBlock Margin="0,4,0,0"
                                                    Style="{StaticResource BodySmallTextStyle}"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                    Text="{Binding Description}"
                                                    TextTrimming="CharacterEllipsis"
-                                                   TextWrapping="Wrap"
                                                    MaxHeight="40" />
-                                        <TextBlock Margin="0,6,0,0"
-                                                   Style="{StaticResource LabelSmallTextStyle}"
-                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                   Text="{Binding Byline}"
-                                                   TextTrimming="CharacterEllipsis" />
+
+                                        <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                                            <Border Padding="10,4"
+                                                    CornerRadius="{StaticResource ChipCornerRadius}"
+                                                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                    BorderThickness="1">
+                                                <TextBlock Style="{StaticResource LabelMediumTextStyle}"
+                                                           Text="{Binding SectionName}" />
+                                            </Border>
+                                            <TextBlock Margin="8,0,0,0"
+                                                       VerticalAlignment="Center"
+                                                       Style="{StaticResource LabelSmallTextStyle}"
+                                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                       Text="{Binding Byline}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
                                     </StackPanel>
-                                </Grid>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
