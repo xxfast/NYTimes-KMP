@@ -342,6 +342,11 @@
                                                 Stroke="{AppThemeBinding Light={StaticResource CardStrokeLight}, Dark={StaticResource CardStrokeDark}}"
                                                 StrokeShape="RoundRectangle 7"
                                                 StrokeThickness="1">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type shared:StoryDetailViewModel}}, Path=OpenRelatedCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
                                                 <Grid ColumnDefinitions="72,*" ColumnSpacing="12">
                                                     <Border
                                                         WidthRequest="72"

@@ -347,7 +347,13 @@
                                                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                                                                         BorderThickness="1"
-                                                                        CornerRadius="6">
+                                                                        CornerRadius="6"
+                                                                        Cursor="Hand">
+                                                                    <Border.InputBindings>
+                                                                        <MouseBinding MouseAction="LeftClick"
+                                                                                      Command="{Binding DataContext.OpenRelatedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                      CommandParameter="{Binding}" />
+                                                                    </Border.InputBindings>
                                                                     <Grid>
                                                                         <Grid.ColumnDefinitions>
                                                                             <ColumnDefinition Width="Auto" />

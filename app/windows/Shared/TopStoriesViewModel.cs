@@ -214,7 +214,22 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         var previous = SelectedStory;
         var disposal = previous?.DisposeAsync().AsTask();
-        SelectedStory = new StoryDetailViewModel(story.SectionName, story.Uri, story.Title, _ui);
+        SelectedStory = new StoryDetailViewModel(
+            story.SectionName,
+            story.Uri,
+            story.Title,
+            _ui,
+            openRelated: related => _ = OpenStoryAsync(related));
+
+        // A related story usually sits in the current list; keep the highlight in step
+        // without re-entering this method through the SelectedArticle setter.
+        var listed = Articles.FirstOrDefault(article => article.Uri == story.Uri);
+        if (!ReferenceEquals(_selectedArticle, listed))
+        {
+            _selectedArticle = listed;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedArticle)));
+        }
+
         if (disposal is not null) await disposal;
     }
 

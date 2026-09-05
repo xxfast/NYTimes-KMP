@@ -239,6 +239,12 @@ public sealed partial class MainWindow : Window
     private void SaveButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.SaveCommand.Execute(null);
 
+    private void RelatedList_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is StorySummaryViewModel related)
+            _detail?.OpenRelatedCommand.Execute(related);
+    }
+
     private void ReloadButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.RefreshCommand.Execute(null);
 }

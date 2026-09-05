@@ -25,11 +25,15 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private string _articleImageUrl = string.Empty;
     private int _disposed;
 
+    /// <param name="openRelated">
+    /// Invoked when a related story is chosen; the owner replaces this detail with that story.
+    /// </param>
     public StoryDetailViewModel(
         string sectionName,
         string uri,
         string title,
-        SynchronizationContext? uiContext = null)
+        SynchronizationContext? uiContext = null,
+        Action<StorySummaryViewModel>? openRelated = null)
     {
         _ui = uiContext ?? SynchronizationContext.Current
             ?? throw new InvalidOperationException(
@@ -38,6 +42,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         Title = title;
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SaveCommand = new RelayCommand(_kotlinViewModel.OnSave);
+        OpenRelatedCommand = new RelayCommand<StorySummaryViewModel>(story => openRelated?.Invoke(story));
         _observation = ObserveStatesAsync();
     }
 
@@ -45,6 +50,9 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     public ObservableCollection<StorySummaryViewModel> Related { get; } = [];
     public ICommand RefreshCommand { get; }
     public ICommand SaveCommand { get; }
+
+    /// <summary>Opens a <see cref="Related"/> story in place of this one.</summary>
+    public ICommand OpenRelatedCommand { get; }
 
     public bool IsLoading
     {

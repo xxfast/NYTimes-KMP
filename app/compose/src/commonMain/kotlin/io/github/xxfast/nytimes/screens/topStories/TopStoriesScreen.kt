@@ -123,6 +123,9 @@ fun TopStoriesScreen(
           uri = details.uri,
           title = details.title,
           onBack = { showPanel = false },
+          onSelectRelated = { section, uri, title ->
+            selection = StoryHomeScreen.Details(section, uri, title)
+          },
           onFullScreen = {
             onSelectArticle(details.section, details.uri, details.title)
           },

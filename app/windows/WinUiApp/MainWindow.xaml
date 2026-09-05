@@ -346,13 +346,14 @@
                                   Background="Transparent"
                                   BorderThickness="0"
                                   SelectionMode="None"
+                                  IsItemClickEnabled="True"
+                                  ItemClick="RelatedList_ItemClick"
                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Padding" Value="0,6" />
                                     <Setter Property="MinHeight" Value="0" />
-                                    <Setter Property="IsHitTestVisible" Value="False" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
