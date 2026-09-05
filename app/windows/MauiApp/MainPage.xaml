@@ -97,7 +97,7 @@
                                     </Border.Triggers>
                                     <Label
                                         LineBreakMode="TailTruncation"
-                                        Text="{Binding Name}"
+                                        Text="{Binding DisplayName}"
                                         TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                                 </Border>
                             </DataTemplate>

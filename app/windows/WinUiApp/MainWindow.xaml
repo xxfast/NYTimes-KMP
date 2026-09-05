@@ -79,7 +79,7 @@
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name}"
+                                <TextBlock Text="{Binding DisplayName}"
                                            TextWrapping="NoWrap"
                                            TextTrimming="CharacterEllipsis"
                                            Style="{StaticResource BodyTextBlockStyle}" />

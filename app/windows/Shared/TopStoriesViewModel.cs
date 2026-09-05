@@ -10,6 +10,8 @@ namespace NYTimes.Windows;
 
 public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposable
 {
+    private const string FavouritesSectionName = "favourites";
+
     private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
     private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
@@ -164,6 +166,8 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         {
             section.IsSelected = sectionName is not null && section.Name == sectionName;
             if (section.IsSelected) selected = section;
+            // Only the favourites section (TopStorySections.favourites) carries a count.
+            section.Count = section.Name == FavouritesSectionName ? state.NumberOfFavourites : null;
         }
 
         if (!ReferenceEquals(_selectedSection, selected))
