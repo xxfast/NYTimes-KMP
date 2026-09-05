@@ -265,6 +265,11 @@
                             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                                 <Button
                                     Padding="14,8"
+                                    Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.GoBackCommand}"
+                                    IsEnabled="{Binding Source={x:Reference RootPage}, Path=BindingContext.CanGoBack}"
+                                    Text="Back" />
+                                <Button
+                                    Padding="14,8"
                                     Command="{Binding SaveCommand}"
                                     Text="Save" />
                                 <Button

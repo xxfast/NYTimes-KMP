@@ -14,7 +14,9 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 
     private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
+    private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel;
+    private readonly HostStateStore _hostState;
+    private readonly Stack<StorySummaryViewModel> _history = new();
     private readonly Task _observation;
     private bool _isLoading = true;
     private string? _errorTitle;
@@ -22,6 +24,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private bool _isEmpty;
     private string _emptyMessage = string.Empty;
     private StoryDetailViewModel? _selectedStory;
+    private StorySummaryViewModel? _currentStory;
     private SectionViewModel? _selectedSection;
     private StorySummaryViewModel? _selectedArticle;
     private int _disposed;
@@ -44,9 +47,17 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         HostDiagnostics.Info("bridge", $"Bootstrapping shared code; storage at {storage}");
         KotlinApp.WindowsApp.Bootstrap(storage);
 
+        _hostState = new HostStateStore(storage);
+        var restored = _hostState.Load();
+        if (restored is not null)
+            HostDiagnostics.Info("restore", $"Restoring section '{restored.Section}' and story '{restored.StoryTitle}'");
+
+        _kotlinViewModel = new KotlinApp.TopStoriesViewModel(restored?.Section);
+
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SelectSectionCommand = new RelayCommand<string>(_kotlinViewModel.OnSelectSection);
         OpenStoryCommand = new RelayCommand<StorySummaryViewModel>(story => _ = OpenStoryAsync(story));
+        GoBackCommand = new RelayCommand(() => _ = GoBackAsync());
 
         foreach (var name in KotlinApp.WindowsApp.SectionNames())
         {
@@ -54,6 +65,19 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
 
         _observation = ObserveStatesAsync();
+
+        if (restored is { StoryUri: not null, StorySection: not null, StoryTitle: not null })
+        {
+            _ = OpenStoryAsync(
+                new StorySummaryViewModel(
+                    restored.StoryUri,
+                    restored.StoryTitle,
+                    string.Empty,
+                    restored.StorySection,
+                    string.Empty,
+                    string.Empty),
+                pushHistory: false);
+        }
     }
 
     public ObservableCollection<SectionViewModel> Sections { get; } = [];
@@ -61,6 +85,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     public ICommand RefreshCommand { get; }
     public ICommand SelectSectionCommand { get; }
     public ICommand OpenStoryCommand { get; }
+
+    /// <summary>Re-opens the story that was showing before the current one.</summary>
+    public ICommand GoBackCommand { get; }
+
+    public bool CanGoBack => _history.Count > 0;
 
     public bool IsLoading
     {
@@ -196,9 +225,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         {
             _selectedSection = selected;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedSection)));
+            PersistState();
         }
 
-        var previousUri = _selectedArticle?.Uri;
+        // Prefer the list highlight, then whatever story is open (e.g. one restored on start).
+        var previousUri = _selectedArticle?.Uri ?? _currentStory?.Uri;
         Articles.Clear();
         StorySummaryViewModel? restoredArticle = null;
         foreach (var article in state.Articles ?? [])
@@ -232,19 +263,30 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
     }
 
-    private async Task OpenStoryAsync(StorySummaryViewModel story)
+    private async Task OpenStoryAsync(StorySummaryViewModel story, bool pushHistory = true)
     {
+        if (_currentStory is not null && _currentStory.Uri == story.Uri) return;
+
         var previous = SelectedStory;
         var disposal = previous?.DisposeAsync().AsTask();
+
+        if (pushHistory && _currentStory is not null)
+        {
+            _history.Push(_currentStory);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        }
+
+        _currentStory = story;
         SelectedStory = new StoryDetailViewModel(
             story.SectionName,
             story.Uri,
             story.Title,
             _ui,
             openRelated: related => _ = OpenStoryAsync(related));
+        PersistState();
 
-        // A related story usually sits in the current list; keep the highlight in step
-        // without re-entering this method through the SelectedArticle setter.
+        // A related or restored story usually sits in the current list; keep the highlight in
+        // step without re-entering this method through the SelectedArticle setter.
         var listed = Articles.FirstOrDefault(article => article.Uri == story.Uri);
         if (!ReferenceEquals(_selectedArticle, listed))
         {
@@ -254,6 +296,19 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 
         if (disposal is not null) await disposal;
     }
+
+    private async Task GoBackAsync()
+    {
+        if (!_history.TryPop(out var previous)) return;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        await OpenStoryAsync(previous, pushHistory: false);
+    }
+
+    private void PersistState() => _hostState.Save(new HostState(
+        _selectedSection?.Name,
+        _currentStory?.Uri,
+        _currentStory?.SectionName,
+        _currentStory?.Title));
 
     public async ValueTask DisposeAsync()
     {

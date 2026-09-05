@@ -79,6 +79,12 @@ references the macOS dylib as an explicit `NativeReference` in its project file.
 Defects found in kotlin-native-nuget while building these hosts are tracked on its
 [issue tracker](https://github.com/xxfast/kotlin-native-nuget/issues), not in this repository.
 
+## Navigation state
+
+The shared `TopStoriesViewModel` keeps a back stack of opened stories (`GoBackCommand` /
+`CanGoBack`) and persists the selected section and open story to
+`%LOCALAPPDATA%\NYTimes-KMP\host-state.json`, restoring both on the next launch.
+
 ## Diagnostics
 
 The shared C# view models trace flow lifecycle, network failures reported by the domain, and

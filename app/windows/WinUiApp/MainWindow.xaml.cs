@@ -132,6 +132,9 @@ public sealed partial class MainWindow : Window
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedStory) or null)
             BindDetail(_viewModel.SelectedStory);
 
+        if (e.PropertyName is nameof(TopStoriesViewModel.CanGoBack) or null)
+            BackButton.IsEnabled = _viewModel.CanGoBack;
+
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedSection) or null &&
             !ReferenceEquals(SectionsList.SelectedItem, _viewModel.SelectedSection))
             SectionsList.SelectedItem = _viewModel.SelectedSection;
@@ -238,6 +241,9 @@ public sealed partial class MainWindow : Window
 
     private void SaveButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.SaveCommand.Execute(null);
+
+    private void BackButton_Click(object sender, RoutedEventArgs e) =>
+        _viewModel.GoBackCommand.Execute(null);
 
     private void RelatedList_ItemClick(object sender, ItemClickEventArgs e)
     {

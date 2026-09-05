@@ -318,6 +318,16 @@
                         <StackPanel Grid.Row="3"
                                     Orientation="Horizontal"
                                     Spacing="8">
+                            <Button x:Name="BackButton"
+                                    Click="BackButton_Click"
+                                    IsEnabled="False"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    ToolTipService.ToolTip="Back to the previous story">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE72B;" FontSize="14" />
+                                    <TextBlock Text="Back" />
+                                </StackPanel>
+                            </Button>
                             <Button x:Name="SaveButton"
                                     Click="SaveButton_Click"
                                     Style="{StaticResource AccentButtonStyle}">
