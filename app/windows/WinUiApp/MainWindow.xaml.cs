@@ -123,6 +123,8 @@ public sealed partial class MainWindow : Window
     {
         if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading)
             or nameof(TopStoriesViewModel.Error)
+            or nameof(TopStoriesViewModel.IsEmpty)
+            or nameof(TopStoriesViewModel.EmptyMessage)
             or null)
             ApplyLoading();
 
@@ -144,6 +146,8 @@ public sealed partial class MainWindow : Window
         LoadingRing.Visibility = _viewModel.IsLoading ? Visibility.Visible : Visibility.Collapsed;
         ErrorText.Text = _viewModel.Error ?? string.Empty;
         ErrorPanel.Visibility = _viewModel.HasError ? Visibility.Visible : Visibility.Collapsed;
+        EmptyText.Text = _viewModel.EmptyMessage;
+        EmptyText.Visibility = _viewModel.IsEmpty ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void BindDetail(StoryDetailViewModel? detail)

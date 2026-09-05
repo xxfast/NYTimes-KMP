@@ -190,6 +190,16 @@
                                Text="Loading top stories..."
                                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+                    <TextBlock Grid.Row="1"
+                               Margin="24"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="{Binding EmptyMessage}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
                     <StackPanel Grid.Row="1"
                                 Margin="24"
                                 HorizontalAlignment="Center"

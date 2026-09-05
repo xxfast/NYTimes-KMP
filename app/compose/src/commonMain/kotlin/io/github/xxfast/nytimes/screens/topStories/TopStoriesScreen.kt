@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
+import io.github.xxfast.nytimes.components.EmptyView
 import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
@@ -220,6 +221,10 @@ fun TopStoriesView(
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Adaptive(248.dp),
       ) {
+        if (articles.isEmpty()) item(span = { GridItemSpan(this.maxLineSpan) }) {
+          EmptyView(message = emptyMessage(state.section))
+        }
+
         items(articles, key = { it.uri.value }) { article ->
           StorySummaryView(
             summary = article,

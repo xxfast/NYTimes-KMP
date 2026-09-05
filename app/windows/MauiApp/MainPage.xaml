@@ -136,6 +136,14 @@
                                 <Label
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    IsVisible="{Binding IsEmpty}"
+                                    Text="{Binding EmptyMessage}"
+                                    Style="{StaticResource SecondaryLabelStyle}" />
+                                <Label
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
                                     IsVisible="{Binding IsLoading}"
                                     Text="Loading top stories…"
                                     Style="{StaticResource SecondaryLabelStyle}" />

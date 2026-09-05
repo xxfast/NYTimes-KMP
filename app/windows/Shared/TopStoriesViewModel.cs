@@ -16,6 +16,8 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private readonly Task _observation;
     private bool _isLoading = true;
     private string? _error;
+    private bool _isEmpty;
+    private string _emptyMessage = string.Empty;
     private StoryDetailViewModel? _selectedStory;
     private SectionViewModel? _selectedSection;
     private StorySummaryViewModel? _selectedArticle;
@@ -73,6 +75,20 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     }
 
     public bool HasError => Error is not null;
+
+    /// <summary>The section loaded successfully but has no stories.</summary>
+    public bool IsEmpty
+    {
+        get => _isEmpty;
+        private set => SetField(ref _isEmpty, value);
+    }
+
+    /// <summary>Copy for the empty state; empty string unless <see cref="IsEmpty"/>.</summary>
+    public string EmptyMessage
+    {
+        get => _emptyMessage;
+        private set => SetField(ref _emptyMessage, value);
+    }
 
     public StoryDetailViewModel? SelectedStory
     {
@@ -165,6 +181,12 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
                     restoredArticle = summary;
             }
         }
+
+        // null = still loading; an empty list means the section really has nothing.
+        IsEmpty = state.Articles is not null && Articles.Count == 0;
+        EmptyMessage = IsEmpty && sectionName is not null
+            ? KotlinApp.WindowsApp.EmptyMessage(sectionName)
+            : string.Empty;
 
         // Restore list highlight after refresh without re-opening the detail pane.
         if (!ReferenceEquals(_selectedArticle, restoredArticle))

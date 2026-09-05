@@ -182,6 +182,17 @@
                         </ListView.ItemTemplate>
                     </ListView>
 
+                    <TextBlock x:Name="EmptyText"
+                               Grid.Row="1"
+                               Margin="24"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="WrapWholeWords"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               Visibility="Collapsed" />
+
                     <StackPanel x:Name="ErrorPanel"
                                 Grid.Row="1"
                                 Margin="24"

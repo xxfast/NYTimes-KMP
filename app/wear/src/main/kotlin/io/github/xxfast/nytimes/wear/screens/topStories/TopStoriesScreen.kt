@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.Card
@@ -44,6 +45,7 @@ import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesRouteViewModel
+import io.github.xxfast.nytimes.screens.topStories.emptyMessage
 import io.github.xxfast.nytimes.wear.components.ErrorCard
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
@@ -132,6 +134,15 @@ fun TopStoriesView(
                 .align(CenterHorizontally)
             )
           }
+        }
+      } else if (state.articles.isNullOrEmpty()) {
+        item {
+          Text(
+            text = emptyMessage(state.section),
+            style = MaterialTheme.typography.caption1,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(8.dp),
+          )
         }
       } else {
         items(state.articles.orEmpty()) { article ->
