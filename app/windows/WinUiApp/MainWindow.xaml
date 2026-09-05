@@ -302,6 +302,11 @@
                         </Border>
 
                         <StackPanel Grid.Row="1" Spacing="6">
+                            <TextBlock x:Name="HeroCaption"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                       TextWrapping="WrapWholeWords"
+                                       Visibility="Collapsed" />
                             <ProgressRing x:Name="DetailLoadingRing"
                                           Width="24"
                                           Height="24"
@@ -331,14 +336,26 @@
                             <TextBlock x:Name="ArticleByline"
                                        Style="{StaticResource BodyTextBlockStyle}"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
-                                    CornerRadius="4"
-                                    Padding="8,2"
-                                    HorizontalAlignment="Left">
-                                <TextBlock x:Name="ArticleSection"
-                                           Style="{StaticResource CaptionTextBlockStyle}"
-                                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
-                            </Border>
+                            <!-- Categories: section and subsection chips, as in the Compose article. -->
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        CornerRadius="12"
+                                        Padding="10,3">
+                                    <TextBlock x:Name="ArticleSection"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                </Border>
+                                <Border x:Name="SubsectionChip"
+                                        Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="12"
+                                        Padding="10,3"
+                                        Visibility="Collapsed">
+                                    <TextBlock x:Name="ArticleSubsection"
+                                               Style="{StaticResource CaptionTextBlockStyle}" />
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
 
                         <ScrollViewer Grid.Row="2"
@@ -391,7 +408,7 @@
                                     Click="SaveButton_Click"
                                     Style="{StaticResource AccentButtonStyle}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <FontIcon x:Name="SaveIcon" Glyph="&#xE734;" FontSize="14" />
+                                    <FontIcon x:Name="SaveIcon" Glyph="&#xEB51;" FontSize="14" />
                                     <TextBlock x:Name="SaveButtonText" Text="Save" />
                                 </StackPanel>
                             </Button>

@@ -23,6 +23,8 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private string _articleByline = string.Empty;
     private string _articleUrl = string.Empty;
     private string _articleImageUrl = string.Empty;
+    private string _articleImageCaption = string.Empty;
+    private string _articleSubsection = string.Empty;
     private int _disposed;
 
     /// <param name="openRelated">
@@ -128,6 +130,32 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
 
     public bool HasArticleImage => !string.IsNullOrWhiteSpace(ArticleImageUrl);
 
+    /// <summary>Caption of the hero image; empty when the article has no image or caption.</summary>
+    public string ArticleImageCaption
+    {
+        get => _articleImageCaption;
+        private set
+        {
+            if (!SetField(ref _articleImageCaption, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasArticleImageCaption)));
+        }
+    }
+
+    public bool HasArticleImageCaption => !string.IsNullOrWhiteSpace(ArticleImageCaption);
+
+    /// <summary>Second category chip after the section, e.g. "Europe"; empty when none.</summary>
+    public string ArticleSubsection
+    {
+        get => _articleSubsection;
+        private set
+        {
+            if (!SetField(ref _articleSubsection, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasArticleSubsection)));
+        }
+    }
+
+    public bool HasArticleSubsection => !string.IsNullOrWhiteSpace(ArticleSubsection);
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private async Task ObserveStatesAsync()
@@ -182,6 +210,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         {
             Related.Clear();
             ArticleImageUrl = string.Empty;
+            ArticleImageCaption = string.Empty;
             return;
         }
 
@@ -189,19 +218,26 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         ArticleTitle = article.Title;
         ArticleDescription = article.Description;
         ArticleSectionName = article.Section.Name;
+        ArticleSubsection = article.Subsection;
         ArticleByline = article.Byline;
         ArticleUrl = article.Url;
 
         // First multimedia entry drives the detail image, matching the Compose hosts.
         var imageUrl = string.Empty;
+        var imageCaption = string.Empty;
         foreach (var media in article.Multimedia ?? [])
         {
             using (media)
             {
-                if (imageUrl.Length == 0) imageUrl = media.Url;
+                if (imageUrl.Length == 0)
+                {
+                    imageUrl = media.Url;
+                    imageCaption = media.Caption;
+                }
             }
         }
         ArticleImageUrl = imageUrl;
+        ArticleImageCaption = imageCaption;
 
         Related.Clear();
         // null related = shared Loading.

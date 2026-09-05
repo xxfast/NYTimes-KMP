@@ -345,11 +345,31 @@
                                                                IsEnabled="{Binding DataContext.CanGoBack, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                Icon="{ui:SymbolIcon ArrowLeft24}"
                                                                ToolTip="Back to the previous story" />
+                                                    <!-- Favourite toggle: outline heart until saved, filled heart after (as in StoryView). -->
                                                     <ui:Button Margin="0,0,8,0"
                                                                Appearance="Primary"
-                                                               Command="{Binding SaveCommand}"
-                                                               Content="Save"
-                                                               Icon="{ui:SymbolIcon Bookmark24}" />
+                                                               Command="{Binding SaveCommand}">
+                                                        <ui:Button.Style>
+                                                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                                                <Setter Property="Content" Value="Save" />
+                                                                <Setter Property="Icon">
+                                                                    <Setter.Value>
+                                                                        <ui:SymbolIcon Symbol="Heart24" />
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsSaved}" Value="True">
+                                                                        <Setter Property="Content" Value="Saved" />
+                                                                        <Setter Property="Icon">
+                                                                            <Setter.Value>
+                                                                                <ui:SymbolIcon Symbol="Heart24" Filled="True" />
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ui:Button.Style>
+                                                    </ui:Button>
                                                     <ui:Button Appearance="Secondary"
                                                                Command="{Binding RefreshCommand}"
                                                                Content="Refresh"
@@ -431,6 +451,12 @@
                                                         <local:ArticleImage Source="{Binding ArticleImageUrl}"
                                                                             Height="240" />
                                                     </Border>
+                                                    <TextBlock Margin="0,-8,0,16"
+                                                               Style="{StaticResource LabelSmallTextStyle}"
+                                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                               Text="{Binding ArticleImageCaption}"
+                                                               TextWrapping="Wrap"
+                                                               Visibility="{Binding HasArticleImageCaption, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                                     <TextBlock Style="{StaticResource BodyMediumTextStyle}"
                                                                Text="{Binding ArticleDescription}" />
@@ -443,6 +469,32 @@
                                                                         Content="{Binding ArticleUrl}"
                                                                         Icon="{ui:SymbolIcon Open24}"
                                                                         NavigateUri="{Binding ArticleUrl}" />
+
+                                                    <!-- Categories: section and subsection chips, as at the foot of the Compose article. -->
+                                                    <TextBlock Margin="0,16,0,4"
+                                                               Style="{StaticResource LabelSmallTextStyle}"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               Text="Categories" />
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Border Padding="10,4"
+                                                                CornerRadius="{StaticResource ChipCornerRadius}"
+                                                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                                BorderThickness="1">
+                                                            <TextBlock Style="{StaticResource LabelMediumTextStyle}"
+                                                                       Text="{Binding ArticleSectionName}" />
+                                                        </Border>
+                                                        <Border Margin="6,0,0,0"
+                                                                Padding="10,4"
+                                                                CornerRadius="{StaticResource ChipCornerRadius}"
+                                                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                                BorderThickness="1"
+                                                                Visibility="{Binding HasArticleSubsection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                            <TextBlock Style="{StaticResource LabelMediumTextStyle}"
+                                                                       Text="{Binding ArticleSubsection}" />
+                                                        </Border>
+                                                    </StackPanel>
 
                                                     <!-- Related below the article; in the wide layout it moves to the side column. -->
                                                     <StackPanel>

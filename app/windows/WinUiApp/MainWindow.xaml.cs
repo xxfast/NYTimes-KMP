@@ -246,6 +246,10 @@ public sealed partial class MainWindow : Window
         ArticleSection.Visibility = string.IsNullOrWhiteSpace(_detail.ArticleSectionName)
             ? Visibility.Collapsed
             : Visibility.Visible;
+        ArticleSubsection.Text = _detail.ArticleSubsection.ToUpperInvariant();
+        SubsectionChip.Visibility = _detail.HasArticleSubsection ? Visibility.Visible : Visibility.Collapsed;
+        HeroCaption.Text = _detail.ArticleImageCaption;
+        HeroCaption.Visibility = _detail.HasArticleImageCaption ? Visibility.Visible : Visibility.Collapsed;
         ArticleDescription.Text = _detail.ArticleDescription;
         ReadStoryText.Text = _detail.ArticleUrl;
         ReadStoryLink.NavigateUri = Uri.TryCreate(_detail.ArticleUrl, UriKind.Absolute, out var storyUri)
@@ -270,14 +274,15 @@ public sealed partial class MainWindow : Window
         DetailErrorText.Text = _detail.Error ?? string.Empty;
         DetailErrorPanel.Visibility = _detail.HasError ? Visibility.Visible : Visibility.Collapsed;
 
+        // Favourite toggle: outline heart until saved, filled heart after (as in StoryView).
         if (_detail.IsSaved)
         {
-            SaveIcon.Glyph = "\uE735"; // Solid star
+            SaveIcon.Glyph = "\uEB52"; // HeartFill
             SaveButtonText.Text = "Saved";
         }
         else
         {
-            SaveIcon.Glyph = "\uE734"; // Outline star
+            SaveIcon.Glyph = "\uEB51"; // Heart
             SaveButtonText.Text = "Save";
         }
     }
