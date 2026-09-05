@@ -79,6 +79,16 @@ references the macOS dylib as an explicit `NativeReference` in its project file.
 Defects found in kotlin-native-nuget while building these hosts are tracked on its
 [issue tracker](https://github.com/xxfast/kotlin-native-nuget/issues), not in this repository.
 
+## Layouts
+
+WPF and WinUI mirror the Compose window size classes from code-behind (`ApplyLayout`):
+
+| Window width | Layout |
+|--------------|--------|
+| under 840    | Compact: sections and list, or the detail with a "Stories" button back to the list |
+| 840 to 1399  | Expanded: sections, then list and detail split 50/50 |
+| 1400 and up  | Wide: the detail widens and related stories move beside the article (60/40) |
+
 ## Navigation state
 
 The shared `TopStoriesViewModel` keeps a back stack of opened stories (`GoBackCommand` /

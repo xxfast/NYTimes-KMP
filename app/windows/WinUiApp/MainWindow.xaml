@@ -46,14 +46,15 @@
               Padding="16,8,16,16"
               ColumnSpacing="12"
               RowSpacing="0">
+            <!-- Column widths and pane visibility are driven by MainWindow.ApplyLayout (compact / expanded / wide). -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220" MinWidth="180" />
-                <ColumnDefinition Width="*" MinWidth="280" />
-                <ColumnDefinition Width="1.15*" MinWidth="300" />
+                <ColumnDefinition x:Name="SectionsColumn" Width="220" />
+                <ColumnDefinition x:Name="StoriesColumn" Width="*" />
+                <ColumnDefinition x:Name="DetailColumn" Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Sections -->
-            <Border Grid.Column="0" Style="{StaticResource AppCardBorderStyle}">
+            <Border x:Name="SectionsPane" Grid.Column="0" Style="{StaticResource AppCardBorderStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -91,7 +92,7 @@
             </Border>
 
             <!-- Top stories -->
-            <Border Grid.Column="1" Style="{StaticResource AppCardBorderStyle}">
+            <Border x:Name="StoriesPane" Grid.Column="1" Style="{StaticResource AppCardBorderStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -225,7 +226,7 @@
             </Border>
 
             <!-- Detail -->
-            <Border Grid.Column="2" Style="{StaticResource AppCardBorderStyle}" Padding="20">
+            <Border x:Name="DetailPane" Grid.Column="2" Style="{StaticResource AppCardBorderStyle}" Padding="20">
                 <Grid>
                     <!-- Empty state -->
                     <StackPanel x:Name="EmptyDetail"
@@ -243,14 +244,19 @@
                     </StackPanel>
 
                     <!-- Loaded detail -->
-                    <Grid x:Name="DetailContent" Visibility="Collapsed" RowSpacing="12">
+                    <Grid x:Name="DetailContent" Visibility="Collapsed" RowSpacing="12" ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <!-- Opens to 2* in the wide layout so related stories sit beside the article. -->
+                            <ColumnDefinition x:Name="RelatedColumn" Width="0" />
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="180" />
+                            <RowDefinition x:Name="RelatedRow" Height="180" />
                         </Grid.RowDefinitions>
 
                         <Border x:Name="HeroImageBorder"
@@ -317,6 +323,17 @@
                         <StackPanel Grid.Row="3"
                                     Orientation="Horizontal"
                                     Spacing="8">
+                            <!-- Compact only: the detail covers the list, so offer a way back to it. -->
+                            <Button x:Name="CloseStoryButton"
+                                    Click="CloseStoryButton_Click"
+                                    Visibility="Collapsed"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    ToolTipService.ToolTip="Back to the story list">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE76B;" FontSize="14" />
+                                    <TextBlock Text="Stories" />
+                                </StackPanel>
+                            </Button>
                             <Button x:Name="BackButton"
                                     Click="BackButton_Click"
                                     IsEnabled="False"
@@ -345,13 +362,18 @@
                             </Button>
                         </StackPanel>
 
-                        <TextBlock Grid.Row="4"
-                                   Style="{StaticResource SectionHeaderTextStyle}"
+                        <!-- Below the article by default; ApplyLayout moves it into RelatedColumn when wide. -->
+                        <Grid x:Name="RelatedPanel" Grid.Row="4" Grid.RowSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource SectionHeaderTextStyle}"
                                    Margin="0,8,0,4"
                                    Text="RELATED" />
 
                         <ListView x:Name="RelatedList"
-                                  Grid.Row="5"
+                                  Grid.Row="1"
                                   Background="Transparent"
                                   BorderThickness="0"
                                   SelectionMode="None"
@@ -388,6 +410,7 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Border>

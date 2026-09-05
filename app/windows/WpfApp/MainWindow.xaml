@@ -7,12 +7,65 @@
                  Height="720"
                  Width="1180"
                  MinHeight="520"
-                 MinWidth="720"
+                 MinWidth="480"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowStartupLocation="CenterScreen">
     <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!-- Related-story card, shared by the below-article and side-column lists. -->
+        <DataTemplate x:Key="RelatedStoryTemplate">
+            <Border Margin="0,0,0,8"
+                    Padding="12"
+                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Cursor="Hand">
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftClick"
+                                  Command="{Binding DataContext.OpenRelatedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                  CommandParameter="{Binding}" />
+                </Border.InputBindings>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                            Width="72"
+                            Height="54"
+                            Margin="0,0,12,0"
+                            CornerRadius="4"
+                            ClipToBounds="True"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <local:ArticleImage Source="{Binding ImageUrl}" />
+                    </Border>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock FontWeight="SemiBold"
+                                   Text="{Binding Title}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   Text="{Binding Description}"
+                                   TextTrimming="CharacterEllipsis"
+                                   TextWrapping="Wrap"
+                                   MaxHeight="40" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </ui:FluentWindow.Resources>
 
     <Grid>
@@ -35,15 +88,17 @@
             </ui:TitleBar.TrailingContent>
         </ui:TitleBar>
 
+        <!-- Column widths and pane visibility are driven by MainWindow.ApplyLayout (compact / expanded / wide). -->
         <Grid Grid.Row="1" Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220" MinWidth="180" />
-                <ColumnDefinition Width="*" MinWidth="260" />
-                <ColumnDefinition Width="1.15*" MinWidth="280" />
+                <ColumnDefinition x:Name="SectionsColumn" Width="220" />
+                <ColumnDefinition x:Name="StoriesColumn" Width="*" />
+                <ColumnDefinition x:Name="DetailColumn" Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Section navigation -->
-            <Border Grid.Column="0"
+            <Border x:Name="SectionsPane"
+                    Grid.Column="0"
                     Margin="12,0,8,0"
                     Padding="0,4,0,8"
                     Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -83,7 +138,8 @@
             </Border>
 
             <!-- Story list -->
-            <Border Grid.Column="1"
+            <Border x:Name="StoriesPane"
+                    Grid.Column="1"
                     Margin="0,0,8,0"
                     Padding="0"
                     Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -225,7 +281,8 @@
             </Border>
 
             <!-- Detail pane -->
-            <Border Grid.Column="2"
+            <Border x:Name="DetailPane"
+                    Grid.Column="2"
                     Margin="0,0,12,0"
                     Padding="20"
                     Background="{DynamicResource ControlFillColorDefaultBrush}"
@@ -249,6 +306,14 @@
                                                 <StackPanel DockPanel.Dock="Right"
                                                             Margin="12,0,0,0"
                                                             Orientation="Horizontal">
+                                                    <!-- Compact only: the detail covers the list, so offer a way back to it. -->
+                                                    <ui:Button Margin="0,0,8,0"
+                                                               Appearance="Secondary"
+                                                               Command="{Binding DataContext.CloseStoryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               Content="Stories"
+                                                               Icon="{ui:SymbolIcon ChevronLeft24}"
+                                                               ToolTip="Back to the story list"
+                                                               Visibility="{Binding IsCompact, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                                     <ui:Button Margin="0,0,8,0"
                                                                Appearance="Secondary"
                                                                Command="{Binding DataContext.GoBackCommand, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -281,7 +346,25 @@
                                                 </StackPanel>
                                             </DockPanel>
 
-                                            <ScrollViewer Grid.Row="1"
+                                            <!-- Article (and, below the wide breakpoint, related) on the left; side column opens when wide. -->
+                                            <Grid Grid.Row="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3*" />
+                                                    <ColumnDefinition>
+                                                        <ColumnDefinition.Style>
+                                                            <Style TargetType="ColumnDefinition">
+                                                                <Setter Property="Width" Value="0" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsWide, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Width" Value="2*" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ColumnDefinition.Style>
+                                                    </ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+
+                                            <ScrollViewer Grid.Column="0"
                                                           Margin="0,16,0,0"
                                                           VerticalScrollBarVisibility="Auto">
                                                 <StackPanel>
@@ -338,67 +421,51 @@
                                                                Text="{Binding ArticleUrl}"
                                                                TextWrapping="Wrap" />
 
+                                                    <!-- Related below the article; in the wide layout it moves to the side column. -->
+                                                    <StackPanel>
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsWide, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
                                                     <TextBlock Margin="0,24,0,8"
                                                                FontSize="14"
                                                                FontWeight="SemiBold"
                                                                Text="Related" />
-                                                    <ItemsControl ItemsSource="{Binding Related}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Border Margin="0,0,0,8"
-                                                                        Padding="12"
-                                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                                                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                                                        BorderThickness="1"
-                                                                        CornerRadius="6"
-                                                                        Cursor="Hand">
-                                                                    <Border.InputBindings>
-                                                                        <MouseBinding MouseAction="LeftClick"
-                                                                                      Command="{Binding DataContext.OpenRelatedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                                      CommandParameter="{Binding}" />
-                                                                    </Border.InputBindings>
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="Auto" />
-                                                                            <ColumnDefinition Width="*" />
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <Border Grid.Column="0"
-                                                                                Width="72"
-                                                                                Height="54"
-                                                                                Margin="0,0,12,0"
-                                                                                CornerRadius="4"
-                                                                                ClipToBounds="True"
-                                                                                Background="{DynamicResource ControlFillColorDefaultBrush}">
-                                                                            <Border.Style>
-                                                                                <Style TargetType="Border">
-                                                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                                                    <Style.Triggers>
-                                                                                        <DataTrigger Binding="{Binding HasImage}" Value="True">
-                                                                                            <Setter Property="Visibility" Value="Visible" />
-                                                                                        </DataTrigger>
-                                                                                    </Style.Triggers>
-                                                                                </Style>
-                                                                            </Border.Style>
-                                                                            <local:ArticleImage Source="{Binding ImageUrl}" />
-                                                                        </Border>
-                                                                        <StackPanel Grid.Column="1">
-                                                                            <TextBlock FontWeight="SemiBold"
-                                                                                       Text="{Binding Title}"
-                                                                                       TextWrapping="Wrap" />
-                                                                            <TextBlock Margin="0,4,0,0"
-                                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                                       Text="{Binding Description}"
-                                                                                       TextTrimming="CharacterEllipsis"
-                                                                                       TextWrapping="Wrap"
-                                                                                       MaxHeight="40" />
-                                                                        </StackPanel>
-                                                                    </Grid>
-                                                                </Border>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
+                                                    <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />
+                                                    </StackPanel>
                                                 </StackPanel>
                                             </ScrollViewer>
+
+                                                <!-- Wide only: related stories beside the article (60/40). -->
+                                                <Grid Grid.Column="1" Margin="16,16,0,0">
+                                                    <Grid.Style>
+                                                        <Style TargetType="Grid">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsWide, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Grid.Style>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Margin="0,0,0,8"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               Text="Related" />
+                                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                                        <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />
+                                                    </ScrollViewer>
+                                                </Grid>
+                                            </Grid>
 
                                             <StackPanel Grid.Row="2"
                                                         Margin="0,12,0,0"

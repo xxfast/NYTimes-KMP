@@ -58,6 +58,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         SelectSectionCommand = new RelayCommand<string>(_kotlinViewModel.OnSelectSection);
         OpenStoryCommand = new RelayCommand<StorySummaryViewModel>(story => _ = OpenStoryAsync(story));
         GoBackCommand = new RelayCommand(() => _ = GoBackAsync());
+        CloseStoryCommand = new RelayCommand(() => _ = CloseStoryAsync());
 
         foreach (var name in KotlinApp.WindowsApp.SectionNames())
         {
@@ -90,6 +91,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     public ICommand GoBackCommand { get; }
 
     public bool CanGoBack => _history.Count > 0;
+
+    /// <summary>Closes the detail pane and returns to the list (compact layouts).</summary>
+    public ICommand CloseStoryCommand { get; }
+
+    public bool HasSelectedStory => SelectedStory is not null;
 
     public bool IsLoading
     {
@@ -134,7 +140,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     public StoryDetailViewModel? SelectedStory
     {
         get => _selectedStory;
-        private set => SetField(ref _selectedStory, value);
+        private set
+        {
+            if (!SetField(ref _selectedStory, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasSelectedStory)));
+        }
     }
 
     /// <summary>Section selected in the left navigation list.</summary>
@@ -295,6 +305,24 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
 
         if (disposal is not null) await disposal;
+    }
+
+    private async Task CloseStoryAsync()
+    {
+        var previous = SelectedStory;
+        if (previous is null) return;
+
+        _history.Clear();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        _currentStory = null;
+        SelectedStory = null;
+        if (_selectedArticle is not null)
+        {
+            _selectedArticle = null;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedArticle)));
+        }
+        PersistState();
+        await previous.DisposeAsync();
     }
 
     private async Task GoBackAsync()

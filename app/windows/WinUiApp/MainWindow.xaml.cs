@@ -53,6 +53,8 @@ public sealed partial class MainWindow : Window
         ArticlesList.ItemsSource = _viewModel.Articles;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         ApplyLoading();
+        Root.SizeChanged += (_, _) => ApplyLayout();
+        ApplyLayout();
 
         Closed += async (_, _) =>
         {
@@ -129,7 +131,10 @@ public sealed partial class MainWindow : Window
             ApplyLoading();
 
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedStory) or null)
+        {
             BindDetail(_viewModel.SelectedStory);
+            ApplyLayout();
+        }
 
         if (e.PropertyName is nameof(TopStoriesViewModel.CanGoBack) or null)
             BackButton.IsEnabled = _viewModel.CanGoBack;
@@ -141,6 +146,56 @@ public sealed partial class MainWindow : Window
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedArticle) or null &&
             !ReferenceEquals(ArticlesList.SelectedItem, _viewModel.SelectedArticle))
             ArticlesList.SelectedItem = _viewModel.SelectedArticle;
+    }
+
+    /// <summary>Below this width the list and the detail take turns filling the window.</summary>
+    private const double CompactBreakpoint = 840;
+
+    /// <summary>From this width the detail pane splits article and related stories 60/40.</summary>
+    private const double WideBreakpoint = 1400;
+
+    /// <summary>
+    /// Mirrors the Compose layouts: compact shows the list or the detail, expanded splits
+    /// list and detail 50/50, and wide widens the detail and moves related stories beside
+    /// the article.
+    /// </summary>
+    private void ApplyLayout()
+    {
+        var width = Root.ActualWidth;
+        if (width < 1) return;
+        var isCompact = width < CompactBreakpoint;
+        var isWide = width >= WideBreakpoint;
+        var showDetail = _viewModel.HasSelectedStory;
+
+        CloseStoryButton.Visibility = isCompact ? Visibility.Visible : Visibility.Collapsed;
+
+        if (isCompact)
+        {
+            SectionsPane.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+            StoriesPane.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+            DetailPane.Visibility = showDetail ? Visibility.Visible : Visibility.Collapsed;
+            SectionsColumn.Width = showDetail ? new GridLength(0) : new GridLength(180);
+            StoriesColumn.Width = showDetail ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            DetailColumn.Width = showDetail ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+        }
+        else
+        {
+            SectionsPane.Visibility = Visibility.Visible;
+            StoriesPane.Visibility = Visibility.Visible;
+            DetailPane.Visibility = Visibility.Visible;
+            SectionsColumn.Width = new GridLength(220);
+            StoriesColumn.Width = new GridLength(1, GridUnitType.Star);
+            DetailColumn.Width = isWide
+                ? new GridLength(1.5, GridUnitType.Star)
+                : new GridLength(1, GridUnitType.Star);
+        }
+
+        // Wide: related stories move into a 40% side column and span the whole detail height.
+        RelatedColumn.Width = isWide ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
+        RelatedRow.Height = isWide ? new GridLength(0) : new GridLength(180);
+        Grid.SetColumn(RelatedPanel, isWide ? 1 : 0);
+        Grid.SetRow(RelatedPanel, isWide ? 0 : 4);
+        Grid.SetRowSpan(RelatedPanel, isWide ? 6 : 2);
     }
 
     private void ApplyLoading()
@@ -239,6 +294,9 @@ public sealed partial class MainWindow : Window
 
     private void SaveButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.SaveCommand.Execute(null);
+
+    private void CloseStoryButton_Click(object sender, RoutedEventArgs e) =>
+        _viewModel.CloseStoryCommand.Execute(null);
 
     private void BackButton_Click(object sender, RoutedEventArgs e) =>
         _viewModel.GoBackCommand.Execute(null);
