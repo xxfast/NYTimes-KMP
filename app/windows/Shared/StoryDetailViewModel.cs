@@ -132,6 +132,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
 
     private async Task ObserveStatesAsync()
     {
+        HostDiagnostics.Info("flow", $"Story '{Title}': collecting state flow");
         try
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
@@ -141,10 +142,23 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
                     await RunOnUiAsync(() => Apply(state));
                 }
             }
+            HostDiagnostics.Info("flow", $"Story '{Title}': state flow completed");
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
             // Host disposal cancels KotlinFlow collection.
+            HostDiagnostics.Info("flow", $"Story '{Title}': state flow cancelled by host");
+        }
+        catch (Exception exception)
+        {
+            // Without this the observation dies silently and the pane freezes on its last state.
+            HostDiagnostics.Error("bridge", $"Story '{Title}': state flow faulted", exception);
+            await RunOnUiAsync(() =>
+            {
+                ErrorTitle = "Lost connection to the shared code";
+                Error = exception.Message;
+                IsLoading = false;
+            });
         }
     }
 
@@ -152,6 +166,12 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     {
         // null article = shared Loading, unless the domain reported why it never arrived.
         using var failure = state.Failure;
+        if (failure is not null && failure.Message != _error)
+        {
+            HostDiagnostics.Warning(
+                "network",
+                $"Story '{Title}': {failure.Kind} {failure.StatusCode} {failure.Message}");
+        }
         ErrorTitle = failure?.Title;
         Error = failure?.Message;
         IsLoading = state.Article is null && failure is null;
@@ -204,6 +224,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
 
+        HostDiagnostics.Info("bridge", $"Story '{Title}': disposing");
         _cancellation.Cancel();
         _kotlinViewModel.Close();
         try { await _observation; }

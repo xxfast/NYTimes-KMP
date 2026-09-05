@@ -78,3 +78,11 @@ references the macOS dylib as an explicit `NativeReference` in its project file.
 
 Defects found in kotlin-native-nuget while building these hosts are tracked on its
 [issue tracker](https://github.com/xxfast/kotlin-native-nuget/issues), not in this repository.
+
+## Diagnostics
+
+The shared C# view models trace flow lifecycle, network failures reported by the domain, and
+bridge faults through the `NYTimes.Windows` `TraceSource`, so they show up in the debugger
+output window. Each host also appends them to
+`%LOCALAPPDATA%\NYTimes-KMP\diagnostics.log`. A faulted flow no longer dies silently: the pane
+shows "Lost connection to the shared code" with the exception message.

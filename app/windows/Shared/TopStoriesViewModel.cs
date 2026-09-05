@@ -40,6 +40,8 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "NYTimes-KMP");
         Directory.CreateDirectory(storage);
+        HostDiagnostics.Initialise();
+        HostDiagnostics.Info("bridge", $"Bootstrapping shared code; storage at {storage}");
         KotlinApp.WindowsApp.Bootstrap(storage);
 
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
@@ -136,6 +138,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 
     private async Task ObserveStatesAsync()
     {
+        HostDiagnostics.Info("flow", "TopStories: collecting state flow");
         try
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
@@ -145,10 +148,23 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
                     await RunOnUiAsync(() => Apply(state));
                 }
             }
+            HostDiagnostics.Info("flow", "TopStories: state flow completed");
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
             // Window shutdown cancels the generated KotlinFlow collection.
+            HostDiagnostics.Info("flow", "TopStories: state flow cancelled by host");
+        }
+        catch (Exception exception)
+        {
+            // Without this the observation dies silently and the UI freezes on its last state.
+            HostDiagnostics.Error("bridge", "TopStories: state flow faulted", exception);
+            await RunOnUiAsync(() =>
+            {
+                ErrorTitle = "Lost connection to the shared code";
+                Error = exception.Message;
+                IsLoading = false;
+            });
         }
     }
 
@@ -156,6 +172,12 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         // null articles = shared Loading, unless the domain reported why they never arrived.
         using var failure = state.Failure;
+        if (failure is not null && failure.Message != _error)
+        {
+            HostDiagnostics.Warning(
+                "network",
+                $"TopStories {state.Section?.Name}: {failure.Kind} {failure.StatusCode} {failure.Message}");
+        }
         ErrorTitle = failure?.Title;
         Error = failure?.Message;
         IsLoading = state.Articles is null && failure is null;
@@ -237,6 +259,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
 
+        HostDiagnostics.Info("bridge", "TopStories: disposing");
         var storyDisposal = SelectedStory?.DisposeAsync().AsTask();
         _cancellation.Cancel();
         _kotlinViewModel.Close();
