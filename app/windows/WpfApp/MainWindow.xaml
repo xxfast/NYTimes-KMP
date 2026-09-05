@@ -111,15 +111,11 @@
                     Grid.Column="0"
                     Margin="12,0,8,0"
                     Padding="0,4,0,8"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8">
+                    Style="{StaticResource PaneBorderStyle}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top"
                                Margin="16,14,16,8"
-                               FontSize="12"
-                               FontWeight="SemiBold"
+                               Style="{StaticResource LabelMediumTextStyle}"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                Text="SECTIONS" />
                     <ListBox x:Name="SectionsList"
@@ -140,7 +136,7 @@
                         </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock FontSize="14" Text="{Binding DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Style="{StaticResource BodyMediumTextStyle}" Text="{Binding DisplayName}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -152,10 +148,7 @@
                     Grid.Column="1"
                     Margin="0,0,8,0"
                     Padding="0"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8">
+                    Style="{StaticResource PaneBorderStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -165,8 +158,7 @@
 
                     <DockPanel Grid.Row="0" Margin="16,14,16,8">
                         <TextBlock VerticalAlignment="Center"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
+                                   Style="{StaticResource TitleLargeTextStyle}"
                                    Text="Top Stories" />
                         <ui:ProgressRing Width="22"
                                          Height="22"
@@ -221,24 +213,21 @@
                                     </Border>
 
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock FontSize="12"
-                                                   FontWeight="SemiBold"
+                                        <TextBlock Style="{StaticResource LabelMediumTextStyle}"
                                                    Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
                                                    Text="{Binding SectionName}" />
                                         <TextBlock Margin="0,4,0,0"
-                                                   FontSize="15"
-                                                   FontWeight="SemiBold"
-                                                   Text="{Binding Title}"
-                                                   TextWrapping="Wrap" />
+                                                   Style="{StaticResource TitleMediumTextStyle}"
+                                                   Text="{Binding Title}" />
                                         <TextBlock Margin="0,4,0,0"
-                                                   FontSize="13"
+                                                   Style="{StaticResource BodySmallTextStyle}"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                    Text="{Binding Description}"
                                                    TextTrimming="CharacterEllipsis"
                                                    TextWrapping="Wrap"
                                                    MaxHeight="40" />
                                         <TextBlock Margin="0,6,0,0"
-                                                   FontSize="12"
+                                                   Style="{StaticResource LabelSmallTextStyle}"
                                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                                    Text="{Binding Byline}"
                                                    TextTrimming="CharacterEllipsis" />
@@ -271,11 +260,9 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock FontSize="15"
-                                   FontWeight="SemiBold"
+                        <TextBlock Style="{StaticResource TitleMediumTextStyle}"
                                    Text="{Binding ErrorTitle}"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap" />
+                                   TextAlignment="Center" />
                         <TextBlock Margin="0,4,0,0"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                    Text="{Binding Error}"
@@ -308,10 +295,7 @@
                     Grid.Column="2"
                     Margin="0,0,12,0"
                     Padding="20"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8">
+                    Style="{StaticResource PaneBorderStyle}">
                 <ContentControl Content="{Binding SelectedStory}">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
@@ -354,15 +338,12 @@
                                                                Icon="{ui:SymbolIcon ArrowClockwise24}" />
                                                 </StackPanel>
                                                 <StackPanel>
-                                                    <TextBlock FontSize="12"
-                                                               FontWeight="SemiBold"
+                                                    <TextBlock Style="{StaticResource LabelMediumTextStyle}"
                                                                Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
                                                                Text="{Binding ArticleSectionName}" />
                                                     <TextBlock Margin="0,6,0,4"
-                                                               FontSize="22"
-                                                               FontWeight="SemiBold"
-                                                               Text="{Binding ArticleTitle}"
-                                                               TextWrapping="Wrap" />
+                                                               Style="{StaticResource HeadlineSmallTextStyle}"
+                                                               Text="{Binding ArticleTitle}" />
                                                     <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                Text="{Binding ArticleByline}"
                                                                TextWrapping="Wrap" />
@@ -400,10 +381,8 @@
 
                                                     <StackPanel Margin="0,0,0,16"
                                                                 Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <TextBlock FontSize="15"
-                                                                   FontWeight="SemiBold"
-                                                                   Text="{Binding ErrorTitle}"
-                                                                   TextWrapping="Wrap" />
+                                                        <TextBlock Style="{StaticResource TitleMediumTextStyle}"
+                                                                   Text="{Binding ErrorTitle}" />
                                                         <TextBlock Margin="0,4,0,0"
                                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                    Text="{Binding Error}"
@@ -435,12 +414,10 @@
                                                                             Height="240" />
                                                     </Border>
 
-                                                    <TextBlock FontSize="15"
-                                                               LineHeight="24"
-                                                               Text="{Binding ArticleDescription}"
-                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Style="{StaticResource BodyMediumTextStyle}"
+                                                               Text="{Binding ArticleDescription}" />
                                                     <TextBlock Margin="0,16,0,4"
-                                                               FontSize="12"
+                                                               Style="{StaticResource LabelSmallTextStyle}"
                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                Text="Read the full story" />
                                                     <ui:HyperlinkButton Padding="0"
@@ -461,8 +438,7 @@
                                                             </Style>
                                                         </StackPanel.Style>
                                                     <TextBlock Margin="0,24,0,8"
-                                                               FontSize="14"
-                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TitleSmallTextStyle}"
                                                                Text="Related" />
                                                     <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />
                                                     </StackPanel>
@@ -486,8 +462,7 @@
                                                         <RowDefinition Height="*" />
                                                     </Grid.RowDefinitions>
                                                     <TextBlock Margin="0,0,0,8"
-                                                               FontSize="14"
-                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TitleSmallTextStyle}"
                                                                Text="Related" />
                                                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                                         <ItemsControl ItemsSource="{Binding Related}" ItemTemplate="{StaticResource RelatedStoryTemplate}" />

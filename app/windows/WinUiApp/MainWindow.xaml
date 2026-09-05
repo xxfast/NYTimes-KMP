@@ -167,9 +167,7 @@
 
                                     <StackPanel Grid.Column="1" Spacing="4">
                                         <TextBlock Text="{Binding Title}"
-                                                   FontWeight="SemiBold"
-                                                   TextWrapping="WrapWholeWords"
-                                                   Style="{StaticResource BodyTextBlockStyle}" />
+                                                   Style="{StaticResource TitleMediumTextStyle}" />
                                         <TextBlock Text="{Binding Byline}"
                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -208,9 +206,7 @@
                         <TextBlock x:Name="ErrorTitleText"
                                    HorizontalAlignment="Center"
                                    TextAlignment="Center"
-                                   TextWrapping="WrapWholeWords"
-                                   FontWeight="SemiBold"
-                                   Style="{StaticResource BodyTextBlockStyle}" />
+                                   Style="{StaticResource TitleMediumTextStyle}" />
                         <TextBlock x:Name="ErrorText"
                                    HorizontalAlignment="Center"
                                    TextAlignment="Center"
@@ -296,9 +292,7 @@
                                         Spacing="8"
                                         Visibility="Collapsed">
                                 <TextBlock x:Name="DetailErrorTitleText"
-                                           TextWrapping="WrapWholeWords"
-                                           FontWeight="SemiBold"
-                                           Style="{StaticResource BodyTextBlockStyle}" />
+                                           Style="{StaticResource TitleMediumTextStyle}" />
                                 <TextBlock x:Name="DetailErrorText"
                                            TextWrapping="WrapWholeWords"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -313,8 +307,7 @@
                                 </Button>
                             </StackPanel>
                             <TextBlock x:Name="ArticleTitle"
-                                       Style="{StaticResource TitleTextBlockStyle}"
-                                       TextWrapping="WrapWholeWords" />
+                                       Style="{StaticResource HeadlineSmallTextStyle}" />
                             <TextBlock x:Name="ArticleByline"
                                        Style="{StaticResource BodyTextBlockStyle}"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />

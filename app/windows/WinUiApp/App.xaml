@@ -21,6 +21,17 @@
                 <Setter Property="Padding" Value="0" />
             </Style>
 
+            <!-- Material 3 roles the Compose screens use, mapped onto the Fluent type ramp. -->
+            <Style x:Key="HeadlineSmallTextStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="TextWrapping" Value="WrapWholeWords" />
+            </Style>
+
+            <Style x:Key="TitleMediumTextStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextWrapping" Value="WrapWholeWords" />
+            </Style>
+
             <Style x:Key="SectionHeaderTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CaptionTextBlockStyle}">
                 <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
                 <Setter Property="FontWeight" Value="SemiBold" />
