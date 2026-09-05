@@ -98,6 +98,10 @@ jobs:
         run: chmod +x gradlew
         shell: bash
 
+      - name: Test shared domains
+        run: ./gradlew :app:desktopTest
+        shell: bash
+
       - name: Build with Gradle
         run: ./gradlew :app:desktop:${{ matrix.config.task }}
         shell: bash

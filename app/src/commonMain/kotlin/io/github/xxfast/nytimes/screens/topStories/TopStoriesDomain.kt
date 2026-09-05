@@ -60,6 +60,9 @@ fun TopStoriesDomain(
         TopStoriesEvent.Refresh -> refreshes++
         is TopStoriesEvent.SelectSection -> {
           section = if (event.section == section) home else event.section
+          // Reset with the section so no state pairs the new section with the old list.
+          articles = Loading
+          failure = null
           refreshes++
         }
       }

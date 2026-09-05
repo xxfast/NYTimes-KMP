@@ -16,7 +16,8 @@ data class SummaryState(
 ) {
   constructor(article: Article) : this(
     uri = article.uri,
-    imageUrl = article.multimedia?.first()?.url,
+    // Articles can arrive with no multimedia at all; first() here used to abort the whole load.
+    imageUrl = article.multimedia?.firstOrNull()?.url,
     title = article.title,
     description = article.description,
     section = article.section,
