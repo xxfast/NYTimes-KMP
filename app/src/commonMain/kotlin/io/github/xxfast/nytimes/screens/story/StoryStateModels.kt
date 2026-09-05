@@ -13,6 +13,8 @@ data class StoryState(
   val article: Article? = Loading,
   val related: List<SummaryState>? = Loading,
   val isSaved: Boolean? = DontKnowYet,
+  /** Why the last load of [article] failed; null while loading or once loaded. */
+  val failure: String? = null,
 )
 
 sealed interface StoryEvent {

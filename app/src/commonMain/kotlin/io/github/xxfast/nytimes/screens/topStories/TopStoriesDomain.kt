@@ -11,11 +11,11 @@ import io.github.xxfast.kstore.KStore
 import io.github.xxfast.nytimes.api.NyTimesWebService
 import io.github.xxfast.nytimes.data.store
 import io.github.xxfast.nytimes.models.SavedArticles
-import io.github.xxfast.nytimes.models.TopStoryResponse
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.TopStorySections.home
 import io.github.xxfast.nytimes.screens.summary.SummaryState
+import io.github.xxfast.nytimes.utils.errorMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -28,6 +28,7 @@ fun TopStoriesDomain(
 ): TopStoriesState {
   var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
   var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
+  var failure: String? by remember { mutableStateOf(initialState.failure) }
 
   val favourites: List<SummaryState>? by store.updates
     .map { savedArticles -> savedArticles.orEmpty().map(::SummaryState) }
@@ -40,15 +41,16 @@ fun TopStoriesDomain(
     if (refreshes == 0 && articles != Loading) return@LaunchedEffect
     val selectedSection: TopStorySection = section ?: return@LaunchedEffect
     articles = Loading
+    failure = null
 
     if (selectedSection == TopStorySections.favourites) {
       articles = favourites
       return@LaunchedEffect
     }
 
-    val topStory: TopStoryResponse = webService.topStories(selectedSection).getOrNull()
-      ?: return@LaunchedEffect
-    articles = topStory.results.map(::SummaryState)
+    webService.topStories(selectedSection)
+      .onSuccess { topStory -> articles = topStory.results.map(::SummaryState) }
+      .onFailure { throwable -> failure = throwable.errorMessage }
   }
 
   LaunchedEffect(Unit) {
@@ -63,5 +65,5 @@ fun TopStoriesDomain(
     }
   }
 
-  return TopStoriesState(section, articles, numberOfFavourites)
+  return TopStoriesState(section, articles, numberOfFavourites, failure)
 }

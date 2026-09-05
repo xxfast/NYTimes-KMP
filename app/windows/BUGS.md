@@ -10,8 +10,8 @@ functionality is in
 | Component             |                                                                    Version |
 |-----------------------|---------------------------------------------------------------------------:|
 | Kotlin                |                                                                   `2.4.10` |
-| Gradle                |                                                                    `9.4.1` |
-| `kotlin-native-nuget` |                                                                    `0.3.0` |
+| Gradle                |                                                                    `9.7.0` |
+| `kotlin-native-nuget` |                                                                    `0.4.0` |
 | Kotlin targets        |                                                  `mingwX64` / `macosArm64` |
 | .NET targets          | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
 | Generated package     |                                                   `NYTimes.Kotlin` `0.2.0` |
@@ -68,24 +68,44 @@ to `osx-arm64`.
 
 ## Open
 
-### BUG-002: Network failures have no observable error state
-
-- **Area:** Shared domain / runtime
-- **Impact:** Top-stories and story-detail can stay in loading forever. Neither state model
-  carries an error, so the .NET hosts cannot show a failure message or retry reason.
-
 ### BUG-009: C# reserved keywords are not escaped in generated parameter names
 
-- **Area:** `kotlin-native-nuget` 0.3.0
+- **Area:** `kotlin-native-nuget` 0.4.0 (still open upstream; tracked in the plugin's
+  [`docs/backlog/c-keyword-parameter-names-never-escaped-kotlin.md`](https://github.com/xxfast/kotlin-native-nuget/blob/main/docs/backlog/c-keyword-parameter-names-never-escaped-kotlin.md))
 - **Observed:** `Article.abstract` emitted a constructor/P-Invoke parameter literally named
   `abstract`, which does not compile (`@abstract` escaping is missing). Kotlin allows modifier
-  keywords as identifiers, so any such property name hits this.
+  keywords as identifiers, so any such property name hits this. The plugin only `@`-escapes
+  method names, never parameter names.
 - **Workaround:** Renamed the shared property to `description` with `@SerialName("abstract")`,
   keeping the NYT API wire format. Also renamed `published_date` → `publishedDate`
   (`@SerialName`) since snake_case surfaced as `Published_date` in C# (cosmetic, not a compile
   break).
 
+### BUG-010: A Kotlin parameter named `error` collides with the generated exception slot
+
+- **Area:** `kotlin-native-nuget` 0.4.0
+- **Observed:** Adding `val error: String?` to `StoryState` / `TopStoriesState` generated
+  `Native_Create(..., string? error, out IntPtr error)` and `Native_Copy(...)` P-Invoke
+  declarations, which fail with `CS0100: The parameter name 'error' is a duplicate`. The
+  generator hard-codes `error` as the name of its `out IntPtr` exception slot (ADR-024 /
+  ADR-031) without renaming a user parameter of the same name. Same family as BUG-009
+  (identifier collisions are not detected on parameters).
+- **Workaround:** The shared state property is `failure`, not `error`; the .NET hosts still
+  expose it as `Error` / `HasError`.
+
 ## Fixed / retired workarounds
+
+### BUG-002: Network failures have no observable error state
+
+- **Fixed (shared domain):** `TopStoriesState.failure` and `StoryState.failure` (`String?`,
+  binds as C# `string?`; named to dodge BUG-010) carry the failure message from the `Result` the
+  web service already returned. The domains reset it at the start of every load, so `Refresh`
+  doubles as retry. Story detail also reports when a successful fetch no longer contains the
+  story instead of loading forever.
+- **Hosts:** `IsLoading` is now `articles/article is null && error is null`; the shared VMs
+  expose `Error` / `HasError` and WPF, WinUI, and MAUI show the message with a Retry button
+  bound to the existing refresh command.
+- **Still open:** Compose and Wear screens ignore `failure` and keep spinning (MF-008).
 
 ### BUG-005: Nullable `List<T>?` of object elements hard-failed property generation (plugin 0.3.0)
 

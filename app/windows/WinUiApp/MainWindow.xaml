@@ -181,6 +181,29 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+
+                    <StackPanel x:Name="ErrorPanel"
+                                Grid.Row="1"
+                                Margin="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="12"
+                                Visibility="Collapsed">
+                        <TextBlock x:Name="ErrorText"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWholeWords"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                        <Button HorizontalAlignment="Center"
+                                Click="RefreshButton_Click"
+                                Style="{StaticResource SubtleButtonStyle}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                <TextBlock Text="Retry" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Border>
 
@@ -230,6 +253,22 @@
                                           IsActive="False"
                                           Visibility="Collapsed"
                                           HorizontalAlignment="Left" />
+                            <StackPanel x:Name="DetailErrorPanel"
+                                        Spacing="8"
+                                        Visibility="Collapsed">
+                                <TextBlock x:Name="DetailErrorText"
+                                           TextWrapping="WrapWholeWords"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           Style="{StaticResource BodyTextBlockStyle}" />
+                                <Button HorizontalAlignment="Left"
+                                        Click="ReloadButton_Click"
+                                        Style="{StaticResource SubtleButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                        <TextBlock Text="Retry" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                             <TextBlock x:Name="ArticleTitle"
                                        Style="{StaticResource TitleTextBlockStyle}"
                                        TextWrapping="WrapWholeWords" />

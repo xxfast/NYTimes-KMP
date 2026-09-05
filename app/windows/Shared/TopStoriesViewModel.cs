@@ -15,6 +15,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
     private readonly Task _observation;
     private bool _isLoading = true;
+    private string? _error;
     private StoryDetailViewModel? _selectedStory;
     private SectionViewModel? _selectedSection;
     private StorySummaryViewModel? _selectedArticle;
@@ -59,6 +60,19 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         get => _isLoading;
         private set => SetField(ref _isLoading, value);
     }
+
+    /// <summary>Why the last load failed; null while loading or once articles arrive.</summary>
+    public string? Error
+    {
+        get => _error;
+        private set
+        {
+            if (!SetField(ref _error, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasError)));
+        }
+    }
+
+    public bool HasError => Error is not null;
 
     public StoryDetailViewModel? SelectedStory
     {
@@ -114,8 +128,9 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 
     private void Apply(TopStoriesState state)
     {
-        // null articles = shared Loading.
-        IsLoading = state.Articles is null;
+        // null articles = shared Loading, unless the domain reported why they never arrived.
+        Error = state.Failure;
+        IsLoading = state.Articles is null && state.Failure is null;
 
         var sectionName = state.Section?.Name;
         SectionViewModel? selected = null;
@@ -209,10 +224,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         return tcs.Task;
     }
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        return true;
     }
 }

@@ -9,7 +9,7 @@ Toolchain, module chain, and build commands:
 
 | Items            | Owner                            |
 |------------------|----------------------------------|
-| BUG-009          | `kotlin-native-nuget`            |
+| BUG-009, BUG-010 | `kotlin-native-nuget`            |
 | MF-004           | Decompose Router                 |
 | MF-006+          | NYTimes-KMP sample / build / UI  |
 
@@ -26,7 +26,8 @@ Plugin reachability (ADR-066) exports the shared state/model types directly:
 `rootPackage = "io.github.xxfast.nytimes"` admits `screens.*` and `models` from `:app`. The local
 NuGet DTOs and `InteropMappers` are deleted; `:app:windows` keeps only the host view models.
 Value classes bind as `readonly record struct`, `Instant` as `DateTimeOffset`, nullable object
-lists per ADR-075. Remaining plugin gap: reserved-keyword escaping (BUG-009).
+lists per ADR-075. Remaining plugin gaps: reserved-keyword escaping (BUG-009) and the
+`error` parameter-name collision (BUG-010).
 
 ### MF-004: MinGW support in Decompose Router
 
@@ -48,9 +49,11 @@ restore hook still evicts that repo-local cache so native assets match each host
 
 ### MF-008: Explicit loading, error, empty, and retry states
 
-State models need failure info; all hosts need error/empty UI and retry (closes the gap left by
-BUG-002). Loading is modelled as null articles/related (shared `Loading`); there is still no
-distinct error state.
+Loading is modelled as null articles/related (shared `Loading`) and failures as a message in
+`TopStoriesState.failure` / `StoryState.failure` (BUG-002). The .NET hosts show the message with a
+Retry button. Still missing: an empty state (section loaded with no stories), structured error
+reasons (offline vs. HTTP status) instead of a raw exception message, and error UI in the
+Compose / Wear screens, which still spin on failure.
 
 ### MF-009: Verified end-to-end data loading
 

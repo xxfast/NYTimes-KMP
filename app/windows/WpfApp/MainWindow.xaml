@@ -189,6 +189,23 @@
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                Text="Loading top stories..."
                                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <StackPanel Grid.Row="1"
+                                Margin="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   Text="{Binding Error}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <ui:Button Margin="0,12,0,0"
+                                   HorizontalAlignment="Center"
+                                   Appearance="Secondary"
+                                   Command="{Binding RefreshCommand}"
+                                   Content="Retry"
+                                   Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                    </StackPanel>
                 </Grid>
             </Border>
 
@@ -253,6 +270,19 @@
                                                                      HorizontalAlignment="Left"
                                                                      IsIndeterminate="True"
                                                                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                                    <StackPanel Margin="0,0,0,16"
+                                                                Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                        <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                   Text="{Binding Error}"
+                                                                   TextWrapping="Wrap" />
+                                                        <ui:Button Margin="0,8,0,0"
+                                                                   HorizontalAlignment="Left"
+                                                                   Appearance="Secondary"
+                                                                   Command="{Binding RefreshCommand}"
+                                                                   Content="Retry"
+                                                                   Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                                                    </StackPanel>
 
                                                     <Border Margin="0,0,0,16"
                                                             MaxHeight="240"

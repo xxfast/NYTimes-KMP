@@ -136,8 +136,25 @@
                                 <Label
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
+                                    IsVisible="{Binding IsLoading}"
                                     Text="Loading top stories…"
                                     Style="{StaticResource SecondaryLabelStyle}" />
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding HasError}"
+                                    Spacing="12">
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding Error}"
+                                        Style="{StaticResource SecondaryLabelStyle}" />
+                                    <Button
+                                        HorizontalOptions="Center"
+                                        Padding="14,8"
+                                        Command="{Binding RefreshCommand}"
+                                        Text="Retry" />
+                                </VerticalStackLayout>
                             </Grid>
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
@@ -251,6 +268,18 @@
                                     IsRunning="{Binding IsLoading}"
                                     IsVisible="{Binding IsLoading}"
                                     Color="{StaticResource BrandColor}" />
+
+                                <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8">
+                                    <Label
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding Error}"
+                                        Style="{StaticResource SecondaryLabelStyle}" />
+                                    <Button
+                                        HorizontalOptions="Start"
+                                        Padding="14,8"
+                                        Command="{Binding RefreshCommand}"
+                                        Text="Retry" />
+                                </VerticalStackLayout>
 
                                 <Border
                                     HeightRequest="230"

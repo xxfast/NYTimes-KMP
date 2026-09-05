@@ -121,7 +121,9 @@ public sealed partial class MainWindow : Window
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading) or null)
+        if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading)
+            or nameof(TopStoriesViewModel.Error)
+            or null)
             ApplyLoading();
 
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedStory) or null)
@@ -140,6 +142,8 @@ public sealed partial class MainWindow : Window
     {
         LoadingRing.IsActive = _viewModel.IsLoading;
         LoadingRing.Visibility = _viewModel.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        ErrorText.Text = _viewModel.Error ?? string.Empty;
+        ErrorPanel.Visibility = _viewModel.HasError ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void BindDetail(StoryDetailViewModel? detail)
@@ -195,6 +199,8 @@ public sealed partial class MainWindow : Window
 
         DetailLoadingRing.IsActive = _detail.IsLoading;
         DetailLoadingRing.Visibility = _detail.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        DetailErrorText.Text = _detail.Error ?? string.Empty;
+        DetailErrorPanel.Visibility = _detail.HasError ? Visibility.Visible : Visibility.Collapsed;
 
         if (_detail.IsSaved)
         {

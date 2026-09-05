@@ -12,6 +12,8 @@ data class TopStoriesState(
   val section: TopStorySection? = home,
   val articles: List<SummaryState>? = Loading,
   val numberOfFavourites: Int? = Loading,
+  /** Why the last load of [articles] failed; null while loading or once loaded. */
+  val failure: String? = null,
 )
 
 sealed interface TopStoriesEvent {
