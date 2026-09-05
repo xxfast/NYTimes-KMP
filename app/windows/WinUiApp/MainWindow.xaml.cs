@@ -247,6 +247,11 @@ public sealed partial class MainWindow : Window
             ? Visibility.Collapsed
             : Visibility.Visible;
         ArticleDescription.Text = _detail.ArticleDescription;
+        ReadStoryText.Text = _detail.ArticleUrl;
+        ReadStoryLink.NavigateUri = Uri.TryCreate(_detail.ArticleUrl, UriKind.Absolute, out var storyUri)
+            ? storyUri
+            : null;
+        ReadStoryLink.Visibility = storyUri is null ? Visibility.Collapsed : Visibility.Visible;
 
         if (_detail.HasArticleImage)
         {

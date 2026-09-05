@@ -75,10 +75,20 @@
         </Grid.RowDefinitions>
 
         <ui:TitleBar Grid.Row="0"
-                     Title="The New York Times"
+                     Title=""
                      ShowMinimize="True"
                      ShowMaximize="True"
                      ShowClose="True">
+            <ui:TitleBar.Header>
+                <!-- Masthead vector shared with the Compose top app bar. -->
+                <Path Height="16"
+                      Margin="12,0,0,0"
+                      VerticalAlignment="Center"
+                      Data="{StaticResource MastheadGeometry}"
+                      Fill="{DynamicResource TextFillColorPrimaryBrush}"
+                      Stretch="Uniform"
+                      ToolTip="The New York Times" />
+            </ui:TitleBar.Header>
             <ui:TitleBar.TrailingContent>
                 <ui:Button Margin="0,0,8,0"
                            Appearance="Secondary"
@@ -150,6 +160,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <DockPanel Grid.Row="0" Margin="16,14,16,8">
@@ -277,6 +288,18 @@
                                    Content="Retry"
                                    Icon="{ui:SymbolIcon ArrowClockwise24}" />
                     </StackPanel>
+
+                    <!-- "Data provided by The New York Times" attribution, as under the Compose grid. -->
+                    <ui:HyperlinkButton Grid.Row="2"
+                                        Margin="8,0,8,4"
+                                        HorizontalAlignment="Center"
+                                        NavigateUri="https://developer.nytimes.com"
+                                        ToolTip="developer.nytimes.com">
+                        <Path Height="28"
+                              Data="{StaticResource AttributionGeometry}"
+                              Fill="{DynamicResource TextFillColorSecondaryBrush}"
+                              Stretch="Uniform" />
+                    </ui:HyperlinkButton>
                 </Grid>
             </Border>
 
@@ -416,10 +439,15 @@
                                                                LineHeight="24"
                                                                Text="{Binding ArticleDescription}"
                                                                TextWrapping="Wrap" />
-                                                    <TextBlock Margin="0,16,0,0"
-                                                               Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
-                                                               Text="{Binding ArticleUrl}"
-                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Margin="0,16,0,4"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               Text="Read the full story" />
+                                                    <ui:HyperlinkButton Padding="0"
+                                                                        HorizontalAlignment="Left"
+                                                                        Content="{Binding ArticleUrl}"
+                                                                        Icon="{ui:SymbolIcon Open24}"
+                                                                        NavigateUri="{Binding ArticleUrl}" />
 
                                                     <!-- Related below the article; in the wide layout it moves to the side column. -->
                                                     <StackPanel>
