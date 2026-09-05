@@ -95,6 +95,19 @@ The shared `TopStoriesViewModel` keeps a back stack of opened stories (`GoBackCo
 `CanGoBack`) and persists the selected section and open story to
 `%LOCALAPPDATA%\NYTimes-KMP\host-state.json`, restoring both on the next launch.
 
+## Smoke run and screenshots
+
+`tools\Smoke-Wpf.ps1` launches the built WPF host, optionally restores a section and story,
+screenshots the window at the compact, expanded and wide breakpoints into
+`build\screenshots`, and prints the diagnostics log:
+
+```powershell
+dotnet build app\windows\WpfApp\WpfApp.csproj -p:Platform=x64
+powershell -File app\windows\tools\Smoke-Wpf.ps1 -Section world -StoryUri "nyt://article/..." -StoryTitle "..."
+```
+
+The PNGs are the baseline for comparing the host against the Compose screens.
+
 ## Diagnostics
 
 The shared C# view models trace flow lifecycle, network failures reported by the domain, and
