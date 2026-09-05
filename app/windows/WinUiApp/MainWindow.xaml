@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:WinUiApp"
     mc:Ignorable="d"
     Title="The New York Times">
 
@@ -156,8 +157,7 @@
                                             CornerRadius="6"
                                             Background="{ThemeResource ControlFillColorSecondaryBrush}"
                                             Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}}">
-                                        <Image Source="{Binding ImageUrl}"
-                                               Stretch="UniformToFill" />
+                                        <local:ArticleImage Source="{Binding ImageUrl}" />
                                     </Border>
 
                                     <StackPanel Grid.Column="1" Spacing="4">
@@ -258,9 +258,8 @@
                                 CornerRadius="8"
                                 Background="{ThemeResource ControlFillColorSecondaryBrush}"
                                 Visibility="Collapsed">
-                            <Image x:Name="HeroImage"
-                                   Stretch="UniformToFill"
-                                   MaxHeight="220" />
+                            <local:ArticleImage x:Name="HeroImage"
+                                                Height="220" />
                         </Border>
 
                         <StackPanel Grid.Row="1" Spacing="6">
@@ -378,7 +377,7 @@
                                                 CornerRadius="4"
                                                 Background="{ThemeResource ControlFillColorSecondaryBrush}"
                                                 Visibility="{Binding HasImage, Converter={StaticResource BoolToVisibilityConverter}}">
-                                            <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" />
+                                            <local:ArticleImage Source="{Binding ImageUrl}" />
                                         </Border>
                                         <TextBlock Grid.Column="1"
                                                    Text="{Binding Title}"

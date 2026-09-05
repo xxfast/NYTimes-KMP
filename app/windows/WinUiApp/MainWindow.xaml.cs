@@ -6,7 +6,6 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using NYTimes.Windows;
 using Windows.Graphics;
 using WinRT.Interop;
@@ -194,10 +193,9 @@ public sealed partial class MainWindow : Window
             : Visibility.Visible;
         ArticleDescription.Text = _detail.ArticleDescription;
 
-        if (_detail.HasArticleImage &&
-            Uri.TryCreate(_detail.ArticleImageUrl, UriKind.Absolute, out var imageUri))
+        if (_detail.HasArticleImage)
         {
-            HeroImage.Source = new BitmapImage(imageUri);
+            HeroImage.Source = _detail.ArticleImageUrl;
             HeroImageBorder.Visibility = Visibility.Visible;
         }
         else
