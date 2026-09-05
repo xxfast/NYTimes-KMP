@@ -60,6 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.rememberOnRoute
+import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.TopStorySection
@@ -159,7 +160,9 @@ fun StoryView(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
   ) { scaffoldPadding ->
     if (article == Loading) Box(modifier = Modifier.fillMaxSize()) {
-      CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+      val failure: String? = state.failure
+      if (failure == null) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+      else ErrorView(message = failure, onRetry = onRefresh, modifier = Modifier.align(Alignment.Center))
     } else TwoPanelScaffold(
       panelVisibility = windowSizeClass.widthSizeClass != Compact && onFullScreen == null,
       split = split,

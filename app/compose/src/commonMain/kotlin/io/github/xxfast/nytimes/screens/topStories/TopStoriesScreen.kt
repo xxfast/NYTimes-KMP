@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
+import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -253,7 +254,9 @@ fun TopStoriesView(
         exit = fadeOut(),
       ) {
         Box(modifier = Modifier.fillMaxSize()) {
-          CircularProgressIndicator(modifier = Modifier.align(Center))
+          val failure: String? = state.failure
+          if (failure == null) CircularProgressIndicator(modifier = Modifier.align(Center))
+          else ErrorView(message = failure, onRetry = onRefresh, modifier = Modifier.align(Center))
         }
       }
     }

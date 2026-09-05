@@ -44,6 +44,7 @@ import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesRouteViewModel
+import io.github.xxfast.nytimes.wear.components.ErrorCard
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
@@ -59,7 +60,8 @@ fun TopStoriesScreen(
   TopStoriesView(
     state = state,
     onSelectSection = viewModel::onSelectSection,
-    onSelectArticle = onSelectArticle
+    onSelectArticle = onSelectArticle,
+    onRefresh = viewModel::onRefresh,
   )
 }
 
@@ -68,6 +70,7 @@ fun TopStoriesView(
   state: TopStoriesState,
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
+  onRefresh: () -> Unit,
 ) {
   NavigationBox { columnState ->
     ScalingLazyColumn(
@@ -111,7 +114,10 @@ fun TopStoriesView(
         }
       }
 
-      if (state.articles == Loading) {
+      val failure: String? = state.failure
+      if (state.articles == Loading && failure != null) {
+        item { ErrorCard(message = failure, onRetry = onRefresh) }
+      } else if (state.articles == Loading) {
         item {
           Card(
             onClick = {},
@@ -170,6 +176,14 @@ fun TopStoriesPreviewLoading() {
 @WearPreviewSmallRound
 @WearPreviewLargeRound
 @Composable
+fun TopStoriesPreviewFailed() {
+  val state = TopStoriesState(failure = "Unable to resolve host api.nytimes.com")
+  TopStoriesPreview(state)
+}
+
+@WearPreviewSmallRound
+@WearPreviewLargeRound
+@Composable
 fun TopStoriesPreviewLoaded() {
   val state = TopStoriesState(
     section = TopStorySection("Sports"),
@@ -194,6 +208,7 @@ private fun TopStoriesPreview(state: TopStoriesState) {
       state = state,
       onSelectArticle = { _, _, _ -> },
       onSelectSection = {},
+      onRefresh = {},
     )
   }
 }

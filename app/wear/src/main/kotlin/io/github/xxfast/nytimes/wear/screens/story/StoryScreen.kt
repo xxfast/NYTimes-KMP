@@ -30,6 +30,7 @@ import androidx.wear.compose.ui.tooling.preview.WearPreviewSmallRound
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import io.github.xxfast.decompose.router.rememberOnRoute
+import io.github.xxfast.nytimes.wear.components.ErrorCard
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
@@ -56,6 +57,7 @@ fun StoryScreen(
   StoryView(
     state = state,
     onSave = viewModel::onSave,
+    onRefresh = viewModel::onRefresh,
   )
 }
 
@@ -63,6 +65,7 @@ fun StoryScreen(
 fun StoryView(
   state: StoryState,
   onSave: () -> Unit,
+  onRefresh: () -> Unit,
 ) {
   NavigationBox { columnState ->
     ScalingLazyColumn(
@@ -107,7 +110,9 @@ fun StoryView(
 
       val article: Article? = state.article
       if (article == Loading) {
-        item { CircularProgressIndicator() }
+        val failure: String? = state.failure
+        if (failure == null) item { CircularProgressIndicator() }
+        else item { ErrorCard(message = failure, onRetry = onRefresh) }
         return@ScalingLazyColumn
       }
 
@@ -148,6 +153,17 @@ fun StoryPreviewLoading() {
 @WearPreviewSmallRound
 @WearPreviewLargeRound
 @Composable
+fun StoryPreviewFailed() {
+  val state = StoryState(
+    title = "Harry Kane and the End of the Line",
+    failure = "Unable to resolve host api.nytimes.com",
+  )
+  StorePreview(state)
+}
+
+@WearPreviewSmallRound
+@WearPreviewLargeRound
+@Composable
 fun StoryPreviewLoaded() {
   val state = StoryState(
     title = "Harry Kane and the End of the Line",
@@ -170,7 +186,8 @@ private fun StorePreview(state: StoryState) {
   NYTimesWearTheme {
     StoryView(
       state = state,
-      onSave = {}
+      onSave = {},
+      onRefresh = {},
     )
   }
 }
