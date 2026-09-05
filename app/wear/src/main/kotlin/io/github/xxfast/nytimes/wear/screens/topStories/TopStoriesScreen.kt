@@ -36,6 +36,8 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
+import io.github.xxfast.nytimes.models.FailureKind
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
@@ -116,9 +118,9 @@ fun TopStoriesView(
         }
       }
 
-      val failure: String? = state.failure
+      val failure: Failure? = state.failure
       if (state.articles == Loading && failure != null) {
-        item { ErrorCard(message = failure, onRetry = onRefresh) }
+        item { ErrorCard(failure = failure, onRetry = onRefresh) }
       } else if (state.articles == Loading) {
         item {
           Card(
@@ -188,7 +190,14 @@ fun TopStoriesPreviewLoading() {
 @WearPreviewLargeRound
 @Composable
 fun TopStoriesPreviewFailed() {
-  val state = TopStoriesState(failure = "Unable to resolve host api.nytimes.com")
+  val state = TopStoriesState(
+    failure = Failure(
+      kind = FailureKind.Http,
+      title = "The New York Times is unavailable",
+      message = "The server responded with 503 Service Unavailable",
+      statusCode = 503,
+    ),
+  )
   TopStoriesPreview(state)
 }
 

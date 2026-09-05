@@ -63,6 +63,7 @@ import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
 import io.github.xxfast.nytimes.screens.topStories.Loading
@@ -160,9 +161,9 @@ fun StoryView(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
   ) { scaffoldPadding ->
     if (article == Loading) Box(modifier = Modifier.fillMaxSize()) {
-      val failure: String? = state.failure
+      val failure: Failure? = state.failure
       if (failure == null) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-      else ErrorView(message = failure, onRetry = onRefresh, modifier = Modifier.align(Alignment.Center))
+      else ErrorView(failure = failure, onRetry = onRefresh, modifier = Modifier.align(Alignment.Center))
     } else TwoPanelScaffold(
       panelVisibility = windowSizeClass.widthSizeClass != Compact && onFullScreen == null,
       split = split,

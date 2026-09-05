@@ -154,6 +154,13 @@
                                     Spacing="12">
                                     <Label
                                         HorizontalTextAlignment="Center"
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding ErrorTitle}"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                    <Label
+                                        HorizontalTextAlignment="Center"
                                         LineBreakMode="WordWrap"
                                         Text="{Binding Error}"
                                         Style="{StaticResource SecondaryLabelStyle}" />
@@ -278,6 +285,12 @@
                                     Color="{StaticResource BrandColor}" />
 
                                 <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding ErrorTitle}"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                                     <Label
                                         LineBreakMode="WordWrap"
                                         Text="{Binding Error}"

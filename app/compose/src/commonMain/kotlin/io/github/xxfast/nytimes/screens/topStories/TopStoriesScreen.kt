@@ -61,6 +61,7 @@ import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
@@ -259,9 +260,9 @@ fun TopStoriesView(
         exit = fadeOut(),
       ) {
         Box(modifier = Modifier.fillMaxSize()) {
-          val failure: String? = state.failure
+          val failure: Failure? = state.failure
           if (failure == null) CircularProgressIndicator(modifier = Modifier.align(Center))
-          else ErrorView(message = failure, onRetry = onRefresh, modifier = Modifier.align(Center))
+          else ErrorView(failure = failure, onRetry = onRefresh, modifier = Modifier.align(Center))
         }
       }
     }

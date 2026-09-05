@@ -1,6 +1,7 @@
 package io.github.xxfast.nytimes.screens.story
 
 import io.github.xxfast.nytimes.models.Article
+import io.github.xxfast.nytimes.models.Failure
 import io.github.xxfast.nytimes.screens.summary.SummaryState
 import kotlinx.serialization.Serializable
 
@@ -14,7 +15,7 @@ data class StoryState(
   val related: List<SummaryState>? = Loading,
   val isSaved: Boolean? = DontKnowYet,
   /** Why the last load of [article] failed; null while loading or once loaded. */
-  val failure: String? = null,
+  val failure: Failure? = null,
 )
 
 sealed interface StoryEvent {

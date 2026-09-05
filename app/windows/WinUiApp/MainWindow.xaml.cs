@@ -123,6 +123,7 @@ public sealed partial class MainWindow : Window
     {
         if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading)
             or nameof(TopStoriesViewModel.Error)
+            or nameof(TopStoriesViewModel.ErrorTitle)
             or nameof(TopStoriesViewModel.IsEmpty)
             or nameof(TopStoriesViewModel.EmptyMessage)
             or null)
@@ -144,6 +145,7 @@ public sealed partial class MainWindow : Window
     {
         LoadingRing.IsActive = _viewModel.IsLoading;
         LoadingRing.Visibility = _viewModel.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        ErrorTitleText.Text = _viewModel.ErrorTitle ?? string.Empty;
         ErrorText.Text = _viewModel.Error ?? string.Empty;
         ErrorPanel.Visibility = _viewModel.HasError ? Visibility.Visible : Visibility.Collapsed;
         EmptyText.Text = _viewModel.EmptyMessage;
@@ -203,6 +205,7 @@ public sealed partial class MainWindow : Window
 
         DetailLoadingRing.IsActive = _detail.IsLoading;
         DetailLoadingRing.Visibility = _detail.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        DetailErrorTitleText.Text = _detail.ErrorTitle ?? string.Empty;
         DetailErrorText.Text = _detail.Error ?? string.Empty;
         DetailErrorPanel.Visibility = _detail.HasError ? Visibility.Visible : Visibility.Collapsed;
 

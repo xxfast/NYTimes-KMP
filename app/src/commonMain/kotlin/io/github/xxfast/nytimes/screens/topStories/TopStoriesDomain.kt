@@ -15,7 +15,8 @@ import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.TopStorySections.home
 import io.github.xxfast.nytimes.screens.summary.SummaryState
-import io.github.xxfast.nytimes.utils.errorMessage
+import io.github.xxfast.nytimes.models.Failure
+import io.github.xxfast.nytimes.utils.toFailure
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -28,7 +29,7 @@ fun TopStoriesDomain(
 ): TopStoriesState {
   var section: TopStorySection? by remember { mutableStateOf(initialState.section) }
   var articles: List<SummaryState>? by remember { mutableStateOf(initialState.articles) }
-  var failure: String? by remember { mutableStateOf(initialState.failure) }
+  var failure: Failure? by remember { mutableStateOf(initialState.failure) }
 
   val favourites: List<SummaryState>? by store.updates
     .map { savedArticles -> savedArticles.orEmpty().map(::SummaryState) }
@@ -50,7 +51,7 @@ fun TopStoriesDomain(
 
     webService.topStories(selectedSection)
       .onSuccess { topStory -> articles = topStory.results.map(::SummaryState) }
-      .onFailure { throwable -> failure = throwable.errorMessage }
+      .onFailure { throwable -> failure = throwable.toFailure() }
   }
 
   LaunchedEffect(Unit) {

@@ -14,21 +14,22 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TitleCard
+import io.github.xxfast.nytimes.models.Failure
 
-/** Failure message with a retry chip, shown where a screen would otherwise keep loading. */
+/** Failure title and detail with a retry chip, shown where a screen would otherwise keep loading. */
 @Composable
 fun ErrorCard(
-  message: String,
+  failure: Failure,
   onRetry: () -> Unit,
 ) {
   TitleCard(
     onClick = onRetry,
-    title = { Text("Something went wrong") },
+    title = { Text(failure.title) },
     contentColor = MaterialTheme.colors.onSurface,
     titleColor = MaterialTheme.colors.error,
   ) {
     Text(
-      text = message,
+      text = failure.message,
       style = MaterialTheme.typography.caption1,
       maxLines = 3,
       overflow = TextOverflow.Ellipsis,

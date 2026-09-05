@@ -14,6 +14,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private readonly KotlinApp.StoryViewModel _kotlinViewModel;
     private readonly Task _observation;
     private bool _isLoading = true;
+    private string? _errorTitle;
     private string? _error;
     private bool _isSaved;
     private string _articleTitle = string.Empty;
@@ -49,6 +50,13 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     {
         get => _isLoading;
         private set => SetField(ref _isLoading, value);
+    }
+
+    /// <summary>Short heading for the failure, e.g. "Story not found"; null unless <see cref="HasError"/>.</summary>
+    public string? ErrorTitle
+    {
+        get => _errorTitle;
+        private set => SetField(ref _errorTitle, value);
     }
 
     /// <summary>Why the last load failed; null while loading or once the article arrives.</summary>
@@ -135,8 +143,10 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private void Apply(StoryState state)
     {
         // null article = shared Loading, unless the domain reported why it never arrived.
-        Error = state.Failure;
-        IsLoading = state.Article is null && state.Failure is null;
+        using var failure = state.Failure;
+        ErrorTitle = failure?.Title;
+        Error = failure?.Message;
+        IsLoading = state.Article is null && failure is null;
         // null = shared DontKnowYet; only true after save state resolves.
         IsSaved = state.IsSaved == true;
 

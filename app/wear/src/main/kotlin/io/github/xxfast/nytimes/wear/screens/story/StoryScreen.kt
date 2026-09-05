@@ -34,6 +34,8 @@ import io.github.xxfast.nytimes.wear.components.ErrorCard
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.models.Article
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
+import io.github.xxfast.nytimes.models.FailureKind
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.story.ArticleImage
 import io.github.xxfast.nytimes.screens.story.Loading
@@ -110,9 +112,9 @@ fun StoryView(
 
       val article: Article? = state.article
       if (article == Loading) {
-        val failure: String? = state.failure
+        val failure: Failure? = state.failure
         if (failure == null) item { CircularProgressIndicator() }
-        else item { ErrorCard(message = failure, onRetry = onRefresh) }
+        else item { ErrorCard(failure = failure, onRetry = onRefresh) }
         return@ScalingLazyColumn
       }
 
@@ -156,7 +158,11 @@ fun StoryPreviewLoading() {
 fun StoryPreviewFailed() {
   val state = StoryState(
     title = "Harry Kane and the End of the Line",
-    failure = "Unable to resolve host api.nytimes.com",
+    failure = Failure(
+      kind = FailureKind.Offline,
+      title = "You're offline",
+      message = "Check your connection and try again",
+    ),
   )
   StorePreview(state)
 }

@@ -15,6 +15,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
     private readonly Task _observation;
     private bool _isLoading = true;
+    private string? _errorTitle;
     private string? _error;
     private bool _isEmpty;
     private string _emptyMessage = string.Empty;
@@ -61,6 +62,13 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     {
         get => _isLoading;
         private set => SetField(ref _isLoading, value);
+    }
+
+    /// <summary>Short heading for the failure, e.g. "You're offline"; null unless <see cref="HasError"/>.</summary>
+    public string? ErrorTitle
+    {
+        get => _errorTitle;
+        private set => SetField(ref _errorTitle, value);
     }
 
     /// <summary>Why the last load failed; null while loading or once articles arrive.</summary>
@@ -145,8 +153,10 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     private void Apply(TopStoriesState state)
     {
         // null articles = shared Loading, unless the domain reported why they never arrived.
-        Error = state.Failure;
-        IsLoading = state.Articles is null && state.Failure is null;
+        using var failure = state.Failure;
+        ErrorTitle = failure?.Title;
+        Error = failure?.Message;
+        IsLoading = state.Articles is null && failure is null;
 
         var sectionName = state.Section?.Name;
         SectionViewModel? selected = null;

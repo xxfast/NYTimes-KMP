@@ -200,6 +200,12 @@
                                 VerticalAlignment="Center"
                                 Spacing="12"
                                 Visibility="Collapsed">
+                        <TextBlock x:Name="ErrorTitleText"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="WrapWholeWords"
+                                   FontWeight="SemiBold"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
                         <TextBlock x:Name="ErrorText"
                                    HorizontalAlignment="Center"
                                    TextAlignment="Center"
@@ -267,6 +273,10 @@
                             <StackPanel x:Name="DetailErrorPanel"
                                         Spacing="8"
                                         Visibility="Collapsed">
+                                <TextBlock x:Name="DetailErrorTitleText"
+                                           TextWrapping="WrapWholeWords"
+                                           FontWeight="SemiBold"
+                                           Style="{StaticResource BodyTextBlockStyle}" />
                                 <TextBlock x:Name="DetailErrorText"
                                            TextWrapping="WrapWholeWords"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
