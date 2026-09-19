@@ -133,7 +133,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
 
         using var article = state.Article;
         ArticleTitle = article.Title;
-        ArticleDescription = article.Description;
+        ArticleDescription = article.Abstract;
         ArticleSectionName = article.Section.Name;
         ArticleByline = article.Byline;
         ArticleUrl = article.Url;

@@ -106,7 +106,7 @@ struct StoryDetailView: View {
               .lineLimit(2)
           }
 
-          Text(article.description_)
+          Text(article.abstract)
             .font(.body)
 
           if !article.subsection.isEmpty {

@@ -86,9 +86,7 @@ data class Article(
   val section: TopStorySection,
   val subsection: String,
   val title: String,
-  // `abstract` is a reserved keyword in C#: kotlin-native-nuget 0.3.0 emits it unescaped
-  // as a constructor parameter, so the NuGet export needs a C#-safe name here.
-  @SerialName("abstract") val description: String,
+  val abstract: String,
   val url: String,
   val byline: String,
   @SerialName("published_date") val publishedDate: Instant,

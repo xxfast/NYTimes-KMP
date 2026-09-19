@@ -10,8 +10,8 @@ functionality is in
 | Component             |                                                                    Version |
 |-----------------------|---------------------------------------------------------------------------:|
 | Kotlin                |                                                                   `2.4.10` |
-| Gradle                |                                                                    `9.4.1` |
-| `kotlin-native-nuget` |                                                                    `0.3.0` |
+| Gradle                |                                                                    `9.7.0` |
+| `kotlin-native-nuget` |                                                                    `0.7.0` |
 | Kotlin targets        |                                                  `mingwX64` / `macosArm64` |
 | .NET targets          | `net10.0-windows` / `win-x64`; `net10.0-maccatalyst` / `maccatalyst-arm64` |
 | Generated package     |                                                   `NYTimes.Kotlin` `0.2.0` |
@@ -74,18 +74,16 @@ to `osx-arm64`.
 - **Impact:** Top-stories and story-detail can stay in loading forever. Neither state model
   carries an error, so the .NET hosts cannot show a failure message or retry reason.
 
-### BUG-009: C# reserved keywords are not escaped in generated parameter names
-
-- **Area:** `kotlin-native-nuget` 0.3.0
-- **Observed:** `Article.abstract` emitted a constructor/P-Invoke parameter literally named
-  `abstract`, which does not compile (`@abstract` escaping is missing). Kotlin allows modifier
-  keywords as identifiers, so any such property name hits this.
-- **Workaround:** Renamed the shared property to `description` with `@SerialName("abstract")`,
-  keeping the NYT API wire format. Also renamed `published_date` → `publishedDate`
-  (`@SerialName`) since snake_case surfaced as `Published_date` in C# (cosmetic, not a compile
-  break).
-
 ## Fixed / retired workarounds
+
+### BUG-009: C# reserved keywords were not escaped in generated parameter names (plugin 0.3.0)
+
+- **Fixed (plugin 0.5.0, ADR-024 / ADR-062):** keyword parameter names render as verbatim
+  identifiers (`string @abstract`), and `packNuget` now compiles the generated C# (ADR-138), so
+  a regression fails the Gradle build instead of the .NET one.
+- **Workaround retired (plugin 0.7.0):** `Article.abstract` is back (C# `Article.Abstract`);
+  the `description` + `@SerialName("abstract")` rename is gone. `publishedDate` keeps its
+  `@SerialName("published_date")`, that one is naming taste, not a workaround.
 
 ### BUG-005: Nullable `List<T>?` of object elements hard-failed property generation (plugin 0.3.0)
 

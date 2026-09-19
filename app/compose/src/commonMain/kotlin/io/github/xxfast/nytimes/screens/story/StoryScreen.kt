@@ -216,7 +216,7 @@ fun StoryView(
               }
 
               Text(
-                text = article.description,
+                text = article.abstract,
                 style = MaterialTheme.typography.bodyMedium,
               )
 

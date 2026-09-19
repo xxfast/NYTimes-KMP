@@ -9,7 +9,6 @@ Toolchain, module chain, and build commands:
 
 | Items            | Owner                            |
 |------------------|----------------------------------|
-| BUG-009          | `kotlin-native-nuget`            |
 | MF-004           | Decompose Router                 |
 | MF-006+          | NYTimes-KMP sample / build / UI  |
 
@@ -26,7 +25,7 @@ Plugin reachability (ADR-066) exports the shared state/model types directly:
 `rootPackage = "io.github.xxfast.nytimes"` admits `screens.*` and `models` from `:app`. The local
 NuGet DTOs and `InteropMappers` are deleted; `:app:windows` keeps only the host view models.
 Value classes bind as `readonly record struct`, `Instant` as `DateTimeOffset`, nullable object
-lists per ADR-075. Remaining plugin gap: reserved-keyword escaping (BUG-009).
+lists per ADR-075.
 
 ### MF-004: MinGW support in Decompose Router
 

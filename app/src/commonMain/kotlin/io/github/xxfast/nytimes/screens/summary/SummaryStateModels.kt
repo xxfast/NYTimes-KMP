@@ -18,7 +18,7 @@ data class SummaryState(
     uri = article.uri,
     imageUrl = article.multimedia?.first()?.url,
     title = article.title,
-    description = article.description,
+    description = article.abstract,
     section = article.section,
     byline = article.byline,
   )
