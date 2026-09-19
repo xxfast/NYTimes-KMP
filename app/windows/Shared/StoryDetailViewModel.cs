@@ -14,6 +14,8 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private readonly KotlinApp.StoryViewModel _kotlinViewModel;
     private readonly Task _observation;
     private bool _isLoading = true;
+    private string? _errorTitle;
+    private string? _error;
     private bool _isSaved;
     private string _articleTitle = string.Empty;
     private string _articleDescription = string.Empty;
@@ -21,13 +23,19 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     private string _articleByline = string.Empty;
     private string _articleUrl = string.Empty;
     private string _articleImageUrl = string.Empty;
+    private string _articleImageCaption = string.Empty;
+    private string _articleSubsection = string.Empty;
     private int _disposed;
 
+    /// <param name="openRelated">
+    /// Invoked when a related story is chosen; the owner replaces this detail with that story.
+    /// </param>
     public StoryDetailViewModel(
         string sectionName,
         string uri,
         string title,
-        SynchronizationContext? uiContext = null)
+        SynchronizationContext? uiContext = null,
+        Action<StorySummaryViewModel>? openRelated = null)
     {
         _ui = uiContext ?? SynchronizationContext.Current
             ?? throw new InvalidOperationException(
@@ -36,6 +44,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         Title = title;
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SaveCommand = new RelayCommand(_kotlinViewModel.OnSave);
+        OpenRelatedCommand = new RelayCommand<StorySummaryViewModel>(story => openRelated?.Invoke(story));
         _observation = ObserveStatesAsync();
     }
 
@@ -44,11 +53,34 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     public ICommand RefreshCommand { get; }
     public ICommand SaveCommand { get; }
 
+    /// <summary>Opens a <see cref="Related"/> story in place of this one.</summary>
+    public ICommand OpenRelatedCommand { get; }
+
     public bool IsLoading
     {
         get => _isLoading;
         private set => SetField(ref _isLoading, value);
     }
+
+    /// <summary>Short heading for the failure, e.g. "Story not found"; null unless <see cref="HasError"/>.</summary>
+    public string? ErrorTitle
+    {
+        get => _errorTitle;
+        private set => SetField(ref _errorTitle, value);
+    }
+
+    /// <summary>Why the last load failed; null while loading or once the article arrives.</summary>
+    public string? Error
+    {
+        get => _error;
+        private set
+        {
+            if (!SetField(ref _error, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasError)));
+        }
+    }
+
+    public bool HasError => Error is not null;
 
     public bool IsSaved
     {
@@ -98,10 +130,37 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
 
     public bool HasArticleImage => !string.IsNullOrWhiteSpace(ArticleImageUrl);
 
+    /// <summary>Caption of the hero image; empty when the article has no image or caption.</summary>
+    public string ArticleImageCaption
+    {
+        get => _articleImageCaption;
+        private set
+        {
+            if (!SetField(ref _articleImageCaption, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasArticleImageCaption)));
+        }
+    }
+
+    public bool HasArticleImageCaption => !string.IsNullOrWhiteSpace(ArticleImageCaption);
+
+    /// <summary>Second category chip after the section, e.g. "Europe"; empty when none.</summary>
+    public string ArticleSubsection
+    {
+        get => _articleSubsection;
+        private set
+        {
+            if (!SetField(ref _articleSubsection, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasArticleSubsection)));
+        }
+    }
+
+    public bool HasArticleSubsection => !string.IsNullOrWhiteSpace(ArticleSubsection);
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private async Task ObserveStatesAsync()
     {
+        HostDiagnostics.Info("flow", $"Story '{Title}': collecting state flow");
         try
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
@@ -111,16 +170,39 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
                     await RunOnUiAsync(() => Apply(state));
                 }
             }
+            HostDiagnostics.Info("flow", $"Story '{Title}': state flow completed");
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
             // Host disposal cancels KotlinFlow collection.
+            HostDiagnostics.Info("flow", $"Story '{Title}': state flow cancelled by host");
+        }
+        catch (Exception exception)
+        {
+            // Without this the observation dies silently and the pane freezes on its last state.
+            HostDiagnostics.Error("bridge", $"Story '{Title}': state flow faulted", exception);
+            await RunOnUiAsync(() =>
+            {
+                ErrorTitle = "Lost connection to the shared code";
+                Error = exception.Message;
+                IsLoading = false;
+            });
         }
     }
 
     private void Apply(StoryState state)
     {
-        IsLoading = state.Article is null;
+        // null article = shared Loading, unless the domain reported why it never arrived.
+        using var failure = state.Failure;
+        if (failure is not null && failure.Message != _error)
+        {
+            HostDiagnostics.Warning(
+                "network",
+                $"Story '{Title}': {failure.Kind} {failure.StatusCode} {failure.Message}");
+        }
+        ErrorTitle = failure?.Title;
+        Error = failure?.Message;
+        IsLoading = state.Article is null && failure is null;
         // null = shared DontKnowYet; only true after save state resolves.
         IsSaved = state.IsSaved == true;
 
@@ -128,6 +210,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         {
             Related.Clear();
             ArticleImageUrl = string.Empty;
+            ArticleImageCaption = string.Empty;
             return;
         }
 
@@ -135,19 +218,26 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
         ArticleTitle = article.Title;
         ArticleDescription = article.Abstract;
         ArticleSectionName = article.Section.Name;
+        ArticleSubsection = article.Subsection;
         ArticleByline = article.Byline;
         ArticleUrl = article.Url;
 
         // First multimedia entry drives the detail image, matching the Compose hosts.
         var imageUrl = string.Empty;
+        var imageCaption = string.Empty;
         foreach (var media in article.Multimedia ?? [])
         {
             using (media)
             {
-                if (imageUrl.Length == 0) imageUrl = media.Url;
+                if (imageUrl.Length == 0)
+                {
+                    imageUrl = media.Url;
+                    imageCaption = media.Caption;
+                }
             }
         }
         ArticleImageUrl = imageUrl;
+        ArticleImageCaption = imageCaption;
 
         Related.Clear();
         // null related = shared Loading.
@@ -170,6 +260,7 @@ public sealed class StoryDetailViewModel : INotifyPropertyChanged, IAsyncDisposa
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
 
+        HostDiagnostics.Info("bridge", $"Story '{Title}': disposing");
         _cancellation.Cancel();
         _kotlinViewModel.Close();
         try { await _observation; }

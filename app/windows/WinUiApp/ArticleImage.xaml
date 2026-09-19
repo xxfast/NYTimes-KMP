@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="WinUiApp.ArticleImage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Remote article image with loading, error and decode-to-size behaviour (see ArticleImage.kt). -->
+    <Grid Background="{ThemeResource ControlFillColorSecondaryBrush}">
+        <Image x:Name="Picture"
+               Stretch="UniformToFill"
+               Visibility="Collapsed"
+               ImageOpened="Picture_ImageOpened"
+               ImageFailed="Picture_ImageFailed" />
+        <ProgressRing x:Name="Loading"
+                      Width="20"
+                      Height="20"
+                      IsActive="False"
+                      Visibility="Collapsed" />
+        <FontIcon x:Name="Failed"
+                  Glyph="&#xEB9F;"
+                  FontSize="20"
+                  Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                  Visibility="Collapsed" />
+    </Grid>
+</UserControl>

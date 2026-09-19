@@ -16,6 +16,9 @@ val HttpClient = HttpClient {
 
   install(Logging) { logger = Logger.SIMPLE }
 
+  // Non-2xx responses surface as ResponseException so hosts can show the status.
+  expectSuccess = true
+
   defaultRequest {
     url {
       host = "api.nytimes.com"

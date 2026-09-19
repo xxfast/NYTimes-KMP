@@ -1,0 +1,22 @@
+<UserControl x:Class="WpfApp.ArticleImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <!-- Remote article image with loading, error and decode-to-size behaviour (see ArticleImage.kt). -->
+    <Grid Background="{DynamicResource ControlFillColorSecondaryBrush}">
+        <Image x:Name="Picture"
+               Stretch="UniformToFill"
+               Visibility="Collapsed"
+               RenderOptions.BitmapScalingMode="HighQuality" />
+        <ui:ProgressRing x:Name="Loading"
+                         Width="20"
+                         Height="20"
+                         IsIndeterminate="True"
+                         Visibility="Collapsed" />
+        <ui:SymbolIcon x:Name="Failed"
+                       Symbol="ImageOff24"
+                       FontSize="20"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                       Visibility="Collapsed" />
+    </Grid>
+</UserControl>

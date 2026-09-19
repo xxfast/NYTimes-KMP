@@ -97,7 +97,7 @@
                                     </Border.Triggers>
                                     <Label
                                         LineBreakMode="TailTruncation"
-                                        Text="{Binding Name}"
+                                        Text="{Binding DisplayName}"
                                         TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
                                 </Border>
                             </DataTemplate>
@@ -136,8 +136,40 @@
                                 <Label
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    LineBreakMode="WordWrap"
+                                    IsVisible="{Binding IsEmpty}"
+                                    Text="{Binding EmptyMessage}"
+                                    Style="{StaticResource SecondaryLabelStyle}" />
+                                <Label
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding IsLoading}"
                                     Text="Loading top stories…"
                                     Style="{StaticResource SecondaryLabelStyle}" />
+                                <VerticalStackLayout
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding HasError}"
+                                    Spacing="12">
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding ErrorTitle}"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                    <Label
+                                        HorizontalTextAlignment="Center"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding Error}"
+                                        Style="{StaticResource SecondaryLabelStyle}" />
+                                    <Button
+                                        HorizontalOptions="Center"
+                                        Padding="14,8"
+                                        Command="{Binding RefreshCommand}"
+                                        Text="Retry" />
+                                </VerticalStackLayout>
                             </Grid>
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
@@ -233,6 +265,11 @@
                             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                                 <Button
                                     Padding="14,8"
+                                    Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.GoBackCommand}"
+                                    IsEnabled="{Binding Source={x:Reference RootPage}, Path=BindingContext.CanGoBack}"
+                                    Text="Back" />
+                                <Button
+                                    Padding="14,8"
                                     Command="{Binding SaveCommand}"
                                     Text="Save" />
                                 <Button
@@ -251,6 +288,24 @@
                                     IsRunning="{Binding IsLoading}"
                                     IsVisible="{Binding IsLoading}"
                                     Color="{StaticResource BrandColor}" />
+
+                                <VerticalStackLayout IsVisible="{Binding HasError}" Spacing="8">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="15"
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding ErrorTitle}"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                    <Label
+                                        LineBreakMode="WordWrap"
+                                        Text="{Binding Error}"
+                                        Style="{StaticResource SecondaryLabelStyle}" />
+                                    <Button
+                                        HorizontalOptions="Start"
+                                        Padding="14,8"
+                                        Command="{Binding RefreshCommand}"
+                                        Text="Retry" />
+                                </VerticalStackLayout>
 
                                 <Border
                                     HeightRequest="230"
@@ -292,6 +347,11 @@
                                                 Stroke="{AppThemeBinding Light={StaticResource CardStrokeLight}, Dark={StaticResource CardStrokeDark}}"
                                                 StrokeShape="RoundRectangle 7"
                                                 StrokeThickness="1">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type shared:StoryDetailViewModel}}, Path=OpenRelatedCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
                                                 <Grid ColumnDefinitions="72,*" ColumnSpacing="12">
                                                     <Border
                                                         WidthRequest="72"

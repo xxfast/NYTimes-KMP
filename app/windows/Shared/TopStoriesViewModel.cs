@@ -10,12 +10,21 @@ namespace NYTimes.Windows;
 
 public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposable
 {
+    private const string FavouritesSectionName = "favourites";
+
     private readonly SynchronizationContext _ui;
     private readonly CancellationTokenSource _cancellation = new();
-    private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel = new();
+    private readonly KotlinApp.TopStoriesViewModel _kotlinViewModel;
+    private readonly HostStateStore _hostState;
+    private readonly Stack<StorySummaryViewModel> _history = new();
     private readonly Task _observation;
     private bool _isLoading = true;
+    private string? _errorTitle;
+    private string? _error;
+    private bool _isEmpty;
+    private string _emptyMessage = string.Empty;
     private StoryDetailViewModel? _selectedStory;
+    private StorySummaryViewModel? _currentStory;
     private SectionViewModel? _selectedSection;
     private StorySummaryViewModel? _selectedArticle;
     private int _disposed;
@@ -34,11 +43,22 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "NYTimes-KMP");
         Directory.CreateDirectory(storage);
+        HostDiagnostics.Initialise();
+        HostDiagnostics.Info("bridge", $"Bootstrapping shared code; storage at {storage}");
         KotlinApp.WindowsApp.Bootstrap(storage);
+
+        _hostState = new HostStateStore(storage);
+        var restored = _hostState.Load();
+        if (restored is not null)
+            HostDiagnostics.Info("restore", $"Restoring section '{restored.Section}' and story '{restored.StoryTitle}'");
+
+        _kotlinViewModel = new KotlinApp.TopStoriesViewModel(restored?.Section);
 
         RefreshCommand = new RelayCommand(_kotlinViewModel.OnRefresh);
         SelectSectionCommand = new RelayCommand<string>(_kotlinViewModel.OnSelectSection);
         OpenStoryCommand = new RelayCommand<StorySummaryViewModel>(story => _ = OpenStoryAsync(story));
+        GoBackCommand = new RelayCommand(() => _ = GoBackAsync());
+        CloseStoryCommand = new RelayCommand(() => _ = CloseStoryAsync());
 
         foreach (var name in KotlinApp.WindowsApp.SectionNames())
         {
@@ -46,6 +66,19 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
 
         _observation = ObserveStatesAsync();
+
+        if (restored is { StoryUri: not null, StorySection: not null, StoryTitle: not null })
+        {
+            _ = OpenStoryAsync(
+                new StorySummaryViewModel(
+                    restored.StoryUri,
+                    restored.StoryTitle,
+                    string.Empty,
+                    restored.StorySection,
+                    string.Empty,
+                    string.Empty),
+                pushHistory: false);
+        }
     }
 
     public ObservableCollection<SectionViewModel> Sections { get; } = [];
@@ -54,16 +87,64 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
     public ICommand SelectSectionCommand { get; }
     public ICommand OpenStoryCommand { get; }
 
+    /// <summary>Re-opens the story that was showing before the current one.</summary>
+    public ICommand GoBackCommand { get; }
+
+    public bool CanGoBack => _history.Count > 0;
+
+    /// <summary>Closes the detail pane and returns to the list (compact layouts).</summary>
+    public ICommand CloseStoryCommand { get; }
+
+    public bool HasSelectedStory => SelectedStory is not null;
+
     public bool IsLoading
     {
         get => _isLoading;
         private set => SetField(ref _isLoading, value);
     }
 
+    /// <summary>Short heading for the failure, e.g. "You're offline"; null unless <see cref="HasError"/>.</summary>
+    public string? ErrorTitle
+    {
+        get => _errorTitle;
+        private set => SetField(ref _errorTitle, value);
+    }
+
+    /// <summary>Why the last load failed; null while loading or once articles arrive.</summary>
+    public string? Error
+    {
+        get => _error;
+        private set
+        {
+            if (!SetField(ref _error, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasError)));
+        }
+    }
+
+    public bool HasError => Error is not null;
+
+    /// <summary>The section loaded successfully but has no stories.</summary>
+    public bool IsEmpty
+    {
+        get => _isEmpty;
+        private set => SetField(ref _isEmpty, value);
+    }
+
+    /// <summary>Copy for the empty state; empty string unless <see cref="IsEmpty"/>.</summary>
+    public string EmptyMessage
+    {
+        get => _emptyMessage;
+        private set => SetField(ref _emptyMessage, value);
+    }
+
     public StoryDetailViewModel? SelectedStory
     {
         get => _selectedStory;
-        private set => SetField(ref _selectedStory, value);
+        private set
+        {
+            if (!SetField(ref _selectedStory, value)) return;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasSelectedStory)));
+        }
     }
 
     /// <summary>Section selected in the left navigation list.</summary>
@@ -96,6 +177,7 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
 
     private async Task ObserveStatesAsync()
     {
+        HostDiagnostics.Info("flow", "TopStories: collecting state flow");
         try
         {
             await foreach (var state in _kotlinViewModel.StateFlow.WithCancellation(_cancellation.Token))
@@ -105,17 +187,39 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
                     await RunOnUiAsync(() => Apply(state));
                 }
             }
+            HostDiagnostics.Info("flow", "TopStories: state flow completed");
         }
         catch (OperationCanceledException) when (_cancellation.IsCancellationRequested)
         {
             // Window shutdown cancels the generated KotlinFlow collection.
+            HostDiagnostics.Info("flow", "TopStories: state flow cancelled by host");
+        }
+        catch (Exception exception)
+        {
+            // Without this the observation dies silently and the UI freezes on its last state.
+            HostDiagnostics.Error("bridge", "TopStories: state flow faulted", exception);
+            await RunOnUiAsync(() =>
+            {
+                ErrorTitle = "Lost connection to the shared code";
+                Error = exception.Message;
+                IsLoading = false;
+            });
         }
     }
 
     private void Apply(TopStoriesState state)
     {
-        // null articles = shared Loading.
-        IsLoading = state.Articles is null;
+        // null articles = shared Loading, unless the domain reported why they never arrived.
+        using var failure = state.Failure;
+        if (failure is not null && failure.Message != _error)
+        {
+            HostDiagnostics.Warning(
+                "network",
+                $"TopStories {state.Section?.Name}: {failure.Kind} {failure.StatusCode} {failure.Message}");
+        }
+        ErrorTitle = failure?.Title;
+        Error = failure?.Message;
+        IsLoading = state.Articles is null && failure is null;
 
         var sectionName = state.Section?.Name;
         SectionViewModel? selected = null;
@@ -123,15 +227,19 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         {
             section.IsSelected = sectionName is not null && section.Name == sectionName;
             if (section.IsSelected) selected = section;
+            // Only the favourites section (TopStorySections.favourites) carries a count.
+            section.Count = section.Name == FavouritesSectionName ? state.NumberOfFavourites : null;
         }
 
         if (!ReferenceEquals(_selectedSection, selected))
         {
             _selectedSection = selected;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedSection)));
+            PersistState();
         }
 
-        var previousUri = _selectedArticle?.Uri;
+        // Prefer the list highlight, then whatever story is open (e.g. one restored on start).
+        var previousUri = _selectedArticle?.Uri ?? _currentStory?.Uri;
         Articles.Clear();
         StorySummaryViewModel? restoredArticle = null;
         foreach (var article in state.Articles ?? [])
@@ -151,6 +259,12 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
             }
         }
 
+        // null = still loading; an empty list means the section really has nothing.
+        IsEmpty = state.Articles is not null && Articles.Count == 0;
+        EmptyMessage = IsEmpty && sectionName is not null
+            ? KotlinApp.WindowsApp.EmptyMessage(sectionName)
+            : string.Empty;
+
         // Restore list highlight after refresh without re-opening the detail pane.
         if (!ReferenceEquals(_selectedArticle, restoredArticle))
         {
@@ -159,18 +273,76 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         }
     }
 
-    private async Task OpenStoryAsync(StorySummaryViewModel story)
+    private async Task OpenStoryAsync(StorySummaryViewModel story, bool pushHistory = true)
     {
+        if (_currentStory is not null && _currentStory.Uri == story.Uri) return;
+
         var previous = SelectedStory;
         var disposal = previous?.DisposeAsync().AsTask();
-        SelectedStory = new StoryDetailViewModel(story.SectionName, story.Uri, story.Title, _ui);
+
+        if (pushHistory && _currentStory is not null)
+        {
+            _history.Push(_currentStory);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        }
+
+        _currentStory = story;
+        SelectedStory = new StoryDetailViewModel(
+            story.SectionName,
+            story.Uri,
+            story.Title,
+            _ui,
+            openRelated: related => _ = OpenStoryAsync(related));
+        PersistState();
+
+        // A related or restored story usually sits in the current list; keep the highlight in
+        // step without re-entering this method through the SelectedArticle setter.
+        var listed = Articles.FirstOrDefault(article => article.Uri == story.Uri);
+        if (!ReferenceEquals(_selectedArticle, listed))
+        {
+            _selectedArticle = listed;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedArticle)));
+        }
+
         if (disposal is not null) await disposal;
     }
+
+    private async Task CloseStoryAsync()
+    {
+        var previous = SelectedStory;
+        if (previous is null) return;
+
+        _history.Clear();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        _currentStory = null;
+        SelectedStory = null;
+        if (_selectedArticle is not null)
+        {
+            _selectedArticle = null;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedArticle)));
+        }
+        PersistState();
+        await previous.DisposeAsync();
+    }
+
+    private async Task GoBackAsync()
+    {
+        if (!_history.TryPop(out var previous)) return;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanGoBack)));
+        await OpenStoryAsync(previous, pushHistory: false);
+    }
+
+    private void PersistState() => _hostState.Save(new HostState(
+        _selectedSection?.Name,
+        _currentStory?.Uri,
+        _currentStory?.SectionName,
+        _currentStory?.Title));
 
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
 
+        HostDiagnostics.Info("bridge", "TopStories: disposing");
         var storyDisposal = SelectedStory?.DisposeAsync().AsTask();
         _cancellation.Cancel();
         _kotlinViewModel.Close();
@@ -209,10 +381,11 @@ public sealed class TopStoriesViewModel : INotifyPropertyChanged, IAsyncDisposab
         return tcs.Task;
     }
 
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
         field = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        return true;
     }
 }

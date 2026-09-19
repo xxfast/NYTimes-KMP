@@ -56,9 +56,12 @@ import androidx.compose.ui.unit.dp
 import io.github.xxfast.androidx.compose.material3.windowsizeclass.LocalWindowSizeClass
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.screens.summary.StorySummaryView
+import io.github.xxfast.nytimes.components.EmptyView
+import io.github.xxfast.nytimes.components.ErrorView
 import io.github.xxfast.nytimes.components.TwoPanelScaffold
 import io.github.xxfast.nytimes.components.TwoPanelScaffoldAnimationSpec
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
@@ -120,6 +123,9 @@ fun TopStoriesScreen(
           uri = details.uri,
           title = details.title,
           onBack = { showPanel = false },
+          onSelectRelated = { section, uri, title ->
+            selection = StoryHomeScreen.Details(section, uri, title)
+          },
           onFullScreen = {
             onSelectArticle(details.section, details.uri, details.title)
           },
@@ -219,6 +225,10 @@ fun TopStoriesView(
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Adaptive(248.dp),
       ) {
+        if (articles.isEmpty()) item(span = { GridItemSpan(this.maxLineSpan) }) {
+          EmptyView(message = emptyMessage(state.section))
+        }
+
         items(articles, key = { it.uri.value }) { article ->
           StorySummaryView(
             summary = article,
@@ -253,7 +263,9 @@ fun TopStoriesView(
         exit = fadeOut(),
       ) {
         Box(modifier = Modifier.fillMaxSize()) {
-          CircularProgressIndicator(modifier = Modifier.align(Center))
+          val failure: Failure? = state.failure
+          if (failure == null) CircularProgressIndicator(modifier = Modifier.align(Center))
+          else ErrorView(failure = failure, onRetry = onRefresh, modifier = Modifier.align(Center))
         }
       }
     }

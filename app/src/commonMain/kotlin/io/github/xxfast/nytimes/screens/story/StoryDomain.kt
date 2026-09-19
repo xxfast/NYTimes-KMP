@@ -14,6 +14,9 @@ import io.github.xxfast.nytimes.models.ArticleUri
 import io.github.xxfast.nytimes.models.SavedArticles
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.screens.summary.SummaryState
+import io.github.xxfast.nytimes.models.Failure
+import io.github.xxfast.nytimes.utils.storyNotFound
+import io.github.xxfast.nytimes.utils.toFailure
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -31,6 +34,7 @@ fun StoryDomain(
 ): StoryState {
   var article: Article? by remember { mutableStateOf(initialState.article) }
   var related: List<SummaryState>? by remember { mutableStateOf(initialState.related) }
+  var failure: Failure? by remember { mutableStateOf(initialState.failure) }
   var refreshes: Int by remember { mutableStateOf(0) }
 
   val isSaved: Boolean? by store.updates
@@ -40,10 +44,17 @@ fun StoryDomain(
   LaunchedEffect(refreshes) {
     if (refreshes == 0 && article != Loading) return@LaunchedEffect
     article = Loading
-    val stories: List<Article>? = webService.topStories(section).getOrNull()?.results
+    failure = null
+    val stories: List<Article>? = webService.topStories(section)
+      .onFailure { throwable -> failure = throwable.toFailure() }
+      .getOrNull()
+      ?.results
     article = store.get().orEmpty().find { savedArticle -> savedArticle.uri == uri }
       ?: stories?.find { story -> story.uri == uri }
     related = stories?.filter { story -> story.uri != uri }?.shuffled()?.take(3)?.map(::SummaryState)
+
+    // A successful fetch that no longer contains the story would otherwise load forever.
+    if (article == Loading && failure == null) failure = storyNotFound(section)
   }
 
   LaunchedEffect(Unit) {
@@ -63,5 +74,5 @@ fun StoryDomain(
     }
   }
 
-  return StoryState(title, article, related, isSaved)
+  return StoryState(title, article, related, isSaved, failure)
 }

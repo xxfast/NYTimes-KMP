@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.material.Card
@@ -35,6 +36,8 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.seiko.imageloader.rememberImagePainter
 import io.github.xxfast.decompose.router.rememberOnRoute
 import io.github.xxfast.nytimes.models.ArticleUri
+import io.github.xxfast.nytimes.models.Failure
+import io.github.xxfast.nytimes.models.FailureKind
 import io.github.xxfast.nytimes.models.TopStorySection
 import io.github.xxfast.nytimes.models.TopStorySections
 import io.github.xxfast.nytimes.models.sections
@@ -44,6 +47,8 @@ import io.github.xxfast.nytimes.screens.summary.SummaryState
 import io.github.xxfast.nytimes.screens.topStories.Loading
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesState
 import io.github.xxfast.nytimes.screens.topStories.TopStoriesRouteViewModel
+import io.github.xxfast.nytimes.screens.topStories.emptyMessage
+import io.github.xxfast.nytimes.wear.components.ErrorCard
 import io.github.xxfast.nytimes.wear.navigation.NavigationBox
 import io.github.xxfast.nytimes.wear.theme.NYTimesWearTheme
 import io.github.xxfast.nytimes.resources.Icons as NyTimesIcons
@@ -59,7 +64,8 @@ fun TopStoriesScreen(
   TopStoriesView(
     state = state,
     onSelectSection = viewModel::onSelectSection,
-    onSelectArticle = onSelectArticle
+    onSelectArticle = onSelectArticle,
+    onRefresh = viewModel::onRefresh,
   )
 }
 
@@ -68,6 +74,7 @@ fun TopStoriesView(
   state: TopStoriesState,
   onSelectArticle: (section: TopStorySection, uri: ArticleUri, title: String) -> Unit,
   onSelectSection: (section: TopStorySection) -> Unit,
+  onRefresh: () -> Unit,
 ) {
   NavigationBox { columnState ->
     ScalingLazyColumn(
@@ -111,7 +118,10 @@ fun TopStoriesView(
         }
       }
 
-      if (state.articles == Loading) {
+      val failure: Failure? = state.failure
+      if (state.articles == Loading && failure != null) {
+        item { ErrorCard(failure = failure, onRetry = onRefresh) }
+      } else if (state.articles == Loading) {
         item {
           Card(
             onClick = {},
@@ -126,6 +136,15 @@ fun TopStoriesView(
                 .align(CenterHorizontally)
             )
           }
+        }
+      } else if (state.articles.isNullOrEmpty()) {
+        item {
+          Text(
+            text = emptyMessage(state.section),
+            style = MaterialTheme.typography.caption1,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(8.dp),
+          )
         }
       } else {
         items(state.articles.orEmpty()) { article ->
@@ -170,6 +189,21 @@ fun TopStoriesPreviewLoading() {
 @WearPreviewSmallRound
 @WearPreviewLargeRound
 @Composable
+fun TopStoriesPreviewFailed() {
+  val state = TopStoriesState(
+    failure = Failure(
+      kind = FailureKind.Http,
+      title = "The New York Times is unavailable",
+      message = "The server responded with 503 Service Unavailable",
+      statusCode = 503,
+    ),
+  )
+  TopStoriesPreview(state)
+}
+
+@WearPreviewSmallRound
+@WearPreviewLargeRound
+@Composable
 fun TopStoriesPreviewLoaded() {
   val state = TopStoriesState(
     section = TopStorySection("Sports"),
@@ -194,6 +228,7 @@ private fun TopStoriesPreview(state: TopStoriesState) {
       state = state,
       onSelectArticle = { _, _, _ -> },
       onSelectSection = {},
+      onRefresh = {},
     )
   }
 }

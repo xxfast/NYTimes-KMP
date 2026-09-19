@@ -4,9 +4,9 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using NYTimes.Windows;
 using Windows.Graphics;
 using WinRT.Interop;
@@ -54,6 +54,8 @@ public sealed partial class MainWindow : Window
         ArticlesList.ItemsSource = _viewModel.Articles;
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         ApplyLoading();
+        Root.SizeChanged += (_, _) => ApplyLayout();
+        ApplyLayout();
 
         Closed += async (_, _) =>
         {
@@ -121,11 +123,22 @@ public sealed partial class MainWindow : Window
 
     private void ViewModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading) or null)
+        if (e.PropertyName is nameof(TopStoriesViewModel.IsLoading)
+            or nameof(TopStoriesViewModel.Error)
+            or nameof(TopStoriesViewModel.ErrorTitle)
+            or nameof(TopStoriesViewModel.IsEmpty)
+            or nameof(TopStoriesViewModel.EmptyMessage)
+            or null)
             ApplyLoading();
 
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedStory) or null)
+        {
             BindDetail(_viewModel.SelectedStory);
+            ApplyLayout();
+        }
+
+        if (e.PropertyName is nameof(TopStoriesViewModel.CanGoBack) or null)
+            BackButton.IsEnabled = _viewModel.CanGoBack;
 
         if (e.PropertyName is nameof(TopStoriesViewModel.SelectedSection) or null &&
             !ReferenceEquals(SectionsList.SelectedItem, _viewModel.SelectedSection))
@@ -136,10 +149,65 @@ public sealed partial class MainWindow : Window
             ArticlesList.SelectedItem = _viewModel.SelectedArticle;
     }
 
+    /// <summary>Below this width the list and the detail take turns filling the window.</summary>
+    private const double CompactBreakpoint = 840;
+
+    /// <summary>From this width the detail pane splits article and related stories 60/40.</summary>
+    private const double WideBreakpoint = 1400;
+
+    /// <summary>
+    /// Mirrors the Compose layouts: compact shows the list or the detail, expanded splits
+    /// list and detail 50/50, and wide widens the detail and moves related stories beside
+    /// the article.
+    /// </summary>
+    private void ApplyLayout()
+    {
+        var width = Root.ActualWidth;
+        if (width < 1) return;
+        var isCompact = width < CompactBreakpoint;
+        var isWide = width >= WideBreakpoint;
+        var showDetail = _viewModel.HasSelectedStory;
+
+        CloseStoryButton.Visibility = isCompact ? Visibility.Visible : Visibility.Collapsed;
+
+        if (isCompact)
+        {
+            SectionsPane.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+            StoriesPane.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+            DetailPane.Visibility = showDetail ? Visibility.Visible : Visibility.Collapsed;
+            SectionsColumn.Width = showDetail ? new GridLength(0) : new GridLength(180);
+            StoriesColumn.Width = showDetail ? new GridLength(0) : new GridLength(1, GridUnitType.Star);
+            DetailColumn.Width = showDetail ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+        }
+        else
+        {
+            SectionsPane.Visibility = Visibility.Visible;
+            StoriesPane.Visibility = Visibility.Visible;
+            DetailPane.Visibility = Visibility.Visible;
+            SectionsColumn.Width = new GridLength(220);
+            StoriesColumn.Width = new GridLength(1, GridUnitType.Star);
+            DetailColumn.Width = isWide
+                ? new GridLength(1.5, GridUnitType.Star)
+                : new GridLength(1, GridUnitType.Star);
+        }
+
+        // Wide: related stories move into a 40% side column and span the whole detail height.
+        RelatedColumn.Width = isWide ? new GridLength(2, GridUnitType.Star) : new GridLength(0);
+        RelatedRow.Height = isWide ? new GridLength(0) : new GridLength(180);
+        Grid.SetColumn(RelatedPanel, isWide ? 1 : 0);
+        Grid.SetRow(RelatedPanel, isWide ? 0 : 4);
+        Grid.SetRowSpan(RelatedPanel, isWide ? 6 : 2);
+    }
+
     private void ApplyLoading()
     {
         LoadingRing.IsActive = _viewModel.IsLoading;
         LoadingRing.Visibility = _viewModel.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        ErrorTitleText.Text = _viewModel.ErrorTitle ?? string.Empty;
+        ErrorText.Text = _viewModel.Error ?? string.Empty;
+        ErrorPanel.Visibility = _viewModel.HasError ? Visibility.Visible : Visibility.Collapsed;
+        EmptyText.Text = _viewModel.EmptyMessage;
+        EmptyText.Visibility = _viewModel.IsEmpty ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void BindDetail(StoryDetailViewModel? detail)
@@ -179,12 +247,21 @@ public sealed partial class MainWindow : Window
         ArticleSection.Visibility = string.IsNullOrWhiteSpace(_detail.ArticleSectionName)
             ? Visibility.Collapsed
             : Visibility.Visible;
+        ArticleSubsection.Text = _detail.ArticleSubsection.ToUpperInvariant();
+        SubsectionChip.Visibility = _detail.HasArticleSubsection ? Visibility.Visible : Visibility.Collapsed;
+        HeroCaption.Text = _detail.ArticleImageCaption;
+        AutomationProperties.SetName(HeroImage, _detail.ArticleImageCaption);
+        HeroCaption.Visibility = _detail.HasArticleImageCaption ? Visibility.Visible : Visibility.Collapsed;
         ArticleDescription.Text = _detail.ArticleDescription;
+        ReadStoryText.Text = _detail.ArticleUrl;
+        ReadStoryLink.NavigateUri = Uri.TryCreate(_detail.ArticleUrl, UriKind.Absolute, out var storyUri)
+            ? storyUri
+            : null;
+        ReadStoryLink.Visibility = storyUri is null ? Visibility.Collapsed : Visibility.Visible;
 
-        if (_detail.HasArticleImage &&
-            Uri.TryCreate(_detail.ArticleImageUrl, UriKind.Absolute, out var imageUri))
+        if (_detail.HasArticleImage)
         {
-            HeroImage.Source = new BitmapImage(imageUri);
+            HeroImage.Source = _detail.ArticleImageUrl;
             HeroImageBorder.Visibility = Visibility.Visible;
         }
         else
@@ -195,15 +272,19 @@ public sealed partial class MainWindow : Window
 
         DetailLoadingRing.IsActive = _detail.IsLoading;
         DetailLoadingRing.Visibility = _detail.IsLoading ? Visibility.Visible : Visibility.Collapsed;
+        DetailErrorTitleText.Text = _detail.ErrorTitle ?? string.Empty;
+        DetailErrorText.Text = _detail.Error ?? string.Empty;
+        DetailErrorPanel.Visibility = _detail.HasError ? Visibility.Visible : Visibility.Collapsed;
 
+        // Favourite toggle: outline heart until saved, filled heart after (as in StoryView).
         if (_detail.IsSaved)
         {
-            SaveIcon.Glyph = "\uE735"; // Solid star
+            SaveIcon.Glyph = "\uEB52"; // HeartFill
             SaveButtonText.Text = "Saved";
         }
         else
         {
-            SaveIcon.Glyph = "\uE734"; // Outline star
+            SaveIcon.Glyph = "\uEB51"; // Heart
             SaveButtonText.Text = "Save";
         }
     }
@@ -217,6 +298,17 @@ public sealed partial class MainWindow : Window
             _viewModel.SelectedSection = section;
     }
 
+    /// <summary>Compose GridCells.Adaptive(248.dp): as many 248-wide columns as fit, stretched to fill.</summary>
+    private void ArticlesList_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (ArticlesList.ItemsPanelRoot is not ItemsWrapGrid grid) return;
+        const double minItemWidth = 248 + 16; // card plus the 8px margin on each side
+        var width = e.NewSize.Width - 8; // ListView margin inside the pane
+        if (width < 1) return;
+        var columns = Math.Max(1, (int)Math.Floor(width / minItemWidth));
+        grid.ItemWidth = Math.Floor(width / columns);
+    }
+
     private void ArticlesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (ArticlesList.SelectedItem is StorySummaryViewModel article)
@@ -225,6 +317,18 @@ public sealed partial class MainWindow : Window
 
     private void SaveButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.SaveCommand.Execute(null);
+
+    private void CloseStoryButton_Click(object sender, RoutedEventArgs e) =>
+        _viewModel.CloseStoryCommand.Execute(null);
+
+    private void BackButton_Click(object sender, RoutedEventArgs e) =>
+        _viewModel.GoBackCommand.Execute(null);
+
+    private void RelatedList_ItemClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is StorySummaryViewModel related)
+            _detail?.OpenRelatedCommand.Execute(related);
+    }
 
     private void ReloadButton_Click(object sender, RoutedEventArgs e) =>
         _detail?.RefreshCommand.Execute(null);

@@ -40,7 +40,8 @@ kotlin {
 nuget {
   publish {
     packageId = "NYTimes.Kotlin"
-    version = "0.2.0"
+    // Shared with Directory.Build.props so the .NET PackageReferences always match the pack.
+    version = layout.projectDirectory.file("nuget.version").asFile.readText().trim()
     authors = "xxfast"
     description = "NYTimes Kotlin Multiplatform sample"
     // Shared screens/models packages sit under this root, so the reachability closure
