@@ -30,7 +30,7 @@ fun article(
   section = section,
   subsection = "Subsection $index",
   title = "Story $index",
-  description = "Abstract $index",
+  abstract = "Abstract $index",
   url = "https://www.nytimes.com/story-$index",
   byline = "By Reporter $index",
   publishedDate = Instant.fromEpochSeconds(1_700_000_000L + index),
