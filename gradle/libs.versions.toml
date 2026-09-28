@@ -19,7 +19,7 @@ ktor = "3.5.2"
 molecule = "2.2.0"
 qdsfdhvh-image-loader = "1.10.0"
 skie = "0.10.14"
-wear-compose = "1.6.2"
+wear-compose = "1.7.0"
 
 [libraries]
 agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
